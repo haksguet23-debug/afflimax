@@ -565,10 +565,13 @@
             const ctx2 = document.getElementById('chartSources').getContext('2d');
             sourceChart = new Chart(ctx2, {
                 type: 'doughnut',
-                data: { labels: ['Aucune donnee'], datasets: [{ data: [1], backgroundColor: ['rgba(100,100,120,0.3)'], borderColor: '#141432', borderWidth: 3 }] },
+                data: { labels: ['Aucune donnee'], datasets: [{ data: [1], backgroundColor: ['rgba(100,100,120,0.2)'], borderColor: '#141432', borderWidth: 3 }] },
                 options: {
-                    responsive: true, maintainAspectRatio: false, cutout: '65%',
-                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', usePointStyle: true, padding: 15, font: { size: 10 } } }, tooltip: { backgroundColor: '#141432', borderColor: '#1e1e4a', borderWidth: 1, padding: 12, cornerRadius: 8 } }
+                    responsive: true, maintainAspectRatio: false, cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', usePointStyle: true, padding: 12, font: { size: 11 }, generateLabels: function(chart) { const d=chart.data; if(d.labels.length&&d.datasets.length) return d.labels.map((l,i)=>({text:l+'  ('+d.datasets[0].data[i]+')',fillStyle:d.datasets[0].backgroundColor[i],strokeStyle:d.datasets[0].borderColor,lineWidth:2,hidden:!chart.getDataVisibility(i),index:i,pointStyle:'circle',rotation:0})); return []; } },
+                        tooltip: { backgroundColor: '#141432', borderColor: '#1e1e4a', borderWidth: 1, padding: 14, cornerRadius: 8, callbacks: { label: function(ctx) { const total=ctx.dataset.data.reduce((a,b)=>a+b,0); const pct=total>0?Math.round(ctx.raw/total*100):0; return ' '+ctx.label.replace(/\s*\(\d+\)/,'' )+': '+ctx.raw+' clics ('+pct+'%)'; } } }
+                    }
                 }
             });
         }
@@ -583,13 +586,30 @@
             }
 
             if (state.sources && Object.keys(state.sources).length > 0) {
-                const entries = Object.entries(state.sources);
-                const colors = ['#7c3aed','#f0a500','#10b981','#3b82f6','#ef4444'];
-                sourceChart.data.labels = entries.map(([k]) => k.replace(/_/g,' '));
-                sourceChart.data.datasets[0].data = entries.map(([,v]) => v);
-                sourceChart.data.datasets[0].backgroundColor = entries.map((_,i) => colors[i] || '#666');
+                // Filtrer les sources a zero + trier par valeur decroissante
+                const entries = Object.entries(state.sources)
+                    .filter(([,v]) => v > 0)
+                    .sort(([,a],[,b]) => b - a);
+                
+                const total = entries.reduce((sum,[,v]) => sum + v, 0);
+                const colors = ['#f0a500','#7c3aed','#10b981','#3b82f6','#f97316','#ef4444','#06b6d4','#ec4899'];
+                const labels = {SEO_organique:'SEO Organique',reseaux_sociaux:'Réseaux Sociaux',email_marketing:'Email Marketing',publicite_payante:'Publicité Payante',referencement_direct:'Direct'};
+                const badgeEl = document.querySelector('.charts-row .chart-card:last-child .chart-card__badge');
+                badgeEl.textContent = total + ' clics';
+                
+                if (entries.length === 0) {
+                    sourceChart.data.labels = ['Aucun clic'];
+                    sourceChart.data.datasets[0].data = [1];
+                    sourceChart.data.datasets[0].backgroundColor = ['rgba(100,100,120,0.2)'];
+                    document.getElementById('chartSrcEmpty').style.display = 'flex';
+                    document.getElementById('chartSrcEmpty').textContent = 'Aucun clic enregistré';
+                } else {
+                    sourceChart.data.labels = entries.map(([k]) => labels[k] || k.replace(/_/g,' '));
+                    sourceChart.data.datasets[0].data = entries.map(([,v]) => v);
+                    sourceChart.data.datasets[0].backgroundColor = entries.map((_,i) => colors[i] || '#666');
+                    document.getElementById('chartSrcEmpty').style.display = 'none';
+                }
                 sourceChart.update('none');
-                document.getElementById('chartSrcEmpty').style.display = 'none';
             }
         }
 
