@@ -436,6 +436,17 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
 
     def handle_redirect(self, slug):
         """Enregistre un clic et redirige vers le vrai lien Amazon."""
+        try:
+            self._handle_redirect_impl(slug)
+        except Exception as e:
+            print(f"[ERREUR] handle_redirect({slug}): {e}", file=sys.stderr)
+            self.send_response(500)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(f"Erreur interne: {e}".encode("utf-8"))
+
+    def _handle_redirect_impl(self, slug):
+        """Implementation reelle de handle_redirect."""
         produits = load_products()
         target = None
 
@@ -496,6 +507,17 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
 
     def serve_go_index(self):
         """Affiche la liste de tous les liens de redirection disponibles avec selecteur de source."""
+        try:
+            self._serve_go_index_impl()
+        except Exception as e:
+            print(f"[ERREUR] serve_go_index: {e}", file=sys.stderr)
+            self.send_response(500)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(f"Erreur interne: {e}".encode("utf-8"))
+
+    def _serve_go_index_impl(self):
+        """Implementation reelle de serve_go_index."""
         produits = load_products()
         host = self.headers.get("Host", f"localhost:{PORT}")
         proto = "https" if "RENDER" in os.environ else "http"
@@ -582,7 +604,8 @@ function updateUrls() {
     const label = document.getElementById('srcLabel');
     const map = {twitter:'reseaux_sociaux',facebook:'reseaux_sociaux',linkedin:'reseaux_sociaux',instagram:'reseaux_sociaux',tiktok:'reseaux_sociaux',email:'email_marketing',google:'SEO_organique',ads:'publicite_payante','':'referencement_direct'};
     label.textContent = map[src] || 'referencement_direct';
-    for (let i=1;i<=8;i++) {
+    const TOTAL = document.querySelectorAll('.link-card').length;
+    for (let i=1; i<=TOTAL; i++) {
         const el = document.getElementById('url'+i);
         if (el) {
             const u = BASE + '/go/' + i + (src ? '?src=' + src : '');
