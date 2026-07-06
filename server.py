@@ -364,6 +364,11 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             self.serve_sitemap()
             return
 
+        # ROBOTS.TXT pour SEO
+        if path == "/robots.txt":
+            self.serve_robots()
+            return
+
         # REDIRECTEUR DE CLICS: /go/<slug> -> enregistre clic + redirige Amazon
         if path.startswith("/go/") and len(path) > 4:
             slug = path[4:].strip().lower()
@@ -690,6 +695,22 @@ footer{{text-align:center;padding:40px 20px;color:var(--muted);font-size:.7rem;b
         body = page.encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", len(body))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def serve_robots(self):
+        """Genere un robots.txt pour le SEO."""
+        host = self.headers.get("Host", "localhost")
+        proto = "https" if "RENDER" in os.environ else "http"
+        base = f"{proto}://{host}"
+        content = f"""User-agent: *
+Allow: /
+Sitemap: {base}/sitemap.xml
+"""
+        body = content.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.send_header("Content-Length", len(body))
         self.end_headers()
         self.wfile.write(body)
