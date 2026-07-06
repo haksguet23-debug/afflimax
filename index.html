@@ -594,7 +594,7 @@
                 const total = entries.reduce((sum,[,v]) => sum + v, 0);
                 const colors = ['#f0a500','#7c3aed','#10b981','#3b82f6','#f97316','#ef4444','#06b6d4','#ec4899'];
                 const labels = {SEO_organique:'SEO Organique',reseaux_sociaux:'Réseaux Sociaux',email_marketing:'Email Marketing',publicite_payante:'Publicité Payante',referencement_direct:'Direct'};
-                const badgeEl = document.querySelector('.charts-row .chart-card:last-child .chart-card__badge');
+                const badgeEl = document.querySelector('#chartSources').closest('.chart-card').querySelector('.chart-card__badge');
                 badgeEl.textContent = total + ' clics';
                 
                 if (entries.length === 0) {
