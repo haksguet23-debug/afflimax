@@ -1,0 +1,126 @@
+{
+  "plateformes": {
+    "amazon": {
+      "tag": "confortbure07-21",
+      "pays": "FR",
+      "base_url": "https://www.amazon.fr/dp/{ASIN}?tag={TAG}",
+      "description": "Remplacez {ASIN} par le code produit Amazon (ex: B0CXXXXXXXX)"
+    },
+    "clickbank": {
+      "affiliate_id": "VOTRE_ID_CLICKBANK",
+      "base_url": "https://{VENDOR_ID}.{PRODUCT}.hop.clickbank.net?tid={AFFILIATE_ID}",
+      "description": "Remplacez {VENDOR_ID} et {PRODUCT} par les identifiants ClickBank du produit"
+    },
+    "shareasale": {
+      "affiliate_id": "VOTRE_ID_SHAREASALE",
+      "base_url": "http://www.shareasale.com/r.cfm?b={BANNER_ID}&u={AFFILIATE_ID}&m={MERCHANT_ID}",
+      "description": "Remplacez {BANNER_ID}, {AFFILIATE_ID}, {MERCHANT_ID} par vos IDs ShareASale"
+    },
+    "cj": {
+      "affiliate_id": "VOTRE_ID_CJ",
+      "base_url": "https://www.tkqlhce.com/click-{AFFILIATE_ID}-{ADVERTISER_ID}?url={PRODUCT_URL}",
+      "description": "Remplacez par vos identifiants CJ Affiliate (PID, AID)"
+    },
+    "awin": {
+      "affiliate_id": "VOTRE_ID_AWIN",
+      "base_url": "https://www.awin1.com/cread.php?awinmid={MERCHANT_ID}&awinaffid={AFFILIATE_ID}&ued={PRODUCT_URL}",
+      "description": "Remplacez par vos identifiants Awin (advertiser ID, publisher ID)"
+    },
+    "impact": {
+      "affiliate_id": "VOTRE_ID_IMPACT",
+      "base_url": "https://{ADVERTISER}.impact.com/affiliate-link?affiliateId={AFFILIATE_ID}",
+      "description": "Remplacez par vos identifiants Impact Radius"
+    }
+  },
+  "produits": [
+    {
+      "nom": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "prix": 197.00,
+      "commission_pct": 8,
+      "commission_euro": 15.76,
+      "lien": "https://www.amazon.fr/dp/B0CXXXXXXXX?tag=confortbure07-21",
+      "description": "Solution complete pour entrepreneurs. Plus de 5000 clients satisfaits. Livraison immediate.",
+      "categorie": "Business",
+      "actif": true
+    },
+    {
+      "nom": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "prix": 297.00,
+      "commission_pct": 15,
+      "commission_euro": 44.55,
+      "lien": "https://VOTRE_VENDOR.formation-trading.hop.clickbank.net?tid=VOTRE_ID",
+      "description": "Formation complete au trading. Strategies eprouvees. Support VIP 7j/7 inclus.",
+      "categorie": "Formation",
+      "actif": true
+    },
+    {
+      "nom": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "prix": 147.00,
+      "commission_pct": 12,
+      "commission_euro": 17.64,
+      "lien": "http://www.shareasale.com/r.cfm?b=VOTRE_BANNER&u=VOTRE_ID&m=VOTRE_MERCHANT",
+      "description": "Positionnez vos sites en 1ere page Google. Interface intuitive. Resultats en 30 jours.",
+      "categorie": "SEO",
+      "actif": true
+    },
+    {
+      "nom": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "prix": 29.90,
+      "commission_pct": 10,
+      "commission_euro": 2.99,
+      "lien": "https://www.tkqlhce.com/click-VOTRE_PID-VOTRE_AID?url=https://saas-premium.com",
+      "description": "Suite outils marketing. Email, landing pages, analytics. Essai gratuit 14 jours.",
+      "categorie": "SaaS",
+      "actif": true
+    },
+    {
+      "nom": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "prix": 497.00,
+      "commission_pct": 20,
+      "commission_euro": 99.40,
+      "lien": "https://www.awin1.com/cread.php?awinmid=VOTRE_MERCHANT&awinaffid=VOTRE_ID&ued=https://coaching-vip.com",
+      "description": "Coaching personnalise par des experts. 4 sessions/mois. Garantie satisfait ou rembourse.",
+      "categorie": "Coaching",
+      "actif": true
+    },
+    {
+      "nom": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "prix": 347.00,
+      "commission_pct": 18,
+      "commission_euro": 62.46,
+      "lien": "https://ecommerce-masterclass.impact.com/affiliate?affiliateId=VOTRE_ID",
+      "description": "Creez votre boutique en ligne. De A a Z. Formation video + templates offerts.",
+      "categorie": "E-Commerce",
+      "actif": true
+    },
+    {
+      "nom": "Kit Marketing Digital",
+      "plateforme": "Amazon",
+      "prix": 37.00,
+      "commission_pct": 7,
+      "commission_euro": 2.59,
+      "lien": "https://www.amazon.fr/dp/B0DXXXXXXXX?tag=confortbure07-21",
+      "description": "Kit complet marketing digital. Ebooks, templates, scripts. Telechargement immediat.",
+      "categorie": "Marketing",
+      "actif": true
+    },
+    {
+      "nom": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "prix": 24.90,
+      "commission_pct": 6,
+      "commission_euro": 1.49,
+      "lien": "http://www.shareasale.com/r.cfm?b=VOTRE_BANNER_2&u=VOTRE_ID&m=VOTRE_MERCHANT",
+      "description": "Templates WordPress premium. Responsive, SEO friendly. Installation incluse.",
+      "categorie": "Web",
+      "actif": true
+    }
+  ],
+  "instructions": "Remplacez VOTRE_ID, VOTRE_BANNER, VOTRE_MERCHANT, VOTRE_PID, VOTRE_AID, VOTRE_VENDOR par vos vrais identifiants d'affilie sur chaque plateforme. Pour Amazon, remplacez B0CXXXXXXXX et B0DXXXXXXXX par les vrais ASIN des produits que vous promouvez."
+}

@@ -1,0 +1,128 @@
+{
+  "plateforme": {
+    "nom": "Affilimax",
+    "version": "2.0.0",
+    "description": "Plateforme d'automatisation de marketing d'affiliation — propulsée par n8n",
+    "url": "https://affilmax.render.com",
+    "port": 5678,
+    "environnement": "production",
+    "date_creation": "2026-07-06T00:00:00Z",
+    "derniere_maj": "2026-07-06T12:00:00Z"
+  },
+  "n8n": {
+    "version": "latest",
+    "port": 5678,
+    "webhook_url": "https://affilmax.render.com",
+    "database": {
+      "type": "postgres",
+      "host": "${POSTGRES_HOST}",
+      "port": "${POSTGRES_PORT}",
+      "user": "${POSTGRES_USER}",
+      "password": "${POSTGRES_PASSWORD}",
+      "database": "${POSTGRES_DB}"
+    },
+    "workflows": {
+      "actifs": 8,
+      "dossiers": ["affiliation", "emailing", "analytics", "social", "paiements"]
+    }
+  },
+  "affiliation": {
+    "plateformes": [
+      {
+        "nom": "Amazon Associates",
+        "actif": true,
+        "tag": "confortbure07-21",
+        "pays": ["FR", "BE", "CH", "CA"],
+        "categories": ["High-Tech", "Maison", "Bureau", "Jardin"]
+      },
+      {
+        "nom": "ClickBank",
+        "actif": true,
+        "categories": ["Formation", "Santé", "Business", "Développement Personnel"]
+      },
+      {
+        "nom": "ShareASale",
+        "actif": true,
+        "categories": ["Mode", "Lifestyle", "Tech", "Sport"]
+      },
+      {
+        "nom": "CJ Affiliate",
+        "actif": true,
+        "categories": ["Finance", "Voyage", "Tech", "Beauté"]
+      },
+      {
+        "nom": "Awin",
+        "actif": true,
+        "pays": ["FR", "UK", "DE", "ES", "IT"],
+        "categories": ["Retail", "Telecom", "Finance", "Voyage"]
+      },
+      {
+        "nom": "Impact",
+        "actif": false,
+        "statut": "en_cours_onboarding"
+      }
+    ],
+    "taux_commission_moyen": 12.5,
+    "delai_paiement_jours": 30
+  },
+  "monetisation": {
+    "modeles": ["CPA", "CPC", "CPL", "CPM", "Revenue Share"],
+    "seuils_paiement": {
+      "CPA": 50,
+      "CPC": 100,
+      "CPL": 75,
+      "Revenue_Share": 25
+    },
+    "devises_acceptees": ["EUR", "USD", "GBP", "CHF"]
+  },
+  "trafic": {
+    "sources_principales": [
+      "SEO organique",
+      "Réseaux sociaux",
+      "Email marketing",
+      "Publicité payante (Google Ads, Meta Ads)",
+      "Référencement direct"
+    ],
+    "cibles_geographiques": ["France", "Belgique", "Suisse", "Canada", "Royaume-Uni"],
+    "langues": ["fr", "en"]
+  },
+  "analytics": {
+    "outils": ["n8n analytics", "Google Analytics 4", "PostgreSQL"],
+    "metriques_suivies": [
+      "clics_par_jour",
+      "taux_conversion",
+      "commissions_journalieres",
+      "epc",
+      "revenu_genere",
+      "taux_rebond",
+      "duree_session"
+    ],
+    "rapports_automatiques": {
+      "quotidien": "06:00 UTC",
+      "hebdomadaire": "Lundi 08:00 UTC",
+      "mensuel": "1er du mois 08:00 UTC"
+    }
+  },
+  "notifications": {
+    "canaux": ["Email", "Telegram", "Slack"],
+    "evenements": [
+      "nouvelle_vente",
+      "seuil_commission_atteint",
+      "erreur_workflow",
+      "pic_trafic",
+      "taux_conversion_bas"
+    ]
+  },
+  "securite": {
+    "auth": "API Key + JWT",
+    "https": true,
+    "rate_limiting": true,
+    "backup_db": "quotidien 02:00 UTC"
+  },
+  "deploiement": {
+    "hebergeur": "Render.com",
+    "type": "Docker Compose",
+    "services": ["n8n", "postgres"],
+    "region": "Frankfurt (EU)"
+  }
+}

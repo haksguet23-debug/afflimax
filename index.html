@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affilimax — Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #0f0f2a;
+            --bg-card: #141432;
+            --bg-card-hover: #1a1a40;
+            --accent-gold: #f0a500;
+            --accent-gold-glow: #ffc107;
+            --accent-purple: #7c3aed;
+            --accent-purple-glow: #a78bfa;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-orange: #f97316;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #1e1e4a;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow-gold: 0 0 30px rgba(240,165,0,0.15);
+            --shadow-purple: 0 0 30px rgba(124,58,237,0.15);
+            --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            --font-mono: 'SF Mono','Cascadia Code','Consolas',monospace;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:'Inter','Segoe UI',system-ui,sans-serif;
+            background:var(--bg-primary);
+            color:var(--text-primary);
+            min-height:100vh;overflow-x:hidden;
+        }
+        .bg-grid{
+            position:fixed;inset:0;pointer-events:none;z-index:0;
+            background-image:linear-gradient(rgba(124,58,237,0.02)1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.02)1px,transparent 1px);
+            background-size:60px 60px;
+        }
+        .app{position:relative;z-index:1;padding:24px;max-width:1600px;margin:0 auto}
+        .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+        .header__logo{display:flex;align-items:center;gap:12px}
+        .header__logo-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--accent-purple),var(--accent-gold));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px}
+        .header__title{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,var(--text-primary),var(--accent-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.5px}
+        .header__subtitle{font-size:0.75rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase}
+        .header__right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+
+        /* SIMULATION BADGE */
+        .simulation-badge{
+            display:flex;align-items:center;gap:8px;
+            padding:10px 20px;
+            background:rgba(249,115,22,0.12);
+            border:2px solid rgba(249,115,22,0.5);
+            border-radius:50px;
+            font-size:0.8rem;font-weight:700;color:var(--accent-orange);
+            font-family:var(--font-mono);
+            animation:simPulse 2s ease-in-out infinite;
+        }
+        @keyframes simPulse{
+            0%,100%{border-color:rgba(249,115,22,0.5);box-shadow:0 0 10px rgba(249,115,22,0.1)}
+            50%{border-color:rgba(249,115,22,0.9);box-shadow:0 0 20px rgba(249,115,22,0.25)}
+        }
+        .simulation-dot{width:10px;height:10px;border-radius:50%;background:var(--accent-orange);animation:simDot 1s ease-in-out infinite}
+        @keyframes simDot{0%,100%{opacity:1}50%{opacity:0.3}}
+
+        .live-badge{
+            display:flex;align-items:center;gap:8px;padding:8px 16px;
+            background:var(--bg-card);border:1px solid var(--border);
+            border-radius:50px;font-size:0.8rem;color:var(--text-secondary);font-family:var(--font-mono)
+        }
+        .refresh-btn{
+            padding:8px 20px;background:linear-gradient(135deg,var(--accent-purple),#5b21b6);
+            border:none;border-radius:50px;color:white;font-weight:600;font-size:0.85rem;
+            cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:6px;
+        }
+        .refresh-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,58,237,0.4)}
+
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px}
+        .stat-card{
+            background:var(--bg-card);border:1px solid var(--border);
+            border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;transition:var(--transition)
+        }
+        .stat-card:hover{background:var(--bg-card-hover);transform:translateY(-2px);box-shadow:var(--shadow-purple)}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0}
+        .stat-card--gold::before{background:linear-gradient(90deg,var(--accent-gold),#ffdd57)}
+        .stat-card--purple::before{background:linear-gradient(90deg,var(--accent-purple),var(--accent-purple-glow))}
+        .stat-card--green::before{background:linear-gradient(90deg,var(--accent-green),#34d399)}
+        .stat-card--blue::before{background:linear-gradient(90deg,var(--accent-blue),#60a5fa)}
+        .stat-card--cyan::before{background:linear-gradient(90deg,var(--accent-cyan),#22d3ee)}
+        .stat-card--red::before{background:linear-gradient(90deg,var(--accent-red),#f87171)}
+        .stat-card__icon{font-size:1.5rem;margin-bottom:6px}
+        .stat-card__label{font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+        .stat-card__value{font-size:2rem;font-weight:800;font-family:var(--font-mono);letter-spacing:-1px}
+        .stat-card__value--zero{color:var(--text-muted)}
+        .stat-card__change{font-size:0.75rem;margin-top:4px;color:var(--text-muted)}
+
+        .charts-row{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:20px}
+        @media(max-width:968px){.charts-row{grid-template-columns:1fr}}
+        .chart-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:var(--transition)}
+        .chart-card:hover{box-shadow:var(--shadow-purple)}
+        .chart-card__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+        .chart-card__title{font-weight:700;font-size:0.95rem}
+        .chart-card__badge{
+            padding:4px 12px;background:rgba(240,165,0,0.1);border:1px solid rgba(240,165,0,0.3);
+            border-radius:50px;font-size:0.7rem;color:var(--accent-gold);font-family:var(--font-mono)
+        }
+        canvas{width:100%!important}
+
+        .bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+        @media(max-width:968px){.bottom-row{grid-template-columns:1fr}}
+        .feed-card{
+            background:var(--bg-card);border:1px solid var(--border);
+            border-radius:var(--radius);padding:20px;transition:var(--transition);
+            max-height:380px;overflow:hidden;display:flex;flex-direction:column
+        }
+        .feed-card:hover{box-shadow:var(--shadow-purple)}
+        .feed-card__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-shrink:0}
+        .feed-card__title{font-weight:700;font-size:0.95rem}
+        .feed-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+        .feed-list::-webkit-scrollbar{width:4px}
+        .feed-list::-webkit-scrollbar-track{background:transparent}
+        .feed-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+        .feed-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--radius-sm);transition:var(--transition)}
+        .feed-item:hover{background:rgba(255,255,255,0.03)}
+        .feed-item__icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;background:rgba(255,255,255,0.04)}
+        .feed-item__info{flex:1;min-width:0}
+        .feed-item__name{font-weight:600;font-size:0.8rem}
+        .feed-item__detail{font-size:0.68rem;color:var(--text-muted);margin-top:2px}
+        .feed-item__amount{font-weight:700;font-family:var(--font-mono);font-size:0.85rem}
+        .feed-item__amount--positive{color:var(--accent-green)}
+        .feed-item__time{font-size:0.65rem;color:var(--text-muted);font-family:var(--font-mono);flex-shrink:0}
+
+        .status-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:var(--transition)}
+        .status-card:hover{box-shadow:var(--shadow-purple)}
+        .status-card__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+        .status-card__title{font-weight:700;font-size:0.95rem}
+        .status-grid-inner{display:grid;gap:10px}
+        .status-row{display:flex;align-items:center;justify-content:space-between;padding:10px;background:rgba(255,255,255,0.02);border-radius:var(--radius-sm)}
+        .status-row__name{font-weight:600;font-size:0.82rem}
+        .status-row__info{font-size:0.68rem;color:var(--text-muted)}
+        .status-badge{
+            padding:3px 10px;border-radius:50px;font-size:0.68rem;font-weight:600;font-family:var(--font-mono)
+        }
+        .status-badge--offline{background:rgba(239,68,68,0.15);color:var(--accent-red)}
+        .status-badge--unknown{background:rgba(249,115,22,0.15);color:var(--accent-orange)}
+
+        .setup-card{
+            background:var(--bg-card);border:1px solid var(--accent-orange);
+            border-radius:var(--radius);padding:24px;grid-column:1/-1;margin-bottom:20px
+        }
+        .setup-card__title{font-size:1.1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+        .setup-card__text{font-size:0.85rem;color:var(--text-secondary);line-height:1.7}
+        .setup-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:14px}
+        .setup-step{
+            background:rgba(255,255,255,0.02);border:1px solid var(--border);
+            border-radius:var(--radius-sm);padding:16px;transition:var(--transition)
+        }
+        .setup-step:hover{background:rgba(255,255,255,0.04)}
+        .setup-step__num{
+            width:28px;height:28px;background:var(--accent-purple);border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            font-weight:700;font-size:0.8rem;margin-bottom:8px
+        }
+        .setup-step__title{font-weight:700;font-size:0.85rem;margin-bottom:4px}
+        .setup-step__desc{font-size:0.72rem;color:var(--text-muted);line-height:1.5}
+        .setup-step code{
+            background:rgba(124,58,237,0.2);padding:2px 6px;border-radius:4px;
+            font-family:var(--font-mono);font-size:0.7rem;color:var(--accent-purple-glow)
+        }
+
+        .campaigns-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;grid-column:1/-1}
+        .campaigns-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+        .campaigns-table th{text-align:left;padding:8px 10px;color:var(--text-muted);font-weight:600;font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)}
+        .campaigns-table td{padding:10px;border-bottom:1px solid rgba(30,30,74,0.5);color:var(--text-muted)}
+        .campaigns-table tbody tr:hover{background:rgba(255,255,255,0.02)}
+        .campaign-name{font-weight:600;display:flex;align-items:center;gap:6px;color:var(--text-primary)}
+        .campaign-name__dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+        .progress-bar{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;margin-top:4px}
+        .progress-bar__fill{height:100%;border-radius:3px;transition:width 0.6s ease}
+        .footer{text-align:center;padding:20px;color:var(--text-muted);font-size:0.72rem;font-family:var(--font-mono);opacity:0.5}
+
+        .flash{animation:flashValue 0.6s ease-out}
+        @keyframes flashValue{0%{color:var(--accent-gold-glow);text-shadow:0 0 20px var(--accent-gold)}100%{color:inherit;text-shadow:none}}
+
+        /* Zero state placeholder for charts */
+        .chart-empty-state{
+            position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+            color:var(--text-muted);font-size:0.85rem;font-family:var(--font-mono);
+            pointer-events:none;z-index:1
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header__logo">
+                <div class="header__logo-icon">A</div>
+                <div>
+                    <div class="header__title">Affilimax</div>
+                    <div class="header__subtitle">Plateforme d'Affiliation</div>
+                </div>
+            </div>
+            <div class="header__right">
+                <div class="simulation-badge" id="simBadge">
+                    <span class="simulation-dot"></span>
+                    <span>SIMULATION &mdash; Donnees fictives</span>
+                </div>
+                <div class="live-badge" id="dateBadge">&#128197; <span id="currentDate"></span></div>
+                <button class="refresh-btn" onclick="fetchRealData()">&#128259; Chercher donnees reelles</button>
+            </div>
+        </header>
+
+        <!-- EXPLANATION CARD -->
+        <div class="setup-card" id="setupCard">
+            <div class="setup-card__title">&#9888;&#65039; Ce dashboard affiche actuellement des zeros</div>
+            <div class="setup-card__text">
+                Aucune donnee reelle n'est connectee. Les chiffres ci-dessous sont a <strong>zero</strong>.
+                Voici ce qu'il faut mettre en place pour avoir des <strong>donnees reelles</strong> :
+            </div>
+            <div class="setup-steps">
+                <div class="setup-step">
+                    <div class="setup-step__num">1</div>
+                    <div class="setup-step__title">Lancer n8n + PostgreSQL</div>
+                    <div class="setup-step__desc">
+                        <code>docker-compose up -d</code> dans le dossier du projet.
+                        n8n sera sur <code>localhost:5678</code>, PostgreSQL sur le port 5432.
+                    </div>
+                </div>
+                <div class="setup-step">
+                    <div class="setup-step__num">2</div>
+                    <div class="setup-step__title">Creer les workflows n8n</div>
+                    <div class="setup-step__desc">
+                        Lancer <code>python create_all_workflows.py --api-key VOTRE_CLE</code>
+                        pour deployer les 8 workflows d'automatisation.
+                    </div>
+                </div>
+                <div class="setup-step">
+                    <div class="setup-step__num">3</div>
+                    <div class="setup-step__title">Ajouter vos liens d'affiliation</div>
+                    <div class="setup-step__desc">
+                        Configurer les webhooks n8n pour tracker les clics et conversions.
+                        Les donnees rempliront PostgreSQL automatiquement.
+                    </div>
+                </div>
+                <div class="setup-step">
+                    <div class="setup-step__num">4</div>
+                    <div class="setup-step__title">Connecter le dashboard a l'API</div>
+                    <div class="setup-step__desc">
+                        Modifier <code>API_URL</code> dans le code ci-dessous pour pointer vers
+                        <code>https://affilmax.render.com/api/stats</code> (endpoint n8n).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card stat-card--gold">
+                <div class="stat-card__icon">&#128142;</div>
+                <div class="stat-card__label">Commissions Aujourd'hui</div>
+                <div class="stat-card__value stat-card__value--zero" id="statCommissions">0,00 &euro;</div>
+                <div class="stat-card__change">En attente de donnees</div>
+            </div>
+            <div class="stat-card stat-card--purple">
+                <div class="stat-card__icon">&#128070;</div>
+                <div class="stat-card__label">Clics Aujourd'hui</div>
+                <div class="stat-card__value stat-card__value--zero" id="statClicks">0</div>
+                <div class="stat-card__change">En attente de donnees</div>
+            </div>
+            <div class="stat-card stat-card--green">
+                <div class="stat-card__icon">&#127919;</div>
+                <div class="stat-card__label">Taux de Conversion</div>
+                <div class="stat-card__value stat-card__value--zero" id="statConvRate">0%</div>
+                <div class="stat-card__change">En attente de donnees</div>
+            </div>
+            <div class="stat-card stat-card--cyan">
+                <div class="stat-card__icon">&#128202;</div>
+                <div class="stat-card__label">EPC (&euro;/clic)</div>
+                <div class="stat-card__value stat-card__value--zero" id="statEPC">0,00 &euro;</div>
+                <div class="stat-card__change">En attente de donnees</div>
+            </div>
+            <div class="stat-card stat-card--blue">
+                <div class="stat-card__icon">&#128293;</div>
+                <div class="stat-card__label">Conversions</div>
+                <div class="stat-card__value stat-card__value--zero" id="statConversions">0</div>
+                <div class="stat-card__change">En attente de donnees</div>
+            </div>
+            <div class="stat-card stat-card--red">
+                <div class="stat-card__icon">&#128200;</div>
+                <div class="stat-card__label">CA Genere Partenaires</div>
+                <div class="stat-card__value stat-card__value--zero" id="statRevenue">0,00 &euro;</div>
+                <div class="stat-card__change">En attente de donnees</div>
+            </div>
+        </div>
+
+        <!-- Charts row -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <div class="chart-card__header">
+                    <span class="chart-card__title">&#128200; Performance Horaire</span>
+                    <span class="chart-card__badge">Aucune donnee</span>
+                </div>
+                <div style="position:relative;height:260px;">
+                    <canvas id="chartPerformance"></canvas>
+                    <div class="chart-empty-state" id="chartPerfEmpty">En attente de connexion API...</div>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-card__header">
+                    <span class="chart-card__title">&#127856; Sources de Trafic</span>
+                    <span class="chart-card__badge">Aucune donnee</span>
+                </div>
+                <div style="position:relative;height:260px;">
+                    <canvas id="chartSources"></canvas>
+                    <div class="chart-empty-state" id="chartSrcEmpty">En attente de connexion API...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="bottom-row">
+            <div class="feed-card">
+                <div class="feed-card__header">
+                    <span class="feed-card__title">&#128276; Activite en Direct</span>
+                    <span class="chart-card__badge" id="feedCount">0 evenements</span>
+                </div>
+                <div class="feed-list" id="feedList">
+                    <div style="text-align:center;color:var(--text-muted);padding:40px;">
+                        Aucune activite pour le moment.<br>
+                        <small>Les evenements apparaitront quand les webhooks n8n seront actifs.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-card__header">
+                    <span class="status-card__title">&#9000; Statut Plateforme</span>
+                    <span class="chart-card__badge">Local</span>
+                </div>
+                <div class="status-grid-inner">
+                    <div class="status-row">
+                        <div>
+                            <div class="status-row__name">n8n Workflow Engine</div>
+                            <div class="status-row__info">Port 5678</div>
+                        </div>
+                        <span class="status-badge status-badge--offline" id="statusN8n">HORS-LIGNE</span>
+                    </div>
+                    <div class="status-row">
+                        <div>
+                            <div class="status-row__name">PostgreSQL</div>
+                            <div class="status-row__info">Base de donnees</div>
+                        </div>
+                        <span class="status-badge status-badge--offline" id="statusPg">HORS-LIGNE</span>
+                    </div>
+                    <div class="status-row">
+                        <div>
+                            <div class="status-row__name">Render.com</div>
+                            <div class="status-row__info">affilmax.render.com</div>
+                        </div>
+                        <span class="status-badge status-badge--unknown" id="statusRender">NON DEPLOYE</span>
+                    </div>
+                    <div class="status-row">
+                        <div>
+                            <div class="status-row__name">Derniere synchro</div>
+                            <div class="status-row__info" id="statusSync">Jamais</div>
+                        </div>
+                        <span class="status-badge status-badge--unknown">---</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaigns -->
+        <div class="stats-grid" style="grid-template-columns:1fr;">
+            <div class="campaigns-card">
+                <div class="chart-card__header" style="margin-bottom:14px;">
+                    <span class="chart-card__title">&#127919; Campagnes</span>
+                    <span class="chart-card__badge" id="campaignCount">En attente</span>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="campaigns-table">
+                        <thead>
+                            <tr><th>Campagne</th><th>Plateforme</th><th>Clics</th><th>Conversions</th><th>Taux</th><th>Commissions</th><th>Progression</th></tr>
+                        </thead>
+                        <tbody id="campaignsBody">
+                            <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px;">
+                                Configurez vos campagnes dans n8n pour les voir apparaitre ici.
+                            </td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Affilimax v2.0 &middot; Dashboard <span style="color:var(--accent-orange);">non connecte</span> &middot;
+            <span id="apiStatus">API : non configuree</span>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CONFIGURATION ====================
+        // API relative : fonctionne en local (localhost:8765) et sur Render
+        const API_URL = '/api/stats';
+
+        // ==================== STATE ====================
+        const state = {
+            commissions: 0, clicks: 0, conversions: 0, revenue: 0, epc: 0, convRate: 0,
+            feed: [], campaigns: [], hourly: [], sources: [],
+            connected: false, lastFetch: null
+        };
+
+        // ==================== API FETCH ====================
+        async function fetchRealData() {
+            if (!API_URL) {
+                updateAllZeros();
+                showToast('Aucune API configuree. Modifiez API_URL dans le code.');
+                return;
+            }
+
+            const footerEl = document.getElementById('apiStatus');
+            footerEl.textContent = 'API : tentative de connexion...';
+
+            try {
+                const resp = await fetch(API_URL, { method: 'GET', signal: AbortSignal.timeout(5000) });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const data = await resp.json();
+                applyRealData(data);
+            } catch (err) {
+                console.log('API inaccessible :', err.message);
+                footerEl.textContent = 'API : ' + err.message + ' (donnees a zero)';
+                updateAllZeros();
+            }
+        }
+
+        function applyRealData(data) {
+            state.connected = true;
+            state.lastFetch = new Date();
+
+            // Mettre a jour les stats (supporte data.resume.* et data.*)
+            const r = data.resume || data;
+            state.commissions = r.commissions_aujourdhui || data.total_commissions || 0;
+            state.clicks = r.clics_aujourdhui || data.clicks || 0;
+            state.conversions = r.conversions_aujourdhui || data.conversions || 0;
+            state.revenue = r.ca_genere || data.total_revenue || 0;
+            state.epc = r.epc || (state.clicks > 0 ? state.commissions / state.clicks : 0);
+            state.convRate = r.taux_conversion || (state.clicks > 0 ? (state.conversions / state.clicks) * 100 : 0);
+
+            // Mettre a jour le feed
+            if (data.activite_recente) {
+                state.feed = data.activite_recente.map(e => ({
+                    type: e.type === 'vente' ? 'sale' : e.type === 'clic' ? 'click' : e.type === 'lead' ? 'lead' : 'refund',
+                    product: e.produit, platform: e.plateforme,
+                    amount: e.montant ? e.montant.toFixed(2) + ' \u20AC' : (e.type === 'clic' ? 'Visite' : 'Lead'),
+                    time: formatTime(e.timestamp)
+                }));
+            }
+
+            // Mettre a jour les graphiques
+            if (data.performance_horaire) {
+                state.hourly = data.performance_horaire;
+            }
+            if (data.sources_trafic) {
+                state.sources = data.sources_trafic;
+            }
+            if (data.top_campagnes) {
+                state.campaigns = data.top_campagnes;
+            }
+
+            // Mettre a jour le statut
+            if (data.statut_plateforme) {
+                updateStatusFromData(data.statut_plateforme);
+            }
+
+            // Cacher le badge simulation
+            document.getElementById('simBadge').innerHTML =
+                '<span style="width:10px;height:10px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 8px var(--accent-green);"></span>' +
+                '<span>CONNECTE - Donnees reelles</span>';
+            document.getElementById('simBadge').style.borderColor = 'rgba(16,185,129,0.5)';
+            document.getElementById('simBadge').style.color = 'var(--accent-green)';
+            document.getElementById('simBadge').style.background = 'rgba(16,185,129,0.12)';
+            document.getElementById('simBadge').style.animation = 'none';
+
+            // Cacher la carte d'explication
+            document.getElementById('setupCard').style.display = 'none';
+
+            // Mettre a jour le footer
+            document.getElementById('apiStatus').textContent =
+                'API : connectee (' + state.lastFetch.toLocaleTimeString('fr-FR') + ')';
+            document.getElementById('apiStatus').style.color = 'var(--accent-green)';
+
+            updateUI();
+            showToast('Donnees reelles chargees ! ' + state.clicks + ' clics, ' + state.commissions.toFixed(2) + ' \u20AC');
+        }
+
+        function formatTime(ts) {
+            if (!ts) return '';
+            const diff = (Date.now() - new Date(ts).getTime()) / 1000;
+            if (diff < 60) return 'A l\'instant';
+            if (diff < 3600) return 'Il y a ' + Math.floor(diff / 60) + ' min';
+            return 'Il y a ' + Math.floor(diff / 3600) + 'h';
+        }
+
+        function updateStatusFromData(status) {
+            const n8n = document.getElementById('statusN8n');
+            const pg = document.getElementById('statusPg');
+            const render = document.getElementById('statusRender');
+
+            if (status.n8n === 'online') {
+                n8n.textContent = 'EN LIGNE'; n8n.className = 'status-badge status-badge--online';
+                n8n.style.background = 'rgba(16,185,129,0.15)'; n8n.style.color = 'var(--accent-green)';
+            }
+            if (status.postgres === 'online') {
+                pg.textContent = 'EN LIGNE'; pg.className = 'status-badge status-badge--online';
+                pg.style.background = 'rgba(16,185,129,0.15)'; pg.style.color = 'var(--accent-green)';
+            }
+            if (status.render_webhook === 'online') {
+                render.textContent = 'DEPLOYE'; render.className = 'status-badge status-badge--online';
+                render.style.background = 'rgba(16,185,129,0.15)'; render.style.color = 'var(--accent-green)';
+            }
+            if (status.derniere_synchro) {
+                document.getElementById('statusSync').textContent = formatTime(status.derniere_synchro);
+            }
+        }
+
+        function updateAllZeros() {
+            state.connected = false;
+            state.commissions = 0; state.clicks = 0; state.conversions = 0; state.revenue = 0;
+            state.epc = 0; state.convRate = 0; state.feed = []; state.campaigns = [];
+            updateUI();
+            document.getElementById('apiStatus').textContent = 'API : non connectee';
+            document.getElementById('apiStatus').style.color = 'var(--accent-orange)';
+        }
+
+        // ==================== CHARTS ====================
+        let perfChart, sourceChart;
+
+        function initCharts() {
+            const ctx1 = document.getElementById('chartPerformance').getContext('2d');
+            perfChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['0h','2h','4h','6h','8h','10h','12h','14h','16h','18h','20h','22h'],
+                    datasets: [
+                        { label: 'Clics', data: [0,0,0,0,0,0,0,0,0,0,0,0], borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,0.08)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+                        { label: 'Commissions', data: [0,0,0,0,0,0,0,0,0,0,0,0], borderColor: '#f0a500', backgroundColor: 'rgba(240,165,0,0.05)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2, yAxisID: 'y1' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: { legend: { labels: { color: '#94a3b8', usePointStyle: true, padding: 20, font: { size: 11 } } }, tooltip: { backgroundColor: '#141432', borderColor: '#1e1e4a', borderWidth: 1, padding: 12, cornerRadius: 8 } },
+                    scales: { x: { grid: { color: 'rgba(30,30,74,0.5)' }, ticks: { color: '#64748b', font: { size: 10 } } }, y: { min: 0, grid: { color: 'rgba(30,30,74,0.5)' }, ticks: { color: '#64748b', font: { size: 10 } } }, y1: { position: 'right', min: 0, grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 }, callback: v => v + '\u20AC' } } }
+                }
+            });
+
+            const ctx2 = document.getElementById('chartSources').getContext('2d');
+            sourceChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: { labels: ['Aucune donnee'], datasets: [{ data: [1], backgroundColor: ['rgba(100,100,120,0.3)'], borderColor: '#141432', borderWidth: 3 }] },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutout: '65%',
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', usePointStyle: true, padding: 15, font: { size: 10 } } }, tooltip: { backgroundColor: '#141432', borderColor: '#1e1e4a', borderWidth: 1, padding: 12, cornerRadius: 8 } }
+                }
+            });
+        }
+
+        function updateCharts() {
+            if (state.hourly.labels && state.hourly.clicks) {
+                perfChart.data.labels = state.hourly.labels;
+                perfChart.data.datasets[0].data = state.hourly.clicks;
+                perfChart.data.datasets[1].data = state.hourly.commissions;
+                perfChart.update('none');
+                document.getElementById('chartPerfEmpty').style.display = 'none';
+            }
+
+            if (state.sources && Object.keys(state.sources).length > 0) {
+                const entries = Object.entries(state.sources);
+                const colors = ['#7c3aed','#f0a500','#10b981','#3b82f6','#ef4444'];
+                sourceChart.data.labels = entries.map(([k]) => k.replace(/_/g,' '));
+                sourceChart.data.datasets[0].data = entries.map(([,v]) => v);
+                sourceChart.data.datasets[0].backgroundColor = entries.map((_,i) => colors[i] || '#666');
+                sourceChart.update('none');
+                document.getElementById('chartSrcEmpty').style.display = 'none';
+            }
+        }
+
+        // ==================== UI UPDATES ====================
+        function updateUI() {
+            const fmt = n => typeof n === 'number' ? n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : n;
+            const fmtInt = n => typeof n === 'number' ? n.toLocaleString('fr-FR') : n;
+
+            document.getElementById('statCommissions').textContent = fmt(state.commissions) + ' \u20AC';
+            document.getElementById('statClicks').textContent = fmtInt(state.clicks);
+            document.getElementById('statConvRate').textContent = fmt(state.convRate) + '%';
+            document.getElementById('statEPC').textContent = fmt(state.epc) + ' \u20AC';
+            document.getElementById('statConversions').textContent = fmtInt(state.conversions);
+            document.getElementById('statRevenue').textContent = fmt(state.revenue) + ' \u20AC';
+
+            // Remove zero class if has data
+            ['statCommissions','statClicks','statConvRate','statEPC','statConversions','statRevenue'].forEach(id => {
+                const el = document.getElementById(id);
+                if (state.connected) el.classList.remove('stat-card__value--zero');
+                else el.classList.add('stat-card__value--zero');
+            });
+
+            // Feed
+            const feedList = document.getElementById('feedList');
+            if (state.feed.length > 0) {
+                feedList.innerHTML = state.feed.slice(0,15).map(e => {
+                    const iconMap = { sale: '\uD83D\uDCB0', click: '\uD83D\uDC46', lead: '\uD83D\uDCE7', refund: '\u21A9\uFE0F' };
+                    const typeMap = { sale: 'Vente', click: 'Clic', lead: 'Lead', refund: 'Remboursement' };
+                    const amtClass = e.type === 'sale' ? 'feed-item__amount--positive' : e.type === 'refund' ? 'feed-item__amount--negative' : '';
+                    return `<div class="feed-item"><div class="feed-item__icon">${iconMap[e.type]||'\uD83D\uDD14'}</div><div class="feed-item__info"><div class="feed-item__name">${typeMap[e.type]||e.type}</div><div class="feed-item__detail">${e.product||''} ${e.platform?'· '+e.platform:''}</div></div><div class="feed-item__amount ${amtClass}">${e.amount||''}</div><div class="feed-item__time">${e.time||''}</div></div>`;
+                }).join('');
+                document.getElementById('feedCount').textContent = state.feed.length + ' evenements';
+            }
+
+            // Campaigns
+            if (state.campaigns.length > 0) {
+                document.getElementById('campaignsBody').innerHTML = state.campaigns.map(c => {
+                    const rateStr = c.clics > 0 ? (c.conversions / c.clics * 100).toFixed(1).replace('.', ',') : '0,0';
+                    const color = ['#f0a500','#7c3aed','#10b981','#3b82f6','#ef4444'][state.campaigns.indexOf(c) % 5];
+                    return `<tr><td><div class="campaign-name"><span class="campaign-name__dot" style="background:${color};box-shadow:0 0 6px ${color};"></span>${c.nom}</div></td><td>${c.plateforme||''}</td><td style="font-family:var(--font-mono)">${fmtInt(c.clics)}</td><td style="font-family:var(--font-mono)">${c.conversions}</td><td style="font-family:var(--font-mono)">${rateStr}%</td><td style="color:var(--accent-gold);font-weight:700;font-family:var(--font-mono)">${fmt(c.commissions)} \u20AC</td><td><div class="progress-bar"><div class="progress-bar__fill" style="width:${c.progression||0}%;background:${color};"></div></div></td></tr>`;
+                }).join('');
+                document.getElementById('campaignCount').textContent = state.campaigns.length + ' campagnes';
+            }
+
+            updateCharts();
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            toast.style.cssText = 'position:fixed;bottom:24px;right:24px;padding:12px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:50px;color:var(--text-primary);font-size:0.8rem;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:var(--font-mono);';
+            if (state.connected) toast.style.borderColor = 'var(--accent-green)';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent =
+                now.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'}) +
+                ' ' + now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            initCharts();
+            updateTime();
+            setInterval(updateTime, 30000);
+
+            // Tenter de charger les donnees reelles au demarrage
+            setTimeout(fetchRealData, 1000);
+
+            // Reessayer toutes les 5 secondes (plus rapide)
+            setInterval(fetchRealData, 5000);
+        }
+
+        init();
+    </script>
+</body>
+</html>

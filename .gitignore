@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.pyo
+server.log
+nohup.out
+.DS_Store

@@ -1,0 +1,164 @@
+{
+  "workflows": [
+    {
+      "id": "affilmax-track-clicks",
+      "nom": "Suivi des Clics Affiliés",
+      "dossier": "affiliation",
+      "actif": true,
+      "declencheur": {
+        "type": "webhook",
+        "methode": "POST",
+        "path": "/track/click"
+      },
+      "etapes": [
+        {"type": "set", "description": "Extraire UTM params et ID affilié"},
+        {"type": "function", "description": "Enrichir données (pays, device, source)"},
+        {"type": "postgres", "description": "Enregistrer dans table 'clicks'"},
+        {"type": "respond", "description": "Rediriger vers URL partenaire"}
+      ]
+    },
+    {
+      "id": "affilmax-track-conversion",
+      "nom": "Suivi des Conversions",
+      "dossier": "affiliation",
+      "actif": true,
+      "declencheur": {
+        "type": "webhook",
+        "methode": "POST",
+        "path": "/track/conversion"
+      },
+      "etapes": [
+        {"type": "set", "description": "Valider signature et ID commande"},
+        {"type": "function", "description": "Calculer commission et vérifier seuil"},
+        {"type": "postgres", "description": "Enregistrer dans table 'conversions'"},
+        {"type": "if", "description": "Si montant > 100€, notifier Telegram"},
+        {"type": "telegram", "description": "Envoyer notification grosse vente"},
+        {"type": "email", "description": "Envoyer confirmation au partenaire"}
+      ]
+    },
+    {
+      "id": "affilmax-daily-report",
+      "nom": "Rapport Quotidien Automatique",
+      "dossier": "analytics",
+      "actif": true,
+      "declencheur": {
+        "type": "cron",
+        "expression": "0 6 * * *"
+      },
+      "etapes": [
+        {"type": "postgres", "description": "Agréger stats de la veille"},
+        {"type": "function", "description": "Calculer KPIs: taux conv, EPC, CA"},
+        {"type": "email", "description": "Envoyer rapport PDF aux admins"},
+        {"type": "slack", "description": "Poster résumé dans #affiliation"}
+      ]
+    },
+    {
+      "id": "affilmax-email-capture",
+      "nom": "Capture Emails + Lead Nurturing",
+      "dossier": "emailing",
+      "actif": true,
+      "declencheur": {
+        "type": "webhook",
+        "methode": "POST",
+        "path": "/capture/email"
+      },
+      "etapes": [
+        {"type": "set", "description": "Valider email et source"},
+        {"type": "postgres", "description": "Ajouter à table 'leads'"},
+        {"type": "if", "description": "Si nouveau lead, envoyer séquence"},
+        {"type": "email", "description": "Email de bienvenue (template 1)"},
+        {"type": "wait", "description": "Attendre 2 jours"},
+        {"type": "email", "description": "Email offre affiliation (template 2)"},
+        {"type": "wait", "description": "Attendre 3 jours"},
+        {"type": "email", "description": "Email témoignages + CTA (template 3)"}
+      ]
+    },
+    {
+      "id": "affilmax-social-autopost",
+      "nom": "Auto-Publication Réseaux Sociaux",
+      "dossier": "social",
+      "actif": true,
+      "declencheur": {
+        "type": "cron",
+        "expression": "0 9,14,18 * * *"
+      },
+      "etapes": [
+        {"type": "postgres", "description": "Sélectionner top produit du jour"},
+        {"type": "function", "description": "Générer message + hashtags"},
+        {"type": "twitter", "description": "Publier sur X/Twitter"},
+        {"type": "linkedin", "description": "Publier sur LinkedIn"}
+      ]
+    },
+    {
+      "id": "affilmax-commission-alert",
+      "nom": "Alerte Seuil Commission",
+      "dossier": "paiements",
+      "actif": true,
+      "declencheur": {
+        "type": "cron",
+        "expression": "0 */4 * * *"
+      },
+      "etapes": [
+        {"type": "postgres", "description": "Vérifier commissions du mois"},
+        {"type": "if", "description": "Si seuil mensuel > 5000€ atteint"},
+        {"type": "telegram", "description": "Envoyer alerte seuil dépassé"},
+        {"type": "email", "description": "Notifier admin pour retrait"}
+      ]
+    },
+    {
+      "id": "affilmax-health-check",
+      "nom": "Vérification Santé Plateforme",
+      "dossier": "analytics",
+      "actif": true,
+      "declencheur": {
+        "type": "cron",
+        "expression": "*/15 * * * *"
+      },
+      "etapes": [
+        {"type": "http", "description": "Ping endpoint santé n8n"},
+        {"type": "postgres", "description": "Vérifier connexion DB"},
+        {"type": "if", "description": "Si erreur détectée"},
+        {"type": "telegram", "description": "Alerter équipe tech"},
+        {"type": "slack", "description": "Poster incident dans #alerts"}
+      ]
+    },
+    {
+      "id": "affilmax-monthly-invoice",
+      "nom": "Génération Factures Mensuelles",
+      "dossier": "paiements",
+      "actif": true,
+      "declencheur": {
+        "type": "cron",
+        "expression": "0 8 1 * *"
+      },
+      "etapes": [
+        {"type": "postgres", "description": "Agréger commissions mensuelles par partenaire"},
+        {"type": "function", "description": "Générer facture PDF"},
+        {"type": "email", "description": "Envoyer facture aux partenaires"},
+        {"type": "postgres", "description": "Marquer comme facturé"}
+      ]
+    }
+  ],
+  "connexions": {
+    "postgres": {
+      "nom": "Affilimax DB",
+      "type": "postgres",
+      "tables": ["clicks", "conversions", "leads", "partenaires", "campagnes", "factures"]
+    },
+    "email": {
+      "nom": "SMTP Affilimax",
+      "type": "smtp",
+      "templates": ["bienvenue", "offre_affiliation", "temoignages", "facture", "rapport"]
+    },
+    "telegram": {
+      "nom": "Bot Affilimax Alerts",
+      "type": "telegram",
+      "canaux": ["#alertes", "#ventes", "#technique"]
+    },
+    "slack": {
+      "nom": "Affilimax Workspace",
+      "type": "slack",
+      "canaux": ["#affiliation", "#alerts", "#general"]
+    }
+  }
+}

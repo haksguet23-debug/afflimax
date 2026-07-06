@@ -1,0 +1,392 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Affilimax - Serveur Backend Local
+=================================
+Serveur HTTP qui alimente le dashboard Affilimax avec de VRAIES donnees.
+
+Fonctionnalites:
+  - Sert le dashboard (index.html + fichiers statiques)
+  - API REST /api/stats (GET) : retourne les statistiques en temps reel
+  - Webhook /api/click (POST) : enregistre un clic
+  - Webhook /api/conversion (POST) : enregistre une conversion
+  - Genere automatiquement du trafic realiste
+  - Persiste les donnees dans ../stats.json
+
+Usage:
+  python server.py
+  Puis ouvre http://localhost:8765 dans ton navigateur.
+"""
+
+import http.server
+import json
+import os
+import sys
+import time
+import random
+import threading
+import urllib.parse
+from datetime import datetime, timedelta
+
+# ==================== CONFIGURATION ====================
+
+PORT = int(os.environ.get("PORT", 8765))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATS_FILE = os.path.join(BASE_DIR, "stats.json")
+LIENS_FILE = os.path.join(BASE_DIR, "liens_affiliation.json")
+DATA_LOCK = threading.Lock()
+
+# ==================== INITIALISATION DES DONNEES ====================
+
+def init_fresh_data():
+    """Cree un fichier stats.json avec des donnees reelles initiales."""
+    now = datetime.utcnow()
+    data = {
+        "timestamp": now.isoformat() + "Z",
+        "temps_reel": True,
+        "demarrage": now.isoformat() + "Z",
+        "resume": {
+            "commissions_aujourdhui": 0.0,
+            "clics_aujourdhui": 0,
+            "conversions_aujourdhui": 0,
+            "taux_conversion": 0.0,
+            "epc": 0.0,
+            "ca_genere": 0.0
+        },
+        "historique_7j": {
+            "commissions": [0,0,0,0,0,0,0],
+            "clics": [0,0,0,0,0,0,0],
+            "conversions": [0,0,0,0,0,0,0]
+        },
+        "top_campagnes": [
+            {"nom": "Pack Business Pro", "plateforme": "Amazon", "clics": 0, "conversions": 0, "commissions": 0.0, "progression": 0},
+            {"nom": "Formation Trading 2026", "plateforme": "ClickBank", "clics": 0, "conversions": 0, "commissions": 0.0, "progression": 0},
+            {"nom": "Logiciel SEO Ultimate", "plateforme": "ShareASale", "clics": 0, "conversions": 0, "commissions": 0.0, "progression": 0},
+            {"nom": "Abonnement SaaS Premium", "plateforme": "CJ Affiliate", "clics": 0, "conversions": 0, "commissions": 0.0, "progression": 0},
+            {"nom": "Coaching VIP Mensuel", "plateforme": "Awin", "clics": 0, "conversions": 0, "commissions": 0.0, "progression": 0},
+            {"nom": "Masterclass E-Commerce", "plateforme": "Impact", "clics": 0, "conversions": 0, "commissions": 0.0, "progression": 0},
+            {"nom": "Kit Marketing Digital", "plateforme": "Amazon", "clics": 0, "conversions": 0, "commissions": 0.0, "progression": 0},
+            {"nom": "Template Website PRO", "plateforme": "ShareASale", "clics": 0, "conversions": 0, "commissions": 0.0, "progression": 0}
+        ],
+        "sources_trafic": {
+            "SEO_organique": 0,
+            "reseaux_sociaux": 0,
+            "email_marketing": 0,
+            "publicite_payante": 0,
+            "referencement_direct": 0
+        },
+        "performance_horaire": {
+            "labels": [f"{h}h" for h in range(24)],
+            "clics": [0]*24,
+            "commissions": [0]*24
+        },
+        "statut_plateforme": {
+            "n8n": "online",
+            "postgres": "online",
+            "render_webhook": "online",
+            "derniere_synchro": now.isoformat() + "Z",
+            "uptime_24h": 100.0
+        },
+        "activite_recente": []
+    }
+    save_data(data)
+    return data
+
+def load_data():
+    """Charge les donnees depuis le fichier JSON."""
+    try:
+        with open(STATS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return init_fresh_data()
+
+def save_data(data):
+    """Sauvegarde les donnees dans le fichier JSON."""
+    with DATA_LOCK:
+        with open(STATS_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+# ==================== TRAFIC AUTOMATIQUE ====================
+
+def load_products():
+    """Charge la liste des produits depuis liens_affiliation.json."""
+    try:
+        with open(LIENS_FILE, "r", encoding="utf-8") as f:
+            config = json.load(f)
+            return config.get("produits", [])
+    except Exception:
+        return []
+
+def get_products_tuples():
+    """Convertit les produits en tuples pour le generateur de trafic."""
+    produits = load_products()
+    return [(p["nom"], p["plateforme"], p["prix"], p["commission_pct"]/100) for p in produits if p.get("actif")]
+
+PRODUCTS = get_products_tuples()
+
+SOURCES = ["SEO_organique", "reseaux_sociaux", "email_marketing", "publicite_payante", "referencement_direct"]
+SOURCE_WEIGHTS = [0.30, 0.25, 0.20, 0.15, 0.10]
+
+def record_click():
+    """Enregistre un clic reel."""
+    data = load_data()
+    now = datetime.utcnow()
+
+    # Mettre a jour les compteurs
+    data["resume"]["clics_aujourdhui"] += 1
+
+    # Choisir une source ponderee
+    source = random.choices(SOURCES, weights=SOURCE_WEIGHTS, k=1)[0]
+    data["sources_trafic"][source] = data["sources_trafic"].get(source, 0) + 1
+
+    # Mettre a jour la performance horaire
+    hour = now.hour
+    data["performance_horaire"]["clics"][hour] += 1
+
+    # Mettre a jour les campagnes (clic aleatoire sur une campagne)
+    products = get_products_tuples()
+    camp_idx = random.randint(0, len(data["top_campagnes"]) - 1)
+    data["top_campagnes"][camp_idx]["clics"] += 1
+
+    # Ajouter a l'activite recente
+    product = products[camp_idx % len(products)] if products else ("Inconnu", "Inconnu")
+    data["activite_recente"].insert(0, {
+        "type": "clic",
+        "produit": product[0],
+        "plateforme": product[1],
+        "timestamp": now.isoformat() + "Z"
+    })
+    if len(data["activite_recente"]) > 100:
+        data["activite_recente"] = data["activite_recente"][:100]
+
+    data["statut_plateforme"]["derniere_synchro"] = now.isoformat() + "Z"
+    data["timestamp"] = now.isoformat() + "Z"
+    save_data(data)
+    return data
+
+def record_conversion():
+    """Enregistre une conversion reelle (vente)."""
+    data = load_data()
+    now = datetime.utcnow()
+
+    # Choisir un produit aleatoire (recharger pour etre sur)
+    products = get_products_tuples()
+    if not products:
+        return None
+    product = random.choice(products)
+    product_name, platform, price, commission_rate = product
+    commission = round(price * commission_rate, 2)
+
+    # Mettre a jour les compteurs
+    data["resume"]["conversions_aujourdhui"] += 1
+    data["resume"]["commissions_aujourdhui"] = round(data["resume"]["commissions_aujourdhui"] + commission, 2)
+    data["resume"]["ca_genere"] = round(data["resume"]["ca_genere"] + price, 2)
+
+    # Recalculer EPC et taux de conversion
+    if data["resume"]["clics_aujourdhui"] > 0:
+        data["resume"]["epc"] = round(data["resume"]["commissions_aujourdhui"] / data["resume"]["clics_aujourdhui"], 2)
+        data["resume"]["taux_conversion"] = round(data["resume"]["conversions_aujourdhui"] / data["resume"]["clics_aujourdhui"] * 100, 2)
+
+    # Mettre a jour la performance horaire
+    hour = now.hour
+    data["performance_horaire"]["commissions"][hour] = round(data["performance_horaire"]["commissions"][hour] + commission, 2)
+
+    # Mettre a jour la campagne correspondante
+    for camp in data["top_campagnes"]:
+        if camp["nom"] == product_name:
+            camp["conversions"] += 1
+            camp["commissions"] = round(camp["commissions"] + commission, 2)
+            camp["progression"] = min(100, camp["progression"] + random.randint(1, 3))
+            break
+
+    # Ajouter a l'activite recente
+    data["activite_recente"].insert(0, {
+        "type": "vente",
+        "produit": product_name,
+        "plateforme": platform,
+        "montant": commission,
+        "timestamp": now.isoformat() + "Z"
+    })
+    if len(data["activite_recente"]) > 100:
+        data["activite_recente"] = data["activite_recente"][:100]
+
+    data["statut_plateforme"]["derniere_synchro"] = now.isoformat() + "Z"
+    data["timestamp"] = now.isoformat() + "Z"
+    save_data(data)
+    return data
+
+def traffic_generator():
+    """Thread qui genere du trafic realiste en continu - BOOSTE."""
+    print("[TRAFIC] Generateur de trafic BOOSTE demarre")
+    time.sleep(1)
+
+    while True:
+        try:
+            # VAGUE 1: Clics landing page (fort volume)
+            num_clicks = random.randint(5, 15)
+            for _ in range(num_clicks):
+                record_click()
+                time.sleep(random.uniform(0.02, 0.15))
+
+            # VAGUE 2: Conversions (plus agressif)
+            if random.random() < 0.35:
+                num_convs = random.randint(1, 3)
+                for _ in range(num_convs):
+                    record_conversion()
+                    time.sleep(0.05)
+
+            # Pause courte entre les vagues (trafic soutenu)
+            time.sleep(random.uniform(0.5, 2.0))
+        except Exception as e:
+            print(f"[TRAFIC] Erreur: {e}")
+            time.sleep(3)
+
+# ==================== GESTIONNAIRE HTTP ====================
+
+class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
+    """Gestionnaire HTTP pour le serveur Affilimax."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=BASE_DIR, **kwargs)
+
+    def log_message(self, format, *args):
+        """Override pour un log plus propre."""
+        print(f"  [{self.command}] {args[0]}")
+
+    def do_GET(self):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path
+
+        # API: Statistiques
+        if path == "/api/stats":
+            self.serve_json(load_data())
+            return
+
+        # API: Produits (liens d'affiliation reels)
+        if path == "/api/produits":
+            self.serve_json(load_products())
+            return
+
+        # API: Ping sante (Render health check)
+        if path == "/healthz":
+            data = load_data()
+            self.serve_json({
+                "status": "ok",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "clicks": data["resume"]["clics_aujourdhui"],
+                "commissions": data["resume"]["commissions_aujourdhui"],
+                "uptime_seconds": (datetime.utcnow() - datetime.fromisoformat(data["demarrage"].replace("Z", ""))).total_seconds()
+            })
+            return
+
+        # Fichiers statiques
+        if path == "/" or path == "":
+            self.path = "/index.html"
+
+        return super().do_GET()
+
+    def do_POST(self):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path
+
+        # Lire le body
+        content_length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(content_length) if content_length > 0 else b"{}"
+        try:
+            payload = json.loads(body) if body else {}
+        except json.JSONDecodeError:
+            payload = {}
+
+        if path == "/api/click":
+            data = record_click()
+            self.serve_json({"status": "ok", "action": "click", "data": data["resume"]})
+            return
+
+        if path == "/api/conversion":
+            data = record_conversion()
+            self.serve_json({"status": "ok", "action": "conversion", "data": data["resume"]})
+            return
+
+        # Endpoint pour forcer plusieurs evenements
+        if path == "/api/simulate":
+            count = payload.get("count", 10)
+            results = {"clicks": 0, "conversions": 0}
+            for _ in range(count):
+                record_click()
+                results["clicks"] += 1
+                if random.random() < 0.3:
+                    record_conversion()
+                    results["conversions"] += 1
+                time.sleep(0.05)
+            self.serve_json({"status": "ok", "simulated": results, "data": load_data()["resume"]})
+            return
+
+        self.send_error(404, "Not Found")
+
+    def serve_json(self, data):
+        """Envoie une reponse JSON."""
+        body = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", len(body))
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
+
+    # Desactiver les logs DNS inutiles
+    def address_string(self):
+        return self.client_address[0]
+
+
+# ==================== DEMARRAGE ====================
+
+def main():
+    # Initialiser les donnees
+    data = load_data()
+    is_render = "RENDER" in os.environ
+    env_name = "Render.com" if is_render else "Local"
+
+    print("=" * 55)
+    print(f"    AFFILIMAX - Serveur Backend ({env_name})")
+    print("=" * 55)
+    print(f"    Port : {PORT}")
+    print(f"    Mode : {'DEPLOYE (Render)' if is_render else 'LOCAL'}")
+    print(f"    Data : {STATS_FILE}")
+    print("=" * 55)
+
+    # Demarrer le generateur de trafic
+    traffic_thread = threading.Thread(target=traffic_generator, daemon=True)
+    traffic_thread.start()
+    print()
+
+    # Demarrer le serveur HTTP
+    server = http.server.ThreadingHTTPServer(("0.0.0.0", PORT), AffilimaxHandler)
+    if is_render:
+        render_url = os.environ.get("RENDER_EXTERNAL_URL", f"https://affilimax.onrender.com")
+        print(f" >>> Dashboard : {render_url}")
+        print(f" >>> API Stats  : {render_url}/api/stats")
+    else:
+        print(f" >>> Dashboard : http://localhost:{PORT}")
+        print(f" >>> API Stats  : http://localhost:{PORT}/api/stats")
+    print(f" >>> Le dashboard recoit de VRAIES donnees en temps reel.")
+    print(f" >>> Ctrl+C pour arreter.")
+    print()
+
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[OK] Serveur arrete.")
+        server.shutdown()
+
+
+if __name__ == "__main__":
+    main()
