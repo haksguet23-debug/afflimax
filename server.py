@@ -350,7 +350,7 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         # PAGE /go : liste tous les liens de redirection disponibles
-        if path == "/go":
+        if path in ("/go", "/go/"):
             self.serve_go_index()
             return
 
