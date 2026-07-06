@@ -523,7 +523,7 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
         proto = "https" if "RENDER" in os.environ else "http"
         base = f"{proto}://{host}"
 
-        html = """<!DOCTYPE html>
+        page = """<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -582,7 +582,7 @@ a:hover{text-decoration:underline}
             safe_name = html.escape(p['nom'])
             safe_platform = html.escape(p['plateforme'])
             safe_url = html.escape(url)
-            html += f"""
+            page += f"""
 <div class="link-card">
     <div class="link-card__left">
         <div class="link-card__name">{idx}. {safe_name}</div>
@@ -592,7 +592,7 @@ a:hover{text-decoration:underline}
     <button class="copy-btn" id="btn{idx}" onclick="copyLink({idx})">Copier</button>
 </div>"""
 
-        html += """
+        page += """
 <div class="footer">
     <a href="/">Dashboard</a> &middot;
     <a href="/pub.html">Landing Page</a>
@@ -627,7 +627,7 @@ function copyLink(idx) {
 </script>
 </body>
 </html>"""
-        body = html.encode("utf-8")
+        body = page.encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", len(body))
