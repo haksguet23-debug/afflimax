@@ -14,7 +14,7 @@
       "prix": 199.99,
       "commission_pct": 5,
       "commission_euro": 10.00,
-      "lien": "https://www.amazon.fr/dp/B0BZQ4WNHF?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_01?tag=confortbure07-21",
       "description": "Samsung T7 Shield SSD 1To. Stockage rapide pour entrepreneurs. 1050 Mo/s, resistant a l'eau et a la poussiere.",
       "categorie": "Business",
       "actif": true
@@ -25,7 +25,7 @@
       "prix": 19.90,
       "commission_pct": 5,
       "commission_euro": 1.00,
-      "lien": "https://www.amazon.fr/dp/B0CK1YTR6X?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_02?tag=confortbure07-21",
       "description": "Investir en Bourse avec les ETF. Guide complet pour debutants et confirmes. Meilleure vente Amazon.",
       "categorie": "Formation",
       "actif": true
@@ -36,7 +36,7 @@
       "prix": 149.99,
       "commission_pct": 4,
       "commission_euro": 6.00,
-      "lien": "https://www.amazon.fr/dp/B09V124X3C?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_03?tag=confortbure07-21",
       "description": "TP-Link Deco X50. Wi-Fi 6 mesh couvrant jusqu'a 230m2. Ideal pour le teletravail et le streaming.",
       "categorie": "Tech",
       "actif": true
@@ -47,7 +47,7 @@
       "prix": 69.99,
       "commission_pct": 4,
       "commission_euro": 2.80,
-      "lien": "https://www.amazon.fr/dp/B07K95K462?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_04?tag=confortbure07-21",
       "description": "Logitech C920s HD Pro. Full HD 1080p, micro integre, cache confidentialite. Pour visio pro.",
       "categorie": "Bureau",
       "actif": true
@@ -58,7 +58,7 @@
       "prix": 89.99,
       "commission_pct": 5,
       "commission_euro": 4.50,
-      "lien": "https://www.amazon.fr/dp/B09T3S73B3?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_05?tag=confortbure07-21",
       "description": "Philips L'Or Barista Sublime. Cafe espresso et long. Mousseur a lait integre. Design elegant.",
       "categorie": "Maison",
       "actif": true
@@ -69,7 +69,7 @@
       "prix": 14.99,
       "commission_pct": 5,
       "commission_euro": 0.75,
-      "lien": "https://www.amazon.fr/dp/B07S8WXG3R?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_06?tag=confortbure07-21",
       "description": "Dropshipping : la methode pas-a-pas. Creez votre business e-commerce sans stock. Edition 2026.",
       "categorie": "E-Commerce",
       "actif": true
@@ -80,7 +80,7 @@
       "prix": 34.90,
       "commission_pct": 5,
       "commission_euro": 1.75,
-      "lien": "https://www.amazon.fr/dp/B0CGRL916C?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_07?tag=confortbure07-21",
       "description": "Le Grand Livre du Marketing Digital. SEO, SEA, reseaux sociaux, emailing. La bible du marketer.",
       "categorie": "Marketing",
       "actif": true
@@ -91,7 +91,7 @@
       "prix": 21.50,
       "commission_pct": 5,
       "commission_euro": 1.08,
-      "lien": "https://www.amazon.fr/dp/2100761676?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_08?tag=confortbure07-21",
       "description": "Creez vos sites Web avec WordPress. Guide complet du debutant au pro. 100% pratique.",
       "categorie": "Web",
       "actif": true
@@ -102,7 +102,7 @@
       "prix": 49.99,
       "commission_pct": 5,
       "commission_euro": 2.50,
-      "lien": "https://www.amazon.fr/dp/B0C5JVNZDK?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_09?tag=confortbure07-21",
       "description": "Ecouteurs Bluetooth 5.3, reduction de bruit active, autonomie 30h. Parfait pour le sport et le bureau.",
       "categorie": "Audio",
       "actif": true
@@ -113,7 +113,7 @@
       "prix": 39.99,
       "commission_pct": 5,
       "commission_euro": 2.00,
-      "lien": "https://www.amazon.fr/dp/B0BFPVVYCM?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_10?tag=confortbure07-21",
       "description": "Souris gaming 16000 DPI, 8 boutons programmables, RGB. Pour gamers et productivite.",
       "categorie": "Gaming",
       "actif": true
@@ -124,7 +124,7 @@
       "prix": 29.99,
       "commission_pct": 5,
       "commission_euro": 1.50,
-      "lien": "https://www.amazon.fr/dp/B0C1BZPW1C?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_11?tag=confortbure07-21",
       "description": "Power Bank charge rapide USB-C 20W. Compatible iPhone, Samsung, tablettes. Ultra compacte.",
       "categorie": "Accessoires",
       "actif": true
@@ -135,7 +135,7 @@
       "prix": 79.99,
       "commission_pct": 5,
       "commission_euro": 4.00,
-      "lien": "https://www.amazon.fr/dp/B0BXTHVDSL?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_12?tag=confortbure07-21",
       "description": "Clavier mecanique sans fil, switches rouges, retroeclairage RGB. Ideal bureautique et gaming.",
       "categorie": "Bureau",
       "actif": true
@@ -146,7 +146,7 @@
       "prix": 299.99,
       "commission_pct": 4,
       "commission_euro": 12.00,
-      "lien": "https://www.amazon.fr/dp/B0BHX5FPXT?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_13?tag=confortbure07-21",
       "description": "Tapis de course pliable pour la maison. Moteur silencieux, ecran LED, 12 programmes. Pliable 90.",
       "categorie": "Sport",
       "actif": true
@@ -157,7 +157,7 @@
       "prix": 59.99,
       "commission_pct": 5,
       "commission_euro": 3.00,
-      "lien": "https://www.amazon.fr/dp/B0CHY5YNRR?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_14?tag=confortbure07-21",
       "description": "Enceinte portable etanche IPX7, son 360, autonomie 20h. Parfaite pour la plage et les soirees.",
       "categorie": "Audio",
       "actif": true
@@ -168,7 +168,7 @@
       "prix": 249.99,
       "commission_pct": 4,
       "commission_euro": 10.00,
-      "lien": "https://www.amazon.fr/dp/B0BS1YNK7D?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_15?tag=confortbure07-21",
       "description": "Robot aspirateur et laveur, navigation LiDAR, 4000Pa. Controle par appli et Alexa. Maison intelligente.",
       "categorie": "Maison",
       "actif": true
@@ -179,7 +179,7 @@
       "prix": 24.90,
       "commission_pct": 5,
       "commission_euro": 1.25,
-      "lien": "https://www.amazon.fr/dp/2412056341?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_16?tag=confortbure07-21",
       "description": "Guide complet crypto et blockchain. Bitcoin, Ethereum, NFT, DeFi. Strategie d'investissement 2026.",
       "categorie": "Formation",
       "actif": true
@@ -190,7 +190,7 @@
       "prix": 17.90,
       "commission_pct": 5,
       "commission_euro": 0.90,
-      "lien": "https://www.amazon.fr/dp/229035427X?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_17?tag=confortbure07-21",
       "description": "Les 7 habitudes de ceux qui realisent tout ce qu'ils entreprennent. Best-seller mondial. 40M exemplaires.",
       "categorie": "Livre",
       "actif": true
@@ -201,7 +201,7 @@
       "prix": 39.99,
       "commission_pct": 5,
       "commission_euro": 2.00,
-      "lien": "https://www.amazon.fr/dp/B08B4FQ9NF?tag=confortbure07-21",
+      "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_18?tag=confortbure07-21",
       "description": "Balance impedancemetre Bluetooth. Poids, IMC, masse graisseuse, musculaire. Application connectee.",
       "categorie": "Sport",
       "actif": true
