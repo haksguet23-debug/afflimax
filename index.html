@@ -210,17 +210,17 @@
                 </div>
             </div>
             <div class="header__right">
-                <div class="simulation-badge" id="simBadge">
-                    <span class="simulation-dot"></span>
-                    <span>SIMULATION &mdash; Donnees fictives</span>
+                <div class="simulation-badge" id="simBadge" style="border-color:rgba(124,58,237,0.5);color:var(--accent-purple);background:rgba(124,58,237,0.12);animation:none">
+                    <span style="width:10px;height:10px;border-radius:50%;background:var(--accent-purple);"></span>
+                    <span>CHARGEMENT...</span>
                 </div>
                 <div class="live-badge" id="dateBadge">&#128197; <span id="currentDate"></span></div>
                 <button class="refresh-btn" onclick="fetchRealData()">&#128259; Chercher donnees reelles</button>
             </div>
         </header>
 
-        <!-- EXPLANATION CARD -->
-        <div class="setup-card" id="setupCard">
+        <!-- EXPLANATION CARD (hidden by default, shown only when API fails) -->
+        <div class="setup-card" id="setupCard" style="display:none">
             <div class="setup-card__title">&#9888;&#65039; Ce dashboard affiche actuellement des zeros</div>
             <div class="setup-card__text">
                 Aucune donnee reelle n'est connectee. Les chiffres ci-dessous sont a <strong>zero</strong>.
@@ -402,8 +402,7 @@
         </div>
 
         <div class="footer">
-            Affilimax v2.0 &middot; Dashboard <span style="color:var(--accent-orange);">non connecte</span> &middot;
-            <span id="apiStatus">API : non configuree</span>
+            Affilimax v2.0 &middot; <span id="apiStatus">API : connexion en cours...</span>
         </div>
     </div>
 

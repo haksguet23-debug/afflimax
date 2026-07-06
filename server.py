@@ -452,9 +452,14 @@ def main():
     print(f"    Data : {STATS_FILE}")
     print("=" * 55)
 
-    # Demarrer le generateur de trafic
-    traffic_thread = threading.Thread(target=traffic_generator, daemon=True)
-    traffic_thread.start()
+    # Demarrer le generateur de trafic (desactive par defaut)
+    auto_traffic = os.environ.get("AUTO_TRAFFIC", "0") == "1"
+    if auto_traffic:
+        traffic_thread = threading.Thread(target=traffic_generator, daemon=True)
+        traffic_thread.start()
+        print("   [TRAFIC] Auto-trafic ACTIVE")
+    else:
+        print("   [TRAFIC] Auto-trafic DESACTIVE (AUTO_TRAFFIC=1 pour activer)")
     print()
 
     # Demarrer le serveur HTTP
@@ -462,11 +467,13 @@ def main():
     if is_render:
         render_url = os.environ.get("RENDER_EXTERNAL_URL", f"https://affilimax.onrender.com")
         print(f" >>> Dashboard : {render_url}")
-        print(f" >>> API Stats  : {render_url}/api/stats")
+        print(f" >>> Pub        : {render_url}/pub.html")
+        print(f" >>> Admin      : {render_url}/admin.html")
     else:
         print(f" >>> Dashboard : http://localhost:{PORT}")
-        print(f" >>> API Stats  : http://localhost:{PORT}/api/stats")
-    print(f" >>> Le dashboard recoit de VRAIES donnees en temps reel.")
+        print(f" >>> Pub       : http://localhost:{PORT}/pub.html")
+        print(f" >>> Admin     : http://localhost:{PORT}/admin.html")
+    print(f" >>> Seules TES injections apparaissent. ZERO simulation.")
     print(f" >>> Ctrl+C pour arreter.")
     print()
 
