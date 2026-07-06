@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affilimax — Injection Manuelle</title>
+<style>
+:root {
+    --bg:#0a0a1a;--card:#141432;--gold:#f0a500;--purple:#7c3aed;--green:#10b981;
+    --red:#ef4444;--blue:#3b82f6;--cyan:#06b6d4;--text:#f1f5f9;--muted:#94a3b8;
+    --border:#1e1e4a;--radius:14px;--font-mono:'SF Mono','Consolas',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(124,58,237,.02)1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.02)1px,transparent 1px);background-size:60px 60px}
+.app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:24px}
+
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+.header__logo{display:flex;align-items:center;gap:12px}
+.header__logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--purple),var(--gold));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800}
+.header__title{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--text),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header__sub{font-size:.7rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{padding:8px 18px;border-radius:50px;font-size:.8rem;font-weight:600;text-decoration:none;transition:all .3s}
+.nav-link--primary{background:var(--purple);color:#fff}
+.nav-link--secondary{background:var(--card);color:var(--muted);border:1px solid var(--border)}
+.nav-link:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,58,237,.3)}
+
+.stats-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:20px}
+.stat-mini{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;text-align:center}
+.stat-mini__num{font-size:1.6rem;font-weight:800;font-family:var(--font-mono);color:var(--gold)}
+.stat-mini__label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:768px){.main-grid{grid-template-columns:1fr}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.card__title{font-weight:700;font-size:1rem;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card__title .icon{font-size:1.2rem}
+
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600}
+select,input[type="text"],input[type="number"]{
+    width:100%;padding:10px 14px;
+    background:var(--bg);color:var(--text);
+    border:1px solid var(--border);border-radius:8px;
+    font-size:.9rem;font-family:var(--font-mono);
+    outline:none;transition:all .2s
+}
+select:focus,input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border:none;border-radius:8px;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn--gold{background:linear-gradient(135deg,var(--gold),#ffb700);color:#000}
+.btn--purple{background:var(--purple);color:#fff}
+.btn--green{background:var(--green);color:#fff}
+.btn--cyan{background:var(--cyan);color:#000}
+.btn--red{background:var(--red);color:#fff}
+.btn--full{width:100%;justify-content:center;padding:14px;font-size:.95rem}
+.btn--full:hover{box-shadow:0 6px 24px rgba(124,58,237,.35)}
+
+.quick-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:12px}
+.quick-btn{padding:12px 16px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;transition:all .2s;font-family:inherit;font-size:.78rem;text-align:left;display:flex;align-items:center;gap:8px}
+.quick-btn:hover{background:rgba(255,255,255,.06);border-color:var(--purple)}
+.quick-btn__icon{font-size:1.2rem;flex-shrink:0}
+.quick-btn__info{min-width:0}
+.quick-btn__name{font-weight:600;font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.quick-btn__detail{font-size:.65rem;color:var(--muted)}
+
+.log-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;grid-column:1/-1}
+.log-list{max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.log-list::-webkit-scrollbar{width:4px}
+.log-list::-webkit-scrollbar-track{background:transparent}
+.log-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.log-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:.78rem;animation:logSlide .3s ease-out}
+.log-item:hover{background:rgba(255,255,255,.02)}
+.log-item--click{border-left:3px solid var(--purple)}
+.log-item--conversion{border-left:3px solid var(--green)}
+.log-item__icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;background:rgba(255,255,255,.04)}
+.log-item__info{flex:1;min-width:0}
+.log-item__action{font-weight:600;font-size:.78rem}
+.log-item__detail{font-size:.68rem;color:var(--muted);margin-top:2px}
+.log-item__amount{font-weight:700;font-family:var(--font-mono);font-size:.8rem;flex-shrink:0}
+.log-item__amount--pos{color:var(--green)}
+.log-item__time{font-size:.62rem;color:var(--muted);font-family:var(--font-mono);flex-shrink:0}
+@keyframes logSlide{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;background:var(--card);border:1px solid var(--green);border-radius:50px;color:var(--text);font-size:.8rem;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.5);font-family:var(--font-mono);animation:toastIn .3s ease-out}
+.toast--error{border-color:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;font-size:.65rem;font-weight:700;font-family:var(--font-mono)}
+.badge--on{background:rgba(16,185,129,.15);color:var(--green)}
+.badge--off{background:rgba(239,68,68,.15);color:var(--red)}
+
+.footer{text-align:center;padding:20px;color:var(--muted);font-size:.7rem;opacity:.5}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="app">
+
+<!-- Header -->
+<header class="header">
+    <div class="header__logo">
+        <div class="header__logo-icon">A</div>
+        <div>
+            <div class="header__title">Affilimax Admin</div>
+            <div class="header__sub">Injection manuelle de donnees</div>
+        </div>
+    </div>
+    <div class="nav-links">
+        <span class="badge badge--on" id="connBadge">CONNECTE</span>
+        <a href="/" class="nav-link nav-link--secondary" target="_blank">Dashboard</a>
+        <a href="/pub.html" class="nav-link nav-link--secondary" target="_blank">Landing Page</a>
+    </div>
+</header>
+
+<!-- Mini Stats -->
+<div class="stats-mini">
+    <div class="stat-mini">
+        <div class="stat-mini__num" id="topClicks">--</div>
+        <div class="stat-mini__label">Clics aujourd'hui</div>
+    </div>
+    <div class="stat-mini">
+        <div class="stat-mini__num" id="topConv">--</div>
+        <div class="stat-mini__label">Conversions</div>
+    </div>
+    <div class="stat-mini">
+        <div class="stat-mini__num" id="topCommissions">--</div>
+        <div class="stat-mini__label">Commissions EUR</div>
+    </div>
+    <div class="stat-mini">
+        <div class="stat-mini__num" id="topEPC">--</div>
+        <div class="stat-mini__label">EPC</div>
+    </div>
+</div>
+
+<!-- Main Grid -->
+<div class="main-grid">
+
+    <!-- CLIC RAPIDE -->
+    <div class="card">
+        <div class="card__title"><span class="icon">&#128070;</span> Clic Rapide</div>
+        <div class="form-group">
+            <label class="form-label">Produit</label>
+            <select id="clickProduct"></select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Source de trafic</label>
+            <select id="clickSource">
+                <option value="SEO_organique">SEO Organique</option>
+                <option value="reseaux_sociaux">Reseaux Sociaux</option>
+                <option value="email_marketing">Email Marketing</option>
+                <option value="publicite_payante">Publicite Payante</option>
+                <option value="referencement_direct">Direct</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Nombre de clics</label>
+            <input type="number" id="clickCount" value="1" min="1" max="100">
+        </div>
+        <button class="btn btn--purple btn--full" onclick="injectClicks()">
+            &#128070; Injecter le(s) clic(s)
+        </button>
+    </div>
+
+    <!-- CONVERSION MANUELLE -->
+    <div class="card">
+        <div class="card__title"><span class="icon">&#128176;</span> Conversion Manuelle</div>
+        <div class="form-group">
+            <label class="form-label">Produit</label>
+            <select id="convProduct" onchange="onProductChange()"></select>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Commission (EUR)</label>
+                <input type="number" id="convCommission" value="15.76" min="0.01" step="0.01" placeholder="Ex: 15.76">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Prix de vente (EUR)</label>
+                <input type="number" id="convPrice" value="197.00" min="0.01" step="0.01" placeholder="Ex: 197.00">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Nombre de conversions</label>
+            <input type="number" id="convCount" value="1" min="1" max="50">
+        </div>
+        <button class="btn btn--green btn--full" onclick="injectConversions()">
+            &#128176; Injecter la/les conversion(s)
+        </button>
+    </div>
+
+</div>
+
+<!-- Quick Buttons -->
+<div class="card" style="margin-bottom:20px">
+    <div class="card__title"><span class="icon">&#9889;</span> Injections Rapides (1 clic)</div>
+    <div class="quick-btns" id="quickBtns">Chargement...</div>
+</div>
+
+<!-- INJECTION BATCH -->
+<div class="card" style="margin-bottom:20px">
+    <div class="card__title"><span class="icon">&#128640;</span> Rafale (clics + conversions en lot)</div>
+    <div class="form-row">
+        <div class="form-group">
+            <label class="form-label">Clics</label>
+            <input type="number" id="batchClicks" value="10" min="1" max="500">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Conversions (auto, ~30%)</label>
+            <input type="number" id="batchConversions" value="3" min="0" max="200">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Produit (optionnel)</label>
+        <select id="batchProduct"><option value="">Aleatoire</option></select>
+    </div>
+    <button class="btn btn--gold btn--full" onclick="injectBatch()">
+        &#128640; Lancer la rafale
+    </button>
+</div>
+
+<!-- Log -->
+<div class="log-card">
+    <div class="card__title" style="margin-bottom:14px">
+        <span class="icon">&#128340;</span> Historique des injections
+        <span style="font-size:.7rem;color:var(--muted);margin-left:auto;font-family:var(--font-mono)" id="logCount">0 injections</span>
+    </div>
+    <div class="log-list" id="logList">
+        <div style="text-align:center;color:var(--muted);padding:30px">Aucune injection. Utilisez les formulaires ci-dessus.</div>
+    </div>
+</div>
+
+<div class="footer">Affilimax Admin Panel &middot; Injection manuelle de clics et conversions</div>
+</div>
+
+<script>
+const API_BASE = '';
+const state = { products:[], log:[], productMap:{} };
+
+async function loadProducts() {
+    try {
+        const r = await fetch(API_BASE + '/api/produits');
+        state.products = await r.json();
+        state.products.forEach(p => { state.productMap[p.nom] = p; });
+        populateSelectors();
+        populateBatchSelector();
+        populateQuickBtns();
+    } catch(e) {
+        setTimeout(loadProducts, 2000);
+    }
+}
+
+function populateSelectors() {
+    const opts = state.products.filter(p=>p.actif).map(p =>
+        `<option value="${p.nom}" data-platform="${p.plateforme}" data-commission="${p.commission_euro}" data-price="${p.prix}">${p.nom} (${p.plateforme})</option>`
+    ).join('');
+    document.getElementById('clickProduct').innerHTML = opts;
+    document.getElementById('convProduct').innerHTML = opts;
+    onProductChange();
+}
+
+function populateBatchSelector() {
+    document.getElementById('batchProduct').innerHTML =
+        '<option value="">Aleatoire (tous les produits)</option>' +
+        state.products.filter(p=>p.actif).map(p =>
+            `<option value="${p.nom}">${p.nom} (${p.plateforme})</option>`
+        ).join('');
+}
+
+function populateQuickBtns() {
+    const btns = state.products.filter(p=>p.actif).map((p,i) => {
+        const colors = ['#f0a500','#7c3aed','#10b981','#3b82f6','#ef4444'];
+        const c = colors[i%colors.length];
+        return `
+            <button class="quick-btn" onclick="quickClick('${p.nom}','${p.plateforme}')">
+                <span class="quick-btn__icon">&#128070;</span>
+                <span class="quick-btn__info">
+                    <div class="quick-btn__name">${p.nom}</div>
+                    <div class="quick-btn__detail">${p.plateforme} &middot; +1 clic</div>
+                </span>
+            </button>
+            <button class="quick-btn" onclick="quickConv('${p.nom}','${p.plateforme}',${p.commission_euro},${p.prix})">
+                <span class="quick-btn__icon" style="color:${c}">&#128176;</span>
+                <span class="quick-btn__info">
+                    <div class="quick-btn__name">Vente: ${p.nom}</div>
+                    <div class="quick-btn__detail">+${p.commission_euro.toFixed(2)} EUR &middot; ${p.prix.toFixed(0)} EUR</div>
+                </span>
+            </button>`;
+    }).join('');
+    document.getElementById('quickBtns').innerHTML = btns;
+}
+
+function onProductChange() {
+    const sel = document.getElementById('convProduct');
+    const opt = sel.options[sel.selectedIndex];
+    if (opt) {
+        document.getElementById('convCommission').value = opt.dataset.commission || '15.76';
+        document.getElementById('convPrice').value = opt.dataset.price || '197.00';
+    }
+}
+
+async function injectClicks() {
+    const product = document.getElementById('clickProduct').value;
+    const source = document.getElementById('clickSource').value;
+    const count = parseInt(document.getElementById('clickCount').value) || 1;
+    const productData = state.productMap[product];
+
+    for (let i = 0; i < count; i++) {
+        try {
+            await fetch(API_BASE + '/api/click', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({
+                    product: product,
+                    platform: productData?.plateforme || '',
+                    source: source
+                })
+            });
+        } catch(e) {}
+    }
+    addLogEntry('clic', product, productData?.plateforme||'', count, source);
+    toast(`${count} clic(s) injecte(s) sur "${product}"`);
+    refreshStats();
+}
+
+async function injectConversions() {
+    const product = document.getElementById('convProduct').value;
+    const commission = parseFloat(document.getElementById('convCommission').value);
+    const price = parseFloat(document.getElementById('convPrice').value);
+    const count = parseInt(document.getElementById('convCount').value) || 1;
+    const productData = state.productMap[product];
+
+    for (let i = 0; i < count; i++) {
+        try {
+            await fetch(API_BASE + '/api/conversion', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({
+                    product: product,
+                    platform: productData?.plateforme || '',
+                    commission: commission,
+                    price: price
+                })
+            });
+        } catch(e) {}
+    }
+    addLogEntry('conversion', product, productData?.plateforme||'', count, null, commission, price);
+    toast(`${count} conversion(s) injectee(s) : ${product} (+${(commission*count).toFixed(2)} EUR)`);
+    refreshStats();
+}
+
+async function quickClick(name, platform) {
+    await fetch(API_BASE + '/api/click', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({product:name, platform:platform, source:'referencement_direct'})
+    });
+    addLogEntry('clic', name, platform, 1, 'referencement_direct');
+    toast(`+1 clic sur "${name}"`);
+    refreshStats();
+}
+
+async function quickConv(name, platform, commission, price) {
+    await fetch(API_BASE + '/api/conversion', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({product:name, platform:platform, commission:commission, price:price})
+    });
+    addLogEntry('conversion', name, platform, 1, null, commission, price);
+    toast(`+1 VENTE : ${name} (+${commission.toFixed(2)} EUR)`);
+    refreshStats();
+}
+
+async function injectBatch() {
+    const clicks = parseInt(document.getElementById('batchClicks').value) || 10;
+    const convs = parseInt(document.getElementById('batchConversions').value) || 3;
+    const product = document.getElementById('batchProduct').value;
+    const productData = state.productMap[product] || null;
+
+    if (!product) {
+        // Mode aleatoire: utiliser /api/simulate
+        try {
+            await fetch(API_BASE + '/api/simulate', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({count: clicks})
+            });
+        } catch(e) {}
+    } else {
+        for (let i = 0; i < clicks; i++) {
+            await fetch(API_BASE + '/api/click', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({product:product, platform:productData?.plateforme||'', source:'publicite_payante'})
+            });
+        }
+        if (productData) {
+            for (let i = 0; i < convs; i++) {
+                await fetch(API_BASE + '/api/conversion', {
+                    method:'POST', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({product:product, platform:productData.plateforme, commission:productData.commission_euro, price:productData.prix})
+                });
+            }
+        }
+    }
+    addLogEntry('batch', product||'Aleatoire', productData?.plateforme||'Toutes', clicks, 'publicite_payante', convs);
+    toast(`Rafale terminee : ${clicks} clics + ~${convs} conversions`);
+    refreshStats();
+}
+
+function addLogEntry(type, product, platform, count, source, amount, price) {
+    const now = new Date();
+    const time = now.toLocaleTimeString('fr-FR');
+    const isConv = type === 'conversion';
+
+    state.log.unshift({type, product, platform, count, source, amount, price, time});
+
+    if (state.log.length > 50) state.log = state.log.slice(0, 50);
+
+    const list = document.getElementById('logList');
+    const icon = isConv ? '&#128176;' : (type==='batch' ? '&#128640;' : '&#128070;');
+    const cls = isConv ? 'log-item--conversion' : 'log-item--click';
+    const detailParts = [];
+    if (source) detailParts.push(source.replace(/_/g,' '));
+    if (count > 1) detailParts.push(`x${count}`);
+    const detail = detailParts.join(' &middot; ');
+    const amtDisplay = isConv && amount ? `+${(amount*count).toFixed(2)} EUR` : (type==='batch' && amount ? `~${amount} conv` : `${count} clic(s)`);
+    const amtClass = isConv ? 'log-item__amount--pos' : '';
+
+    list.innerHTML = state.log.map(e => {
+        const eIcon = e.type === 'conversion' ? '&#128176;' : (e.type==='batch' ? '&#128640;' : '&#128070;');
+        const eCls = e.type === 'conversion' ? 'log-item--conversion' : 'log-item--click';
+        const eDetail = (e.source||'') + (e.count > 1 ? ` &middot; x${e.count}` : '');
+        const eAmt = e.type === 'conversion' && e.amount ? `+${(e.amount*e.count).toFixed(2)} EUR` : (e.type==='batch' && e.amount ? `~${e.amount} conv` : `${e.count} clic(s)`);
+        const eAmtCls = e.type === 'conversion' ? 'log-item__amount--pos' : '';
+        return `<div class="log-item ${eCls}">
+            <div class="log-item__icon">${eIcon}</div>
+            <div class="log-item__info">
+                <div class="log-item__action">${e.type==='conversion'?'Vente':(e.type==='batch'?'Rafale':'Clic')} : ${e.product}</div>
+                <div class="log-item__detail">${e.platform||''}${eDetail?' &middot; '+eDetail:''}</div>
+            </div>
+            <div class="log-item__amount ${eAmtCls}">${eAmt}</div>
+            <div class="log-item__time">${e.time}</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('logCount').textContent = state.log.length + ' injections';
+}
+
+async function refreshStats() {
+    try {
+        const r = await fetch(API_BASE + '/api/stats');
+        const d = await r.json();
+        const s = d.resume || d;
+        document.getElementById('topClicks').textContent = (s.clics_aujourdhui||0).toLocaleString('fr-FR');
+        document.getElementById('topConv').textContent = s.conversions_aujourdhui||0;
+        document.getElementById('topCommissions').textContent = (s.commissions_aujourdhui||0).toFixed(2).replace('.',',');
+        document.getElementById('topEPC').textContent = (s.epc||0).toFixed(2).replace('.',',') + ' EUR';
+    } catch(e) {
+        document.getElementById('connBadge').className = 'badge badge--off';
+        document.getElementById('connBadge').textContent = 'HORS-LIGNE';
+    }
+}
+
+function toast(msg, isError) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = 'toast' + (isError ? ' toast--error' : '');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+loadProducts();
+refreshStats();
+setInterval(refreshStats, 10000);
+</script>
+</body>
+</html>

@@ -127,33 +127,54 @@ PRODUCTS = get_products_tuples()
 SOURCES = ["SEO_organique", "reseaux_sociaux", "email_marketing", "publicite_payante", "referencement_direct"]
 SOURCE_WEIGHTS = [0.30, 0.25, 0.20, 0.15, 0.10]
 
-def record_click():
-    """Enregistre un clic reel."""
+def record_click(product_name=None, platform=None, source=None):
+    """Enregistre un clic reel. Accepte des parametres manuels ou utilise des valeurs aleatoires."""
     data = load_data()
     now = datetime.utcnow()
 
     # Mettre a jour les compteurs
     data["resume"]["clics_aujourdhui"] += 1
 
-    # Choisir une source ponderee
-    source = random.choices(SOURCES, weights=SOURCE_WEIGHTS, k=1)[0]
-    data["sources_trafic"][source] = data["sources_trafic"].get(source, 0) + 1
+    # Choisir une source (manuelle ou ponderee)
+    if source and source in SOURCES:
+        final_source = source
+    else:
+        final_source = random.choices(SOURCES, weights=SOURCE_WEIGHTS, k=1)[0]
+    data["sources_trafic"][final_source] = data["sources_trafic"].get(final_source, 0) + 1
 
     # Mettre a jour la performance horaire
     hour = now.hour
     data["performance_horaire"]["clics"][hour] += 1
 
-    # Mettre a jour les campagnes (clic aleatoire sur une campagne)
-    products = get_products_tuples()
-    camp_idx = random.randint(0, len(data["top_campagnes"]) - 1)
-    data["top_campagnes"][camp_idx]["clics"] += 1
+    # Mettre a jour les campagnes
+    camp_idx = None
+    if product_name:
+        for i, camp in enumerate(data["top_campagnes"]):
+            if camp["nom"] == product_name:
+                camp_idx = i
+                camp["clics"] += 1
+                break
+    if camp_idx is None:
+        products = get_products_tuples()
+        camp_idx = random.randint(0, len(data["top_campagnes"]) - 1)
+        data["top_campagnes"][camp_idx]["clics"] += 1
 
-    # Ajouter a l'activite recente
-    product = products[camp_idx % len(products)] if products else ("Inconnu", "Inconnu")
+    # Determiner le produit pour l'activite recente
+    products = get_products_tuples()
+    if product_name and platform:
+        display_name, display_platform = product_name, platform
+    elif camp_idx is not None and camp_idx < len(products):
+        display_name, display_platform = products[camp_idx][0], products[camp_idx][1]
+    elif products:
+        display_name, display_platform = products[0][0], products[0][1]
+    else:
+        display_name, display_platform = "Inconnu", "Inconnu"
+
     data["activite_recente"].insert(0, {
         "type": "clic",
-        "produit": product[0],
-        "plateforme": product[1],
+        "produit": display_name,
+        "plateforme": display_platform,
+        "source": final_source,
         "timestamp": now.isoformat() + "Z"
     })
     if len(data["activite_recente"]) > 100:
@@ -164,18 +185,43 @@ def record_click():
     save_data(data)
     return data
 
-def record_conversion():
-    """Enregistre une conversion reelle (vente)."""
+def record_conversion(product_name=None, platform=None, commission_override=None, price_override=None):
+    """Enregistre une conversion reelle (vente). Accepte des parametres manuels."""
     data = load_data()
     now = datetime.utcnow()
 
-    # Choisir un produit aleatoire (recharger pour etre sur)
     products = get_products_tuples()
-    if not products:
+
+    # Determiner le produit
+    if product_name and platform:
+        final_product_name = product_name
+        final_platform = platform
+        # Chercher les infos du produit pour calculer commission auto
+        found_product = None
+        for p in products:
+            if p[0] == product_name:
+                found_product = p
+                break
+        if found_product:
+            _, _, auto_price, auto_rate = found_product
+        else:
+            auto_price, auto_rate = 100.0, 0.10
+    elif products:
+        found_product = random.choice(products)
+        final_product_name, final_platform, auto_price, auto_rate = found_product
+    else:
         return None
-    product = random.choice(products)
-    product_name, platform, price, commission_rate = product
-    commission = round(price * commission_rate, 2)
+
+    # Calculer commission et prix (override ou auto)
+    if commission_override is not None:
+        commission = round(float(commission_override), 2)
+    else:
+        commission = round(auto_price * auto_rate, 2)
+
+    if price_override is not None:
+        price = round(float(price_override), 2)
+    else:
+        price = auto_price
 
     # Mettre a jour les compteurs
     data["resume"]["conversions_aujourdhui"] += 1
@@ -192,19 +238,28 @@ def record_conversion():
     data["performance_horaire"]["commissions"][hour] = round(data["performance_horaire"]["commissions"][hour] + commission, 2)
 
     # Mettre a jour la campagne correspondante
+    found_camp = False
     for camp in data["top_campagnes"]:
-        if camp["nom"] == product_name:
+        if camp["nom"] == final_product_name:
             camp["conversions"] += 1
             camp["commissions"] = round(camp["commissions"] + commission, 2)
             camp["progression"] = min(100, camp["progression"] + random.randint(1, 3))
+            found_camp = True
             break
+    if not found_camp:
+        # Creer une campagne si elle n'existe pas
+        data["top_campagnes"].append({
+            "nom": final_product_name, "plateforme": final_platform,
+            "clics": 1, "conversions": 1, "commissions": commission, "progression": 5
+        })
 
     # Ajouter a l'activite recente
     data["activite_recente"].insert(0, {
         "type": "vente",
-        "produit": product_name,
-        "plateforme": platform,
+        "produit": final_product_name,
+        "plateforme": final_platform,
         "montant": commission,
+        "prix_vente": price,
         "timestamp": now.isoformat() + "Z"
     })
     if len(data["activite_recente"]) > 100:
@@ -298,26 +353,52 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             payload = {}
 
         if path == "/api/click":
-            data = record_click()
-            self.serve_json({"status": "ok", "action": "click", "data": data["resume"]})
+            product_name = payload.get("product") or payload.get("produit")
+            platform = payload.get("platform") or payload.get("plateforme")
+            source = payload.get("source")
+            data = record_click(product_name=product_name, platform=platform, source=source)
+            self.serve_json({"status": "ok", "action": "click", "produit": product_name or "aleatoire", "data": data["resume"]})
             return
 
         if path == "/api/conversion":
-            data = record_conversion()
-            self.serve_json({"status": "ok", "action": "conversion", "data": data["resume"]})
+            product_name = payload.get("product") or payload.get("produit")
+            platform = payload.get("platform") or payload.get("plateforme")
+            commission_override = payload.get("commission") or payload.get("montant")
+            price_override = payload.get("price") or payload.get("prix")
+            data = record_conversion(
+                product_name=product_name,
+                platform=platform,
+                commission_override=commission_override,
+                price_override=price_override
+            )
+            if data:
+                self.serve_json({"status": "ok", "action": "conversion", "produit": product_name or "aleatoire", "data": data["resume"]})
+            else:
+                self.serve_json({"status": "error", "message": "Aucun produit disponible"})
             return
 
-        # Endpoint pour forcer plusieurs evenements
+        # Endpoint pour forcer plusieurs evenements (batch manuel)
         if path == "/api/simulate":
             count = payload.get("count", 10)
+            product_name = payload.get("product") or payload.get("produit")
+            platform = payload.get("platform") or payload.get("plateforme")
+            source = payload.get("source")
+            override_commission = payload.get("commission") or payload.get("montant")
+            override_price = payload.get("price") or payload.get("prix")
+
             results = {"clicks": 0, "conversions": 0}
             for _ in range(count):
-                record_click()
+                record_click(product_name=product_name, platform=platform, source=source)
                 results["clicks"] += 1
                 if random.random() < 0.3:
-                    record_conversion()
+                    record_conversion(
+                        product_name=product_name,
+                        platform=platform,
+                        commission_override=override_commission,
+                        price_override=override_price
+                    )
                     results["conversions"] += 1
-                time.sleep(0.05)
+                time.sleep(0.03)
             self.serve_json({"status": "ok", "simulated": results, "data": load_data()["resume"]})
             return
 
