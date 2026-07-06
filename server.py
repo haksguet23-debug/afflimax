@@ -155,9 +155,17 @@ def record_click(product_name=None, platform=None, source=None):
                 camp["clics"] += 1
                 break
     if camp_idx is None:
-        products = get_products_tuples()
-        camp_idx = random.randint(0, len(data["top_campagnes"]) - 1)
-        data["top_campagnes"][camp_idx]["clics"] += 1
+        if product_name and platform:
+            # Creer la campagne si elle n'existe pas encore
+            data["top_campagnes"].append({
+                "nom": product_name, "plateforme": platform,
+                "clics": 1, "conversions": 0, "commissions": 0.0, "progression": 0
+            })
+            camp_idx = len(data["top_campagnes"]) - 1
+        else:
+            products = get_products_tuples()
+            camp_idx = random.randint(0, len(data["top_campagnes"]) - 1)
+            data["top_campagnes"][camp_idx]["clics"] += 1
 
     # Determiner le produit pour l'activite recente
     products = get_products_tuples()
@@ -363,8 +371,8 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
         if path == "/api/conversion":
             product_name = payload.get("product") or payload.get("produit")
             platform = payload.get("platform") or payload.get("plateforme")
-            commission_override = payload.get("commission") or payload.get("montant")
-            price_override = payload.get("price") or payload.get("prix")
+            commission_override = payload.get("commission") if "commission" in payload else payload.get("montant")
+            price_override = payload.get("price") if "price" in payload else payload.get("prix")
             data = record_conversion(
                 product_name=product_name,
                 platform=platform,
@@ -383,8 +391,8 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             product_name = payload.get("product") or payload.get("produit")
             platform = payload.get("platform") or payload.get("plateforme")
             source = payload.get("source")
-            override_commission = payload.get("commission") or payload.get("montant")
-            override_price = payload.get("price") or payload.get("prix")
+            override_commission = payload.get("commission") if "commission" in payload else payload.get("montant")
+            override_price = payload.get("price") if "price" in payload else payload.get("prix")
 
             results = {"clicks": 0, "conversions": 0}
             for _ in range(count):
