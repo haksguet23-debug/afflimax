@@ -18,6 +18,7 @@ Usage:
   Puis ouvre http://localhost:8765 dans ton navigateur.
 """
 
+import html
 import http.server
 import json
 import os
@@ -342,6 +343,17 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             })
             return
 
+        # REDIRECTEUR DE CLICS: /go/<slug> -> enregistre clic + redirige Amazon
+        if path.startswith("/go/") and len(path) > 4:
+            slug = path[4:].strip().lower()
+            self.handle_redirect(slug)
+            return
+
+        # PAGE /go : liste tous les liens de redirection disponibles
+        if path == "/go":
+            self.serve_go_index()
+            return
+
         # Fichiers statiques
         if path == "/" or path == "":
             self.path = "/index.html"
@@ -411,6 +423,124 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         self.send_error(404, "Not Found")
+
+    def handle_redirect(self, slug):
+        """Enregistre un clic et redirige vers le vrai lien Amazon."""
+        produits = load_products()
+        target = None
+
+        # Essayer par index (1 a N)
+        try:
+            idx = int(slug) - 1
+            if 0 <= idx < len(produits) and produits[idx].get("actif"):
+                target = produits[idx]
+        except ValueError:
+            pass
+
+        # Essayer par correspondance de nom
+        if not target:
+            slug_clean = slug.replace("-", " ").replace("_", " ")
+            for p in produits:
+                if p.get("actif") and slug_clean in p["nom"].lower():
+                    target = p
+                    break
+
+        if not target:
+            self.send_response(302)
+            self.send_header("Location", "/go")
+            self.end_headers()
+            return
+
+        # Enregistrer le clic
+        record_click(
+            product_name=target["nom"],
+            platform=target["plateforme"],
+            source="referencement_direct"
+        )
+
+        # Rediriger vers le vrai lien Amazon
+        self.send_response(302)
+        self.send_header("Location", target["lien"])
+        self.send_header("Cache-Control", "no-cache")
+        self.end_headers()
+
+    def serve_go_index(self):
+        """Affiche la liste de tous les liens de redirection disponibles."""
+        produits = load_products()
+        host = self.headers.get("Host", f"localhost:{PORT}")
+        proto = "https" if "RENDER" in os.environ else "http"
+        base = f"{proto}://{host}"
+
+        html = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affilimax - Liens de Redirection</title>
+<style>
+:root{--bg:#0a0a1a;--card:#141432;--gold:#f0a500;--purple:#7c3aed;--green:#10b981;--text:#f1f5f9;--muted:#94a3b8;--border:#1e1e4a;--radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:40px 20px;max-width:800px;margin:0 auto}
+h1{font-size:1.5rem;margin-bottom:8px}
+h1 span{background:linear-gradient(135deg,var(--text),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+p{color:var(--muted);margin-bottom:24px}
+.link-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:all .2s}
+.link-card:hover{border-color:var(--purple)}
+.link-card__left{min-width:0;flex:1}
+.link-card__name{font-weight:600;font-size:.9rem}
+.link-card__platform{font-size:.7rem;color:var(--muted)}
+.link-card__url{font-size:.72rem;color:var(--purple);font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:350px;background:rgba(124,58,237,.1);padding:6px 10px;border-radius:6px}
+.copy-btn{padding:8px 16px;background:var(--purple);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.75rem;font-weight:600;white-space:nowrap;transition:all .15s}
+.copy-btn:hover{opacity:.9;transform:scale(1.02)}
+.copy-btn:active{transform:scale(.97)}
+.copied{background:var(--green)!important}
+.footer{text-align:center;margin-top:30px;color:var(--muted);font-size:.7rem}
+</style>
+</head>
+<body>
+<h1><span>Affilimax</span> - Liens de Redirection</h1>
+<p>Copie ces liens courts et partage-les sur tes reseaux. Chaque clic est tracke dans le dashboard, puis redirige vers Amazon avec ton tag <strong>confortbure07-21</strong>.</p>
+"""
+        for i, p in enumerate(produits):
+            if not p.get("actif"):
+                continue
+            idx = i + 1
+            url = f"{base}/go/{idx}"
+            safe_name = html.escape(p['nom'])
+            safe_platform = html.escape(p['plateforme'])
+            safe_url = html.escape(url)
+            html += f"""
+<div class="link-card">
+    <div class="link-card__left">
+        <div class="link-card__name">{idx}. {safe_name}</div>
+        <div class="link-card__platform">{safe_platform} &middot; {p['prix']:.2f} EUR &middot; {p['commission_pct']}% comm</div>
+    </div>
+    <div class="link-card__url" title="{safe_url}">{safe_url}</div>
+    <button class="copy-btn" onclick="copyLink('{safe_url}', this)">Copier</button>
+</div>"""
+
+        html += """
+<div class="footer">
+    <a href="/" style="color:var(--purple)">Dashboard</a> &middot;
+    <a href="/pub.html" style="color:var(--purple)">Landing Page</a>
+</div>
+<script>
+function copyLink(url, btn) {
+    navigator.clipboard.writeText(url).then(() => {
+        btn.textContent = 'Copie !';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copier'; btn.classList.remove('copied'); }, 2000);
+    });
+}
+</script>
+</body>
+</html>"""
+        body = html.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", len(body))
+        self.end_headers()
+        self.wfile.write(body)
 
     def serve_json(self, data):
         """Envoie une reponse JSON."""
