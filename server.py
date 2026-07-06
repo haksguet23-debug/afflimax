@@ -353,6 +353,17 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             })
             return
 
+        # PAGES PRODUIT: /produit/<slug> -> fiche detaillee style Amazon
+        if path.startswith("/produit/") and len(path) > 10:
+            slug = path[10:].strip().lower()
+            self.serve_product_page(slug)
+            return
+
+        # SITEMAP XML pour SEO
+        if path == "/sitemap.xml":
+            self.serve_sitemap()
+            return
+
         # REDIRECTEUR DE CLICS: /go/<slug> -> enregistre clic + redirige Amazon
         if path.startswith("/go/") and len(path) > 4:
             slug = path[4:].strip().lower()
@@ -504,6 +515,231 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Location", target["lien"])
         self.send_header("Cache-Control", "no-cache")
         self.end_headers()
+
+    def serve_product_page(self, slug):
+        """Genere une page produit professionnelle style fiche Amazon."""
+        try:
+            self._serve_product_page_impl(slug)
+        except Exception as e:
+            print(f"[ERREUR] serve_product_page({slug}): {e}", file=sys.stderr)
+            self.send_response(500)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(f"Erreur interne: {e}".encode("utf-8"))
+
+    def _serve_product_page_impl(self, slug):
+        """Implementation de la page produit."""
+        produits = load_products()
+        produit = None
+        produit_idx = None
+
+        # Chercher par slug exact
+        for i, p in enumerate(produits):
+            if p.get("actif") and p.get("slug", "").lower() == slug:
+                produit = p
+                produit_idx = i + 1
+                break
+
+        # Fallback: chercher par nom partiel
+        if not produit:
+            slug_clean = slug.replace("-", " ").replace("_", " ")
+            for i, p in enumerate(produits):
+                if p.get("actif") and slug_clean in p["nom"].lower():
+                    produit = p
+                    produit_idx = i + 1
+                    break
+
+        if not produit:
+            self.send_error(404, "Produit non trouve")
+            return
+
+        host = self.headers.get("Host", f"localhost:{PORT}")
+        proto = "https" if "RENDER" in os.environ else "http"
+        base = f"{proto}://{host}"
+
+        nom = html.escape(produit["nom"])
+        desc = html.escape(produit.get("description", ""))
+        plateforme = html.escape(produit.get("plateforme", ""))
+        prix = produit.get("prix", 0)
+        comm_pct = produit.get("commission_pct", 5)
+        comm_euro = produit.get("commission_euro", 0)
+        categorie = html.escape(produit.get("categorie", ""))
+        image = html.escape(produit.get("image_url", f"https://placehold.co/600x400/141432/f0a500?text={nom}"))
+        caracteristiques = produit.get("caracteristiques", [])
+        go_url = f"{base}/go/{produit_idx}?src=produit"
+
+        features_html = "".join(f"<li>{html.escape(f)}</li>" for f in caracteristiques)
+
+        page = f"""<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{nom} - Meilleur Prix Amazon 2026 | Affilimax</title>
+<meta name="description" content="{html.escape(produit.get('description',''))[:160]}">
+<meta property="og:title" content="{nom} - Meilleur Prix Amazon">
+<meta property="og:description" content="{html.escape(produit.get('description',''))[:200]}">
+<meta property="og:image" content="{image}">
+<meta property="og:type" content="product">
+<style>
+:root{{--bg:#0a0a1a;--card:#141432;--gold:#f0a500;--purple:#7c3aed;--green:#10b981;--text:#f1f5f9;--muted:#94a3b8;--border:#1e1e4a;--radius:12px}}
+*{{margin:0;padding:0;box-sizing:border-box}}
+body{{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}}
+.breadcrumb{{max-width:1100px;margin:0 auto;padding:20px 20px 0;font-size:.78rem;color:var(--muted)}}
+.breadcrumb a{{color:var(--purple);text-decoration:none}}
+.breadcrumb a:hover{{text-decoration:underline}}
+.container{{max-width:1100px;margin:0 auto;padding:30px 20px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}}
+@media(max-width:768px){{.container{{grid-template-columns:1fr}}}}
+.product-image{{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center}}
+.product-image img{{width:100%;height:100%;object-fit:cover}}
+.product-info h1{{font-size:1.8rem;font-weight:800;margin-bottom:8px}}
+.product-info .category{{display:inline-block;padding:3px 12px;background:rgba(124,58,237,.15);color:var(--purple);border-radius:50px;font-size:.72rem;font-weight:600;margin-bottom:16px}}
+.product-info .price{{font-size:2.5rem;font-weight:800;font-family:monospace;color:var(--gold);margin:16px 0 4px}}
+.product-info .comm{{font-size:.85rem;color:var(--green);font-weight:600;margin-bottom:20px}}
+.product-info .desc{{color:var(--muted);font-size:.92rem;margin-bottom:24px;line-height:1.7}}
+.features{{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px}}
+.features h3{{font-size:1rem;margin-bottom:14px;color:var(--gold)}}
+.features ul{{list-style:none}}
+.features li{{padding:8px 0 8px 24px;position:relative;color:var(--muted);font-size:.88rem;border-bottom:1px solid rgba(30,30,74,.5)}}
+.features li:last-child{{border-bottom:none}}
+.features li::before{{content:'\2713';position:absolute;left:0;color:var(--green);font-weight:bold}}
+.cta-section{{display:flex;gap:12px;flex-wrap:wrap}}
+.btn-buy{{flex:1;min-width:200px;padding:16px 24px;background:linear-gradient(135deg,#ffb700,var(--gold));color:#000;border:none;border-radius:10px;font-size:1.05rem;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;transition:all .3s;animation:ctaPulse 2s ease-in-out infinite}}
+@keyframes ctaPulse{{0%,100%{{box-shadow:0 0 8px rgba(240,165,0,.3)}}50%{{box-shadow:0 0 24px rgba(240,165,0,.6)}}}}
+.btn-buy:hover{{transform:scale(1.04);box-shadow:0 8px 30px rgba(240,165,0,.5)}}
+.btn-buy:active{{transform:scale(.96)}}
+.btn-back{{padding:16px 24px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:10px;font-size:.9rem;cursor:pointer;text-decoration:none;transition:all .2s;text-align:center}}
+.btn-back:hover{{border-color:var(--purple);background:var(--card)}}
+.trust-badges{{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}}
+.trust-badges span{{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:6px}}
+.trust-badges .icon{{font-size:1rem}}
+.related{{max-width:1100px;margin:0 auto;padding:40px 20px}}
+.related h2{{font-size:1.2rem;margin-bottom:20px}}
+.related-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}}
+.related-card{{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:all .2s;text-decoration:none;color:var(--text);display:block}}
+.related-card:hover{{border-color:var(--purple);transform:translateY(-2px)}}
+.related-card .rname{{font-weight:600;font-size:.85rem;margin-bottom:4px}}
+.related-card .rprice{{color:var(--gold);font-size:.9rem;font-family:monospace}}
+footer{{text-align:center;padding:40px 20px;color:var(--muted);font-size:.7rem;border-top:1px solid var(--border)}}
+</style>
+</head>
+<body>
+<div class="breadcrumb">
+    <a href="/">Accueil</a> &rsaquo; <a href="/pub.html">Offres</a> &rsaquo; {nom}
+</div>
+
+<div class="container">
+    <div class="product-image">
+        <img src="{image}" alt="{nom}" loading="lazy">
+    </div>
+    <div class="product-info">
+        <span class="category">{categorie}</span>
+        <h1>{nom}</h1>
+        <p class="desc">{desc}</p>
+        <div class="price">{prix:.2f} EUR</div>
+        <div class="comm">Commission: {comm_euro:.2f} EUR ({comm_pct}%)</div>
+        <div class="cta-section">
+            <a class="btn-buy" href="{go_url}" rel="nofollow sponsored" target="_blank">
+                Voir l'offre sur {plateforme}
+            </a>
+            <a class="btn-back" href="/pub.html">
+                Toutes les offres
+            </a>
+        </div>
+        <div class="trust-badges">
+            <span><span class="icon">&#128274;</span> Paiement securise</span>
+            <span><span class="icon">&#128666;</span> Livraison rapide</span>
+            <span><span class="icon">&#127381;</span> Satisfait ou rembourse</span>
+            <span><span class="icon">&#11088;</span> Verifie par Affilimax</span>
+        </div>
+    </div>
+</div>
+
+<div class="features" style="max-width:1100px;margin:0 auto 20px;padding:0 20px">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px">
+        <h3>Caracteristiques du produit</h3>
+        <ul>{features_html}</ul>
+    </div>
+</div>
+
+<div class="related">
+    <h2>Produits similaires</h2>
+    <div class="related-grid">
+"""
+        # Ajouter 3 produits similaires aleatoires
+        _others = [p for p in produits if p.get("actif") and p.get("slug") != slug]
+        random.shuffle(_others)
+        for _p in _others[:3]:
+            _p_slug = _p.get("slug", "")
+            _p_nom = html.escape(_p["nom"])
+            _p_prix = _p.get("prix", 0)
+            page += f"""        <a class="related-card" href="/produit/{_p_slug}">
+            <div class="rname">{_p_nom}</div>
+            <div class="rprice">{_p_prix:.2f} EUR</div>
+        </a>
+"""
+
+        page += """    </div>
+</div>
+
+<footer>
+    <p>Affilimax - Plateforme d'affiliation | En partenariat avec Amazon | <a href="/">Dashboard</a> | <a href="/go">Liens</a></p>
+</footer>
+</body>
+</html>"""
+        body = page.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", len(body))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def serve_sitemap(self):
+        """Genere un sitemap XML dynamique pour le SEO."""
+        produits = load_products()
+        host = self.headers.get("Host", "localhost")
+        proto = "https" if "RENDER" in os.environ else "http"
+        base = f"{proto}://{host}"
+        now = datetime.utcnow().strftime("%Y-%m-%d")
+
+        urls = [f"""  <url>
+    <loc>{base}/</loc>
+    <lastmod>{now}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>{base}/pub.html</loc>
+    <lastmod>{now}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>{base}/go</loc>
+    <lastmod>{now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>"""]
+
+        for p in produits:
+            if p.get("actif") and p.get("slug"):
+                urls.append(f"""  <url>
+    <loc>{base}/produit/{html.escape(p['slug'])}</loc>
+    <lastmod>{now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>""")
+
+        sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{chr(10).join(urls)}
+</urlset>"""
+        body = sitemap.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "application/xml; charset=utf-8")
+        self.send_header("Content-Length", len(body))
+        self.end_headers()
+        self.wfile.write(body)
 
     def serve_go_index(self):
         """Affiche la liste de tous les liens de redirection disponibles avec selecteur de source."""

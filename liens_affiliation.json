@@ -10,6 +10,7 @@
   "produits": [
     {
       "nom": "Pack Business Pro",
+      "slug": "pack-business-pro",
       "plateforme": "Amazon",
       "prix": 199.99,
       "commission_pct": 5,
@@ -17,10 +18,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_01?tag=confortbure07-21",
       "description": "Samsung T7 Shield SSD 1To. Stockage rapide pour entrepreneurs. 1050 Mo/s, resistant a l'eau et a la poussiere.",
       "categorie": "Business",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Pack+Business+Pro",
+      "caracteristiques": [
+        "SSD 1To ultra-rapide (1050 Mo/s)",
+        "Resistant a l'eau et a la poussiere (IP65)",
+        "Compatible PC, Mac, Android",
+        "Format compact, ideal pour le teletravail",
+        "Garantie 3 ans Samsung"
+      ],
       "actif": true
     },
     {
       "nom": "Livre Investir en Bourse",
+      "slug": "livre-investir-en-bourse",
       "plateforme": "Amazon",
       "prix": 19.90,
       "commission_pct": 5,
@@ -28,10 +38,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_02?tag=confortbure07-21",
       "description": "Investir en Bourse avec les ETF. Guide complet pour debutants et confirmes. Meilleure vente Amazon.",
       "categorie": "Formation",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Investir+en+Bourse",
+      "caracteristiques": [
+        "Guide complet ETF pour debutants",
+        "Strategies d'investissement a long terme",
+        "Meilleure vente Amazon 2026",
+        "Exemples concrets et etudes de cas",
+        "Format poche, 350 pages"
+      ],
       "actif": true
     },
     {
       "nom": "Routeur Wi-Fi Mesh Pro",
+      "slug": "routeur-wifi-mesh-pro",
       "plateforme": "Amazon",
       "prix": 149.99,
       "commission_pct": 4,
@@ -39,10 +58,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_03?tag=confortbure07-21",
       "description": "TP-Link Deco X50. Wi-Fi 6 mesh couvrant jusqu'a 230m2. Ideal pour le teletravail et le streaming.",
       "categorie": "Tech",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Routeur+WiFi+Mesh",
+      "caracteristiques": [
+        "Wi-Fi 6 mesh - 230m2 de couverture",
+        "Debit jusqu'a 3000 Mbps",
+        "Configuration en 5 minutes via appli",
+        "Parfait pour streaming 4K et gaming",
+        "Controle parental integre"
+      ],
       "actif": true
     },
     {
       "nom": "Webcam HD Pro 1080p",
+      "slug": "webcam-hd-pro-1080p",
       "plateforme": "Amazon",
       "prix": 69.99,
       "commission_pct": 4,
@@ -50,10 +78,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_04?tag=confortbure07-21",
       "description": "Logitech C920s HD Pro. Full HD 1080p, micro integre, cache confidentialite. Pour visio pro.",
       "categorie": "Bureau",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Webcam+HD+Pro",
+      "caracteristiques": [
+        "Full HD 1080p a 30 fps",
+        "Micro stereo integre",
+        "Cache confidentialite physique",
+        "Auto-focus et correction de lumiere",
+        "Compatible Zoom, Teams, Meet"
+      ],
       "actif": true
     },
     {
       "nom": "Machine a Cafe Premium",
+      "slug": "machine-a-cafe-premium",
       "plateforme": "Amazon",
       "prix": 89.99,
       "commission_pct": 5,
@@ -61,10 +98,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_05?tag=confortbure07-21",
       "description": "Philips L'Or Barista Sublime. Cafe espresso et long. Mousseur a lait integre. Design elegant.",
       "categorie": "Maison",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Machine+a+Cafe",
+      "caracteristiques": [
+        "Double pression 19 bars",
+        "Mousseur a lait integre",
+        "Compatible dosettes L'Or et Senseo",
+        "Design elegant, reservoir 1L",
+        "Arret automatique apres 30 min"
+      ],
       "actif": true
     },
     {
       "nom": "Guide Dropshipping 2026",
+      "slug": "guide-dropshipping-2026",
       "plateforme": "Amazon",
       "prix": 14.99,
       "commission_pct": 5,
@@ -72,10 +118,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_06?tag=confortbure07-21",
       "description": "Dropshipping : la methode pas-a-pas. Creez votre business e-commerce sans stock. Edition 2026.",
       "categorie": "E-Commerce",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Dropshipping+2026",
+      "caracteristiques": [
+        "Methode pas-a-pas illustree",
+        "Trouver les bons fournisseurs",
+        "Strategies marketing e-commerce",
+        "Edition mise a jour 2026",
+        "200 pages, format pratique"
+      ],
       "actif": true
     },
     {
       "nom": "Le Grand Livre Marketing",
+      "slug": "le-grand-livre-marketing",
       "plateforme": "Amazon",
       "prix": 34.90,
       "commission_pct": 5,
@@ -83,10 +138,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_07?tag=confortbure07-21",
       "description": "Le Grand Livre du Marketing Digital. SEO, SEA, reseaux sociaux, emailing. La bible du marketer.",
       "categorie": "Marketing",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Marketing+Digital",
+      "caracteristiques": [
+        "SEO, SEA, reseaux sociaux, emailing",
+        "Plus de 600 pages de strategies",
+        "Cas pratiques et exemples reels",
+        "Pour debutants et pros du marketing",
+        "Bible de reference en France"
+      ],
       "actif": true
     },
     {
       "nom": "WordPress Pour Tous",
+      "slug": "wordpress-pour-tous",
       "plateforme": "Amazon",
       "prix": 21.50,
       "commission_pct": 5,
@@ -94,10 +158,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_08?tag=confortbure07-21",
       "description": "Creez vos sites Web avec WordPress. Guide complet du debutant au pro. 100% pratique.",
       "categorie": "Web",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=WordPress+Pour+Tous",
+      "caracteristiques": [
+        "Guide complet WordPress de A a Z",
+        "Creation de sites sans coder",
+        "SEO, securite et performances",
+        "Tutorials pas-a-pas avec captures",
+        "Compatible derniere version WP"
+      ],
       "actif": true
     },
     {
       "nom": "Ecouteurs Sans Fil Pro",
+      "slug": "ecouteurs-sans-fil-pro",
       "plateforme": "Amazon",
       "prix": 49.99,
       "commission_pct": 5,
@@ -105,10 +178,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_09?tag=confortbure07-21",
       "description": "Ecouteurs Bluetooth 5.3, reduction de bruit active, autonomie 30h. Parfait pour le sport et le bureau.",
       "categorie": "Audio",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Ecouteurs+Sans+Fil",
+      "caracteristiques": [
+        "Bluetooth 5.3 avec connexion stable",
+        "Reduction de bruit active (ANC)",
+        "Autonomie 30h avec le boitier",
+        "Resistants a la transpiration (IPX5)",
+        "Commandes tactiles intuitives"
+      ],
       "actif": true
     },
     {
       "nom": "Souris Gaming RGB",
+      "slug": "souris-gaming-rgb",
       "plateforme": "Amazon",
       "prix": 39.99,
       "commission_pct": 5,
@@ -116,10 +198,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_10?tag=confortbure07-21",
       "description": "Souris gaming 16000 DPI, 8 boutons programmables, RGB. Pour gamers et productivite.",
       "categorie": "Gaming",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Souris+Gaming+RGB",
+      "caracteristiques": [
+        "Capteur 16000 DPI ultra-precis",
+        "8 boutons programmables",
+        "Eclairage RGB 16,8M couleurs",
+        "Ergonomique pour sessions longues",
+        "Compatible PC, Mac, PS5, Xbox"
+      ],
       "actif": true
     },
     {
       "nom": "Batterie Externe 20000mAh",
+      "slug": "batterie-externe-20000mah",
       "plateforme": "Amazon",
       "prix": 29.99,
       "commission_pct": 5,
@@ -127,10 +218,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_11?tag=confortbure07-21",
       "description": "Power Bank charge rapide USB-C 20W. Compatible iPhone, Samsung, tablettes. Ultra compacte.",
       "categorie": "Accessoires",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Batterie+Externe",
+      "caracteristiques": [
+        "Capacite 20000mAh (5 charges iPhone)",
+        "Charge rapide USB-C 20W",
+        "Double port USB-A + USB-C",
+        "Ultra-compacte, format poche",
+        "Compatible tous smartphones et tablettes"
+      ],
       "actif": true
     },
     {
       "nom": "Clavier Mecanique Pro",
+      "slug": "clavier-mecanique-pro",
       "plateforme": "Amazon",
       "prix": 79.99,
       "commission_pct": 5,
@@ -138,21 +238,39 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_12?tag=confortbure07-21",
       "description": "Clavier mecanique sans fil, switches rouges, retroeclairage RGB. Ideal bureautique et gaming.",
       "categorie": "Bureau",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Clavier+Mecanique",
+      "caracteristiques": [
+        "Switches mecaniques rouges (lineaires)",
+        "Sans fil Bluetooth + USB-C",
+        "Retroeclairage RGB par touche",
+        "Autonomie 40h avec RGB active",
+        "Format compact 75% avec repose-poignet"
+      ],
       "actif": true
     },
     {
       "nom": "Tapis de Course Pliable",
+      "slug": "tapis-de-course-pliable",
       "plateforme": "Amazon",
       "prix": 299.99,
       "commission_pct": 4,
       "commission_euro": 12.00,
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_13?tag=confortbure07-21",
-      "description": "Tapis de course pliable pour la maison. Moteur silencieux, ecran LED, 12 programmes. Pliable 90.",
+      "description": "Tapis de course pliable pour la maison. Moteur silencieux, ecran LED, 12 programmes. Pliable a 90.",
       "categorie": "Sport",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Tapis+de+Course",
+      "caracteristiques": [
+        "Moteur silencieux 2.5 HP",
+        "Pliable a 90, rangement facile",
+        "12 programmes d'entrainement",
+        "Vitesse 1-14 km/h, ecran LED",
+        "Capteurs cardiaques sur les poignees"
+      ],
       "actif": true
     },
     {
       "nom": "Enceinte Bluetooth Portable",
+      "slug": "enceinte-bluetooth-portable",
       "plateforme": "Amazon",
       "prix": 59.99,
       "commission_pct": 5,
@@ -160,10 +278,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_14?tag=confortbure07-21",
       "description": "Enceinte portable etanche IPX7, son 360, autonomie 20h. Parfaite pour la plage et les soirees.",
       "categorie": "Audio",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Enceinte+Bluetooth",
+      "caracteristiques": [
+        "Son 360 immersif",
+        "Etanche IPX7 (immersion 1m)",
+        "Autonomie 20h de lecture",
+        "Bluetooth 5.3 avec TWS (paire stereo)",
+        "Ultra-portable, 500g"
+      ],
       "actif": true
     },
     {
       "nom": "Aspirateur Robot Laveur",
+      "slug": "aspirateur-robot-laveur",
       "plateforme": "Amazon",
       "prix": 249.99,
       "commission_pct": 4,
@@ -171,10 +298,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_15?tag=confortbure07-21",
       "description": "Robot aspirateur et laveur, navigation LiDAR, 4000Pa. Controle par appli et Alexa. Maison intelligente.",
       "categorie": "Maison",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Aspirateur+Robot",
+      "caracteristiques": [
+        "Navigation LiDAR, cartographie precise",
+        "Aspiration 4000Pa + lavage",
+        "Controle par appli et Alexa/Google",
+        "Autonomie 150 min, retour auto a la base",
+        "Detecte et evite les obstacles"
+      ],
       "actif": true
     },
     {
       "nom": "Livre Crypto Monnaies 2026",
+      "slug": "livre-crypto-monnaies-2026",
       "plateforme": "Amazon",
       "prix": 24.90,
       "commission_pct": 5,
@@ -182,10 +318,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_16?tag=confortbure07-21",
       "description": "Guide complet crypto et blockchain. Bitcoin, Ethereum, NFT, DeFi. Strategie d'investissement 2026.",
       "categorie": "Formation",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Crypto+Monnaies",
+      "caracteristiques": [
+        "Bitcoin, Ethereum, NFT, DeFi expliques",
+        "Strategies d'investissement 2026",
+        "Analyse des risques et opportunites",
+        "Guide pour debutants et intermediaires",
+        "400 pages avec graphiques"
+      ],
       "actif": true
     },
     {
       "nom": "Livre Developpement Personnel",
+      "slug": "livre-developpement-personnel",
       "plateforme": "Amazon",
       "prix": 17.90,
       "commission_pct": 5,
@@ -193,10 +338,19 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_17?tag=confortbure07-21",
       "description": "Les 7 habitudes de ceux qui realisent tout ce qu'ils entreprennent. Best-seller mondial. 40M exemplaires.",
       "categorie": "Livre",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Developpement+Personnel",
+      "caracteristiques": [
+        "Best-seller mondial, 40M exemplaires",
+        "Les 7 habitudes des gens efficaces",
+        "Exercices pratiques inclus",
+        "Pour vie pro et personnelle",
+        "Edition anniversaire augmentee"
+      ],
       "actif": true
     },
     {
       "nom": "Balance Connectee",
+      "slug": "balance-connectee",
       "plateforme": "Amazon",
       "prix": 39.99,
       "commission_pct": 5,
@@ -204,8 +358,16 @@
       "lien": "https://www.amazon.fr/dp/TON_ASIN_ICI_18?tag=confortbure07-21",
       "description": "Balance impedancemetre Bluetooth. Poids, IMC, masse graisseuse, musculaire. Application connectee.",
       "categorie": "Sport",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Balance+Connectee",
+      "caracteristiques": [
+        "Mesure 13 parametres corporels",
+        "Bluetooth, synchro appli smartphone",
+        "Reconnaissance multi-utilisateurs (8)",
+        "Capteurs haute precision ITO",
+        "Design verre trempe, ecran LED"
+      ],
       "actif": true
     }
   ],
-  "note": "18 produits Amazon avec le tag confortbure07-21. Les commissions varient de 1% a 12% selon la categorie. Prix indicatifs."
+  "note": "18 produits Amazon avec tag confortbure07-21. Ajoute tes vrais ASINs en remplacant TON_ASIN_ICI_XX. Pages produits generees automatiquement depuis ces donnees."
 }

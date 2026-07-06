@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-07-06T17:18:27.320961Z",
+  "timestamp": "2026-07-06T18:44:57.415547Z",
   "temps_reel": true,
   "demarrage": "2026-07-06T17:18:27.320961Z",
   "resume": {
     "commissions_aujourdhui": 0.0,
-    "clics_aujourdhui": 0,
+    "clics_aujourdhui": 11,
     "conversions_aujourdhui": 0,
     "taux_conversion": 0.0,
     "epc": 0.0,
@@ -43,7 +43,7 @@
     {
       "nom": "Pack Business Pro",
       "plateforme": "Amazon",
-      "clics": 0,
+      "clics": 7,
       "conversions": 0,
       "commissions": 0.0,
       "progression": 0
@@ -103,14 +103,30 @@
       "conversions": 0,
       "commissions": 0.0,
       "progression": 0
+    },
+    {
+      "nom": "Routeur Wi-Fi Mesh Pro",
+      "plateforme": "Amazon",
+      "clics": 2,
+      "conversions": 0,
+      "commissions": 0.0,
+      "progression": 0
+    },
+    {
+      "nom": "Balance Connectee",
+      "plateforme": "Amazon",
+      "clics": 2,
+      "conversions": 0,
+      "commissions": 0.0,
+      "progression": 0
     }
   ],
   "sources_trafic": {
     "SEO_organique": 0,
-    "reseaux_sociaux": 0,
+    "reseaux_sociaux": 5,
     "email_marketing": 0,
     "publicite_payante": 0,
-    "referencement_direct": 0
+    "referencement_direct": 6
   },
   "performance_horaire": {
     "labels": [
@@ -157,8 +173,8 @@
       0,
       0,
       0,
-      0,
-      0,
+      3,
+      8,
       0,
       0,
       0,
@@ -196,8 +212,86 @@
     "n8n": "online",
     "postgres": "online",
     "render_webhook": "online",
-    "derniere_synchro": "2026-07-06T17:18:27.320961Z",
+    "derniere_synchro": "2026-07-06T18:44:57.415547Z",
     "uptime_24h": 100.0
   },
-  "activite_recente": []
+  "activite_recente": [
+    {
+      "type": "clic",
+      "produit": "Balance Connectee",
+      "plateforme": "Amazon",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T18:44:57.415547Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "source": "referencement_direct",
+      "timestamp": "2026-07-06T18:44:57.152283Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Balance Connectee",
+      "plateforme": "Amazon",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T18:44:34.048582Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "source": "referencement_direct",
+      "timestamp": "2026-07-06T18:44:33.765462Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Routeur Wi-Fi Mesh Pro",
+      "plateforme": "Amazon",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T18:43:32.940415Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "source": "referencement_direct",
+      "timestamp": "2026-07-06T18:43:32.673900Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Routeur Wi-Fi Mesh Pro",
+      "plateforme": "Amazon",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T18:43:10.868168Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "source": "referencement_direct",
+      "timestamp": "2026-07-06T18:43:10.551660Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "source": "referencement_direct",
+      "timestamp": "2026-07-06T17:52:20.232003Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "source": "referencement_direct",
+      "timestamp": "2026-07-06T17:52:00.753933Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T17:44:15.286293Z"
+    }
+  ]
 }
