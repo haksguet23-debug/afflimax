@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affilimax — Espace Partenaire</title>
+<style>
+:root {
+    --bg:#0a0a1a;--card:#141432;--gold:#f0a500;--purple:#7c3aed;--green:#10b981;
+    --red:#ef4444;--blue:#3b82f6;--cyan:#06b6d4;--orange:#f97316;--text:#f1f5f9;
+    --muted:#94a3b8;--border:#1e1e4a;--radius:14px;--font-mono:'SF Mono','Consolas',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(124,58,237,.02)1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.02)1px,transparent 1px);background-size:60px 60px}
+.app{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:24px}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+.header__logo{display:flex;align-items:center;gap:12px}
+.header__logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--purple),var(--gold));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800}
+.header__title{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--text),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header__sub{font-size:.7rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{padding:8px 18px;border-radius:50px;font-size:.8rem;font-weight:600;text-decoration:none;transition:all .3s}
+.nav-link--primary{background:var(--purple);color:#fff}
+.nav-link--secondary{background:var(--card);color:var(--muted);border:1px solid var(--border)}
+.nav-link:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,58,237,.3)}
+
+/* LOGIN SCREEN */
+#loginScreen{max-width:420px;margin:60px auto}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:40px 32px}
+.login-card__icon{text-align:center;font-size:3rem;margin-bottom:12px}
+.login-card__title{text-align:center;font-size:1.3rem;font-weight:700;margin-bottom:4px}
+.login-card__sub{text-align:center;color:var(--muted);font-size:.8rem;margin-bottom:28px}
+.login-card .form-group{margin-bottom:16px}
+.login-card .form-label{display:block;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600}
+.login-card input{width:100%;padding:12px 16px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;font-size:.9rem;font-family:var(--font-mono);outline:none;transition:all .2s}
+.login-card input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.login-card .btn--full{width:100%;padding:14px;font-size:.95rem}
+.login-card .login-error{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:12px;font-size:.8rem;color:var(--red);margin-top:12px;display:none}
+.login-hint{text-align:center;margin-top:16px;padding:12px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:8px;font-size:.75rem;color:var(--muted)}
+.login-hint code{color:var(--gold);font-family:var(--font-mono);font-size:.7rem;display:block;margin-top:4px}
+
+/* DASHBOARD (logged in) */
+#dashboardScreen{display:none}
+.logged-in .header-bar{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.logged-in .header-bar__welcome{display:flex;align-items:center;gap:12px}
+.logged-in .header-bar__avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;flex-shrink:0}
+.logged-in .header-bar__name{font-weight:700;font-size:1rem}
+.logged-in .header-bar__email{font-size:.7rem;color:var(--muted)}
+.logged-in .header-bar__actions{display:flex;gap:8px}
+
+/* Stats cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:all .2s;position:relative;overflow:hidden}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,58,237,.15)}
+.stat-card__top{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.stat-card__value{font-size:1.6rem;font-weight:800;font-family:var(--font-mono)}
+.stat-card__value--gold{color:var(--gold)}
+.stat-card__value--green{color:var(--green)}
+.stat-card__value--blue{color:var(--blue)}
+.stat-card__value--purple{color:var(--purple)}
+.stat-card__value--orange{color:var(--orange)}
+.stat-card__sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+.stat-card .mini-chart{display:flex;gap:3px;align-items:flex-end;height:28px;margin-top:8px}
+.stat-card .mini-chart .bar{width:6px;border-radius:2px;background:var(--gold);opacity:.4;transition:all .3s}
+.stat-card .mini-chart .bar.active{opacity:1}
+
+/* Section grids */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:768px){.two-col{grid-template-columns:1fr}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all .2s}
+.card:hover{box-shadow:0 6px 20px rgba(124,58,237,.1)}
+.card__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.card__title{font-weight:700;font-size:1rem;display:flex;align-items:center;gap:8px}
+.card__title .icon{font-size:1.2rem}
+.card__badge{padding:4px 12px;border-radius:50px;font-size:.65rem;font-weight:600;font-family:var(--font-mono)}
+.card__badge--green{background:rgba(16,185,129,.15);color:var(--green)}
+.card__badge--gold{background:rgba(240,165,0,.15);color:var(--gold)}
+.card__badge--purple{background:rgba(124,58,237,.15);color:var(--purple)}
+
+/* Transaction list */
+.tx-list{display:flex;flex-direction:column;gap:2px;max-height:360px;overflow-y:auto}
+.tx-list::-webkit-scrollbar{width:4px}
+.tx-list::-webkit-scrollbar-track{background:transparent}
+.tx-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.tx-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:.78rem;transition:all .15s;border-left:3px solid transparent}
+.tx-item:hover{background:rgba(255,255,255,.02)}
+.tx-item--commission{border-left-color:var(--green)}
+.tx-item--payout{border-left-color:var(--purple)}
+.tx-item__icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;background:rgba(255,255,255,.04)}
+.tx-item__info{flex:1;min-width:0}
+.tx-item__action{font-weight:600;font-size:.78rem}
+.tx-item__detail{font-size:.68rem;color:var(--muted);margin-top:2px}
+.tx-item__amount{font-weight:700;font-family:var(--font-mono);font-size:.82rem;flex-shrink:0}
+.tx-item__amount--pos{color:var(--green)}
+.tx-item__amount--neg{color:var(--red)}
+.tx-item__time{font-size:.62rem;color:var(--muted);font-family:var(--font-mono);flex-shrink:0}
+
+/* Payout list */
+.payout-list{max-height:360px;overflow-y:auto}
+.payout-list::-webkit-scrollbar{width:4px}
+.payout-list::-webkit-scrollbar-track{background:transparent}
+.payout-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.payout-item{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid rgba(30,30,74,.5);transition:all .15s}
+.payout-item:last-child{border-bottom:none}
+.payout-item:hover{background:rgba(255,255,255,.01)}
+.payout-item__icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.payout-item__icon--success{background:rgba(16,185,129,.15)}
+.payout-item__info{flex:1;min-width:0}
+.payout-item__label{font-weight:600;font-size:.82rem}
+.payout-item__detail{font-size:.68rem;color:var(--muted);margin-top:2px}
+.payout-item__amount{font-weight:700;font-family:var(--font-mono);font-size:.9rem}
+.payout-item__date{font-size:.65rem;color:var(--muted);font-family:var(--font-mono);flex-shrink:0}
+.payout-item__actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+
+/* Status badges */
+.status-badge{padding:3px 10px;border-radius:50px;font-size:.62rem;font-weight:600;font-family:var(--font-mono)}
+.status-badge--completed{background:rgba(16,185,129,.15);color:var(--green)}
+.status-badge--pending{background:rgba(249,115,22,.15);color:var(--orange)}
+.status-badge--failed{background:rgba(239,68,68,.15);color:var(--red)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:8px;font-weight:700;font-size:.78rem;cursor:pointer;transition:all .2s;font-family:inherit;justify-content:center}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn--purple{background:var(--purple);color:#fff}
+.btn--gold{background:linear-gradient(135deg,var(--gold),#ffb700);color:#000}
+.btn--green{background:var(--green);color:#fff}
+.btn--red{background:var(--red);color:#fff}
+.btn--outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn--outline:hover{border-color:var(--purple)}
+.btn--sm{padding:6px 12px;font-size:.72rem}
+.btn--full{width:100%;justify-content:center;padding:14px;font-size:.95rem}
+.btn--full:hover{box-shadow:0 6px 24px rgba(124,58,237,.35)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+/* Profile section */
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.profile-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.profile-field label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.profile-field .value{font-size:.9rem;margin-top:4px;font-family:var(--font-mono)}
+
+/* Onboarding banner */
+.onboard-banner{background:linear-gradient(135deg,rgba(240,165,0,.08),rgba(124,58,237,.08));border:1px solid var(--gold);border-radius:var(--radius);padding:20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.onboard-banner__text{flex:1;min-width:200px}
+.onboard-banner__title{font-weight:700;font-size:.9rem;margin-bottom:4px}
+.onboard-banner__desc{font-size:.78rem;color:var(--muted);line-height:1.5}
+
+/* Empty state */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);font-size:.8rem}
+.empty-state .icon{font-size:2.5rem;margin-bottom:8px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;background:var(--card);border:1px solid var(--green);border-radius:50px;color:var(--text);font-size:.8rem;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.5);font-family:var(--font-mono);animation:toastIn .3s ease-out}
+.toast--error{border-color:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Footer */
+.footer{text-align:center;padding:30px 20px 20px;color:var(--muted);font-size:.7rem;opacity:.5}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="app">
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header__logo">
+        <div class="header__logo-icon">A</div>
+        <div>
+            <div class="header__title">Affilimax</div>
+            <div class="header__sub">Espace Partenaire</div>
+        </div>
+    </div>
+    <div class="nav-links">
+        <a href="/pub.html" class="nav-link nav-link--secondary">Offres</a>
+        <a href="/" class="nav-link nav-link--secondary">Dashboard</a>
+    </div>
+</header>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+    <div class="login-card">
+        <div class="login-card__icon">&#128274;</div>
+        <div class="login-card__title">Connexion Partenaire</div>
+        <div class="login-card__sub">Connectez-vous avec votre email pour acceder a vos statistiques</div>
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="loginEmail" placeholder="votre@email.com" autocomplete="email" autofocus onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <button class="btn btn--gold btn--full" onclick="doLogin()" id="loginBtn">
+            &#128274; Se connecter
+        </button>
+        <div class="login-error" id="loginError"></div>
+        <div class="login-hint">
+            &#128161; Partenaires disponibles pour la demo :
+            <code>sophie@example.com</code>
+            <code>thomas@example.com</code>
+            <code>emma@example.com</code>
+        </div>
+    </div>
+</div>
+
+<!-- DASHBOARD (logged in) -->
+<div id="dashboardScreen">
+    <!-- Welcome bar -->
+    <div class="header-bar">
+        <div class="header-bar__welcome">
+            <div class="header-bar__avatar" id="partnerAvatar">S</div>
+            <div>
+                <div class="header-bar__name" id="partnerName">Chargement...</div>
+                <div class="header-bar__email" id="partnerEmail">---</div>
+            </div>
+        </div>
+        <div class="header-bar__actions">
+            <button class="btn btn--outline btn--sm" onclick="refreshData()">&#128260; Actualiser</button>
+            <button class="btn btn--red btn--sm" onclick="doLogout()">&#128682; Deconnexion</button>
+        </div>
+    </div>
+
+    <!-- Onboarding banner (if not onboarded) -->
+    <div class="onboard-banner" id="onboardBanner" style="display:none">
+        <div class="onboard-banner__text">
+            <div class="onboard-banner__title">&#127919; Activez vos reversements Stripe</div>
+            <div class="onboard-banner__desc">Connectez votre compte Stripe pour recevoir vos commissions automatiquement. Le processus prend moins de 2 minutes.</div>
+        </div>
+        <button class="btn btn--gold" onclick="startOnboarding()">&#128279; Connecter Stripe</button>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card__top">Total Gagne</div>
+            <div class="stat-card__value stat-card__value--gold" id="statTotal">---</div>
+            <div class="stat-card__sub">depuis le debut</div>
+            <div class="mini-chart" id="chartTotal">Chargement...</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__top">Solde en Attente</div>
+            <div class="stat-card__value stat-card__value--orange" id="statSolde">---</div>
+            <div class="stat-card__sub">disponible pour paiement</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__top">Deja Reverse</div>
+            <div class="stat-card__value stat-card__value--green" id="statPaye">---</div>
+            <div class="stat-card__sub">total paye</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__top">Ce Mois-ci</div>
+            <div class="stat-card__value stat-card__value--blue" id="statMois">---</div>
+            <div class="stat-card__sub">commissions du mois</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__top">Taux Commission</div>
+            <div class="stat-card__value stat-card__value--purple" id="statTaux">---</div>
+            <div class="stat-card__sub">sur chaque vente</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__top">Prochain Paiement</div>
+            <div class="stat-card__value stat-card__value--orange" id="statSeuil">---</div>
+            <div class="stat-card__sub">seuil minimum: 25 EUR</div>
+        </div>
+    </div>
+
+    <!-- Two column: Transactions + Payouts -->
+    <div class="two-col">
+        <!-- Transactions -->
+        <div class="card">
+            <div class="card__header">
+                <span class="card__title"><span class="icon">&#128230;</span> Mes Commissions</span>
+                <span class="card__badge card__badge--green" id="txCount">0</span>
+            </div>
+            <div class="tx-list" id="txList">
+                <div class="empty-state"><div class="icon">&#128176;</div>Aucune commission pour le moment.</div>
+            </div>
+        </div>
+
+        <!-- Payouts -->
+        <div class="card">
+            <div class="card__header">
+                <span class="card__title"><span class="icon">&#128184;</span> Mes Reversements</span>
+                <span class="card__badge card__badge--gold" id="payoutCount">0</span>
+            </div>
+            <div class="payout-list" id="payoutList">
+                <div class="empty-state"><div class="icon">&#128195;</div>Aucun reversement pour le moment.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile info -->
+    <div class="profile-card">
+        <div class="card__title" style="margin-bottom:12px"><span class="icon">&#128100;</span> Mon Profil</div>
+        <div class="profile-info">
+            <div class="profile-field"><label>ID Partenaire</label><div class="value" id="profileId">---</div></div>
+            <div class="profile-field"><label>Email</label><div class="value" id="profileEmail">---</div></div>
+            <div class="profile-field"><label>Commission</label><div class="value" id="profileRate">---</div></div>
+            <div class="profile-field"><label>Date d'inscription</label><div class="value" id="profileDate">---</div></div>
+            <div class="profile-field"><label>Statut Stripe</label><div class="value" id="profileStripe">---</div></div>
+            <div class="profile-field"><label>Derniere activite</label><div class="value" id="profileLast">---</div></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Affilimax &middot; Espace Partenaire &middot; <span id="footerStatus">Connecte</span>
+    </div>
+</div>
+
+</div>
+
+<script>
+const API = '';
+let state = { token: null, partner: null, stats: null };
+
+// ==================== AUTH ====================
+
+// Verifier si deja connecte au chargement
+(function() {
+    const saved = localStorage.getItem('partner_token');
+    if (saved) {
+        state.token = saved;
+        loadDashboard();
+    }
+})();
+
+async function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    if (!email) {
+        showLoginError('Veuillez entrer votre email.');
+        return;
+    }
+
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.innerHTML = '&#9203; Connexion...';
+    hideLoginError();
+
+    try {
+        const r = await fetch(API + '/api/partner/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email: email})
+        });
+        const d = await r.json();
+
+        if (d.success) {
+            state.token = d.token;
+            state.partner = d.partner;
+            localStorage.setItem('partner_token', d.token);
+            showDashboard();
+            await loadStats();
+            toast('Bienvenue ' + d.partner.nom + ' !');
+        } else {
+            let msg = d.error || 'Email non trouve.';
+            if (d.suggestions && d.suggestions.length > 0) {
+                msg += '<br><br>Emails disponibles :<br>';
+                d.suggestions.forEach(e => { msg += '<code style="display:block;margin-top:4px;color:var(--gold);font-size:.75rem">' + e + '</code>'; });
+            }
+            showLoginError(msg);
+            btn.disabled = false;
+            btn.innerHTML = '&#128274; Se connecter';
+        }
+    } catch(e) {
+        showLoginError('Erreur de connexion au serveur. Verifiez que le serveur est en marche.');
+        btn.disabled = false;
+        btn.innerHTML = '&#128274; Se connecter';
+    }
+}
+
+async function loadDashboard() {
+    document.getElementById('loginBtn').disabled = false;
+    document.getElementById('loginBtn').innerHTML = '&#128274; Se connecter';
+
+    try {
+        const r = await fetch(API + '/api/partner/me', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({token: state.token})
+        });
+        const d = await r.json();
+
+        if (d.authenticated && d.partner) {
+            state.partner = d.partner;
+            showDashboard();
+            await loadStats();
+        } else {
+            localStorage.removeItem('partner_token');
+            state.token = null;
+            showLogin();
+        }
+    } catch(e) {
+        toast('Erreur de connexion', true);
+    }
+}
+
+function doLogout() {
+    if (state.token) {
+        fetch(API + '/api/partner/logout', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({token: state.token})
+        }).catch(() => {});
+    }
+    localStorage.removeItem('partner_token');
+    state.token = null;
+    state.partner = null;
+    state.stats = null;
+    showLogin();
+    toast('Vous etes deconnecte.');
+}
+
+// ==================== STATS ====================
+
+async function loadStats() {
+    try {
+        const r = await fetch(API + '/api/partner/stats', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({token: state.token})
+        });
+        const d = await r.json();
+
+        if (d.success) {
+            state.stats = d.stats || d;
+            renderDashboard();
+        }
+    } catch(e) {
+        console.log('Erreur chargement stats:', e);
+    }
+}
+
+async function refreshData() {
+    toast('Actualisation...');
+    await loadStats();
+}
+
+// ==================== RENDER ====================
+
+function renderDashboard() {
+    const s = state.stats;
+    const p = s.partner || state.partner;
+    if (!s || !p) return;
+
+    // Stats cards
+    document.getElementById('statTotal').textContent = formatMoney(s.solde_total) + ' EUR';
+    document.getElementById('statSolde').textContent = formatMoney(s.solde_restant) + ' EUR';
+    document.getElementById('statPaye').textContent = formatMoney(s.total_paye) + ' EUR';
+    document.getElementById('statMois').textContent = formatMoney(s.commissions_mois) + ' EUR';
+    document.getElementById('statTaux').textContent = s.taux_commission + '%';
+
+    // Seuil badge
+    const seuilEl = document.getElementById('statSeuil');
+    if (s.peut_recevoir_paiement) {
+        seuilEl.textContent = '&#9989; Atteint !';
+        seuilEl.style.color = 'var(--green)';
+    } else {
+        const restant = (25.0 - s.solde_restant).toFixed(2);
+        const restantFormatted = restant.replace('.',',');
+        seuilEl.innerHTML = s.solde_restant.toFixed(2).replace('.',',') + ' EUR <span style="font-size:.7rem;color:var(--muted)">(encore ' + restantFormatted + ' EUR)</span>';
+        seuilEl.style.color = 'var(--orange)';
+    }
+
+    // Avatar
+    document.getElementById('partnerAvatar').textContent = p.nom.charAt(0);
+    document.getElementById('partnerName').textContent = p.nom;
+    document.getElementById('partnerEmail').textContent = p.email;
+    document.getElementById('footerStatus').textContent = 'Connecte en tant que ' + p.nom;
+
+    // Tx count
+    const txCount = s.nb_commissions || 0;
+    document.getElementById('txCount').textContent = txCount + ' commission' + (txCount > 1 ? 's' : '');
+
+    // Render transactions
+    renderTransactions(s.transactions_recents || []);
+
+    // Render payouts
+    const payoutCount = s.nb_payouts || 0;
+    document.getElementById('payoutCount').textContent = payoutCount + ' reversement' + (payoutCount > 1 ? 's' : '');
+    renderPayouts(s.payouts_recents || []);
+
+    // Profile
+    document.getElementById('profileId').textContent = p.id;
+    document.getElementById('profileEmail').textContent = p.email;
+    document.getElementById('profileRate').textContent = p.commission_rate + '%';
+    document.getElementById('profileDate').textContent = formatDate(p.date_inscription, true);
+    document.getElementById('profileLast').textContent = formatDate(p.derniere_activite, true);
+
+    // Stripe status
+    const stripeStatus = document.getElementById('profileStripe');
+    if (p.onboarded) {
+        stripeStatus.innerHTML = '<span style="color:var(--green)">&#9989; Connecte</span>';
+    } else {
+        stripeStatus.innerHTML = '<span style="color:var(--orange)">&#9203; Non connecte</span>';
+        document.getElementById('onboardBanner').style.display = 'flex';
+    }
+
+    // Mini chart (barres aleatoires pour l'esthetique)
+    renderMiniChart();
+}
+
+function renderTransactions(transactions) {
+    const container = document.getElementById('txList');
+    if (!transactions || transactions.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">&#128176;</div>Aucune commission pour le moment.<br><span style="font-size:.7rem;color:var(--muted)">Les commissions apparaissent automatiquement apres chaque vente.</span></div>';
+        return;
+    }
+
+    container.innerHTML = transactions.slice(0, 30).map(tx => {
+        const isCommission = tx.type === 'commission';
+        const isPayout = tx.type === 'payout';
+        const icon = isCommission ? '&#128200;' : (isPayout ? '&#128184;' : '&#128196;');
+        const cls = isCommission ? 'tx-item--commission' : 'tx-item--payout';
+        const amtCls = isCommission ? 'tx-item__amount--pos' : 'tx-item__amount--neg';
+        const sign = isCommission ? '+ ' : '- ';
+        const label = isCommission ? 'Commission' : 'Reversement';
+        return `<div class="tx-item ${cls}">
+            <div class="tx-item__icon">${icon}</div>
+            <div class="tx-item__info">
+                <div class="tx-item__action">${label}</div>
+                <div class="tx-item__detail">${tx.source || ''} &middot; <span class="status-badge status-badge--${tx.statut === 'completed' ? 'completed' : 'pending'}">${tx.statut || 'en_attente'}</span></div>
+            </div>
+            <div class="tx-item__amount ${amtCls}">${sign}${Math.abs(tx.montant).toFixed(2).replace('.',',')} EUR</div>
+            <div class="tx-item__time">${formatDate(tx.date)}</div>
+        </div>`;
+    }).join('');
+}
+
+function renderPayouts(payouts) {
+    const container = document.getElementById('payoutList');
+    if (!payouts || payouts.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">&#128195;</div>Aucun reversement pour le moment.<br><span style="font-size:.7rem;color:var(--muted)">Les reversements sont effectues par l\'administrateur.</span></div>';
+        return;
+    }
+
+    container.innerHTML = payouts.map(po => {
+        const statusIcon = po.statut === 'completed' ? '&#9989;' : (po.statut === 'failed' ? '&#10060;' : '&#9203;');
+        const statusIconClass = po.statut === 'completed' ? 'payout-item__icon--success' : 'payout-item__icon--pending';
+        const partnerId = state.partner ? state.partner.id : '';
+        return `<div class="payout-item">
+            <div class="payout-item__icon ${statusIconClass}">${statusIcon}</div>
+            <div class="payout-item__info">
+                <div class="payout-item__label">Reversement</div>
+                <div class="payout-item__detail"><span class="status-badge status-badge--${po.statut}">${po.statut}</span> &middot; ${po.description || 'Reversement commissions'}</div>
+            </div>
+            <div class="payout-item__amount" style="color:${po.statut === 'completed' ? 'var(--green)' : 'var(--muted)'}">${po.montant.toFixed(2).replace('.',',')} EUR</div>
+            <div class="payout-item__actions">
+                <button class="btn btn--gold btn--sm" onclick="downloadInvoice('${po.id}','${partnerId}')" title="Telecharger la facture">&#128196;</button>
+                <div class="payout-item__date">${formatDate(po.date_creation)}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderMiniChart() {
+    const container = document.getElementById('chartTotal');
+    const values = [];
+    for (let i = 0; i < 12; i++) {
+        values.push(Math.random() * 0.7 + 0.3);
+    }
+    container.innerHTML = values.map((v, i) => {
+        const isActive = i >= 8;
+        return `<div class="bar ${isActive ? 'active' : ''}" style="height:${v * 24}px"></div>`;
+    }).join('');
+}
+
+// ==================== INVOICE ====================
+
+async function downloadInvoice(payoutId, partnerId) {
+    try {
+        const r = await fetch(API + '/api/invoice/' + encodeURIComponent(payoutId));
+        if (r.ok && r.headers.get('Content-Type')?.includes('pdf')) {
+            const blob = await r.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'facture_' + payoutId.slice(-8).toUpperCase() + '.pdf';
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('Facture telechargee !');
+        } else {
+            toast('Generation de la facture...');
+            const g = await fetch(API + '/api/invoice/generate/' + encodeURIComponent(partnerId) + '/' + encodeURIComponent(payoutId));
+            const d = await g.json();
+            if (d.success) {
+                const r2 = await fetch(API + '/api/invoice/' + encodeURIComponent(payoutId));
+                if (r2.ok) {
+                    const blob = await r2.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = d.filename || ('facture_' + payoutId.slice(-8).toUpperCase() + '.pdf');
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast('Facture generee et telechargee !');
+                }
+            } else {
+                toast(d.error || 'Erreur generation facture', true);
+            }
+        }
+    } catch(e) {
+        toast('Erreur de telechargement', true);
+    }
+}
+
+// ==================== ONBOARDING ====================
+
+async function startOnboarding() {
+    if (!state.partner) return;
+    const p = state.partner;
+
+    try {
+        const r = await fetch(API + '/api/stripe/onboard', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({partner_id: p.id, email: p.email, nom: p.nom})
+        });
+        const d = await r.json();
+        if (d.success) {
+            toast('Compte Stripe connecte !');
+            document.getElementById('onboardBanner').style.display = 'none';
+            document.getElementById('profileStripe').innerHTML = '<span style="color:var(--green)">&#9989; Connecte</span>';
+            await loadStats();
+        } else {
+            toast(d.error || 'Erreur', true);
+        }
+    } catch(e) {
+        toast('Erreur de connexion', true);
+    }
+}
+
+// ==================== UI HELPERS ====================
+
+function showLogin() {
+    document.getElementById('loginScreen').style.display = 'block';
+    document.getElementById('dashboardScreen').style.display = 'none';
+}
+
+function showDashboard() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboardScreen').style.display = 'block';
+}
+
+function showLoginError(msg) {
+    const el = document.getElementById('loginError');
+    el.innerHTML = msg;
+    el.style.display = 'block';
+}
+
+function hideLoginError() {
+    document.getElementById('loginError').style.display = 'none';
+}
+
+function formatDate(ts, full) {
+    if (!ts) return 'N/A';
+    try {
+        const d = new Date(ts);
+        if (full) {
+            return d.toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'});
+        }
+        return d.toLocaleDateString('fr-FR', {day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+    } catch(e) { return ts; }
+}
+
+function formatMoney(val) {
+    return (val || 0).toFixed(2).replace('.',',');
+}
+
+function toast(msg, isError) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = 'toast' + (isError ? ' toast--error' : '');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+}
+</script>
+</body>
+</html>

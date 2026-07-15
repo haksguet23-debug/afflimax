@@ -116,6 +116,7 @@ select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%
     <div class="nav-links">
         <span class="badge badge--on" id="connBadge">CONNECTE</span>
         <a href="/" class="nav-link nav-link--secondary" target="_blank">Dashboard</a>
+        <a href="/payouts.html" class="nav-link nav-link--secondary" target="_blank">Paiements</a>
         <a href="/pub.html" class="nav-link nav-link--secondary" target="_blank">Landing Page</a>
     </div>
 </header>
@@ -236,8 +237,179 @@ select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%
     </div>
 </div>
 
-<div class="footer">Affilimax Admin Panel &middot; Injection manuelle de clics et conversions</div>
+<!-- ==================== NOTIFICATIONS ==================== -->
+<div class="card" style="margin-bottom:20px">
+    <div class="card__title"><span class="icon">&#128276;</span> Notifications Telegram / Slack</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <!-- TELEGRAM -->
+        <div style="background:rgba(255,255,255,.02);border-radius:12px;padding:18px;border:1px solid var(--border)">
+            <div style="font-weight:700;font-size:.9rem;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+                <span style="font-size:1.2rem">&#128172;</span> Telegram
+                <span id="tgStatus" class="badge badge--off">NON CONFIGURE</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Token Bot</label>
+                <input type="text" id="tgToken" placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11" onchange="markNotifChanged()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Chat ID</label>
+                <input type="text" id="tgChatId" placeholder="-1001234567890" onchange="markNotifChanged()">
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+                <label style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);cursor:pointer">
+                    <input type="checkbox" id="tgPayout" checked onchange="markNotifChanged()"> Paiements
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);cursor:pointer">
+                    <input type="checkbox" id="tgCommission" checked onchange="markNotifChanged()"> Commissions
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);cursor:pointer">
+                    <input type="checkbox" id="tgThreshold" checked onchange="markNotifChanged()"> Seuils
+                </label>
+            </div>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn--purple" onclick="testNotif('telegram', event)" style="flex:1;justify-content:center;font-size:.75rem;padding:8px">&#128274; Tester</button>
+                <button class="btn btn--cyan" onclick="saveNotif()" style="flex:1;justify-content:center;font-size:.75rem;padding:8px">&#128190; Enregistrer</button>
+            </div>
+        </div>
+
+        <!-- SLACK -->
+        <div style="background:rgba(255,255,255,.02);border-radius:12px;padding:18px;border:1px solid var(--border)">
+            <div style="font-weight:700;font-size:.9rem;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+                <span style="font-size:1.2rem">:slack:</span> Slack
+                <span id="slStatus" class="badge badge--off">NON CONFIGURE</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Webhook URL</label>
+                <input type="text" id="slWebhook" placeholder="https://hooks.slack.com/services/T00/B00/xxxxx" onchange="markNotifChanged()">
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+                <label style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);cursor:pointer">
+                    <input type="checkbox" id="slPayout" checked onchange="markNotifChanged()"> Paiements
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);cursor:pointer">
+                    <input type="checkbox" id="slCommission" checked onchange="markNotifChanged()"> Commissions
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);cursor:pointer">
+                    <input type="checkbox" id="slThreshold" checked onchange="markNotifChanged()"> Seuils
+                </label>
+            </div>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn--purple" onclick="testNotif('slack', event)" style="flex:1;justify-content:center;font-size:.75rem;padding:8px">&#128274; Tester</button>
+                <button class="btn btn--cyan" onclick="saveNotif()" style="flex:1;justify-content:center;font-size:.75rem;padding:8px">&#128190; Enregistrer</button>
+            </div>
+        </div>
+    </div>
+    <div id="notifResult" style="margin-top:12px;font-size:.78rem;color:var(--muted);font-family:var(--font-mono);padding:10px;background:rgba(0,0,0,.2);border-radius:8px">
+        Configurez Telegram ou Slack pour recevoir des notifications automatiques a chaque paiement.
+    </div>
 </div>
+
+<script>
+// ==================== NOTIFICATIONS ====================
+
+async function loadNotifConfig() {
+    try {
+        const r = await fetch(API_BASE + '/api/notifications/config');
+        const cfg = await r.json();
+
+        // Telegram
+        const tg = cfg.telegram || {};
+        document.getElementById('tgStatus').className = tg.enabled ? 'badge badge--on' : 'badge badge--off';
+        document.getElementById('tgStatus').textContent = tg.enabled ? 'ACTIF' : 'INACTIF';
+        if (tg.has_token) document.getElementById('tgToken').placeholder = 'Token configure (cache)'; else document.getElementById('tgToken').placeholder = '123456:ABC-DEF...';
+        if (tg.chat_id) document.getElementById('tgChatId').placeholder = tg.chat_id; else document.getElementById('tgChatId').placeholder = '-1001234567890';
+        document.getElementById('tgPayout').checked = tg.notify_payout !== false;
+        document.getElementById('tgCommission').checked = tg.notify_commission !== false;
+        document.getElementById('tgThreshold').checked = tg.notify_threshold !== false;
+
+        // Slack
+        const sl = cfg.slack || {};
+        document.getElementById('slStatus').className = sl.enabled ? 'badge badge--on' : 'badge badge--off';
+        document.getElementById('slStatus').textContent = sl.enabled ? 'ACTIF' : 'INACTIF';
+        if (sl.has_webhook) document.getElementById('slWebhook').placeholder = 'Webhook configure (cache)'; else document.getElementById('slWebhook').placeholder = 'https://hooks.slack.com/...';
+        document.getElementById('slPayout').checked = sl.notify_payout !== false;
+        document.getElementById('slCommission').checked = sl.notify_commission !== false;
+        document.getElementById('slThreshold').checked = sl.notify_threshold !== false;
+
+    } catch(e) {}
+}
+
+let notifChanged = false;
+function markNotifChanged() { notifChanged = true; document.getElementById('notifResult').textContent = 'Modifications non sauvegardees. Cliquez sur Enregistrer.'; }
+
+async function saveNotif() {
+    const config = {
+        telegram: {
+            bot_token: document.getElementById('tgToken').value,
+            chat_id: document.getElementById('tgChatId').value,
+            notify_payout: document.getElementById('tgPayout').checked,
+            notify_commission: document.getElementById('tgCommission').checked,
+            notify_threshold: document.getElementById('tgThreshold').checked
+        },
+        slack: {
+            webhook_url: document.getElementById('slWebhook').value,
+            notify_payout: document.getElementById('slPayout').checked,
+            notify_commission: document.getElementById('slCommission').checked,
+            notify_threshold: document.getElementById('slThreshold').checked
+        }
+    };
+
+    try {
+        const r = await fetch(API_BASE + '/api/notifications/save', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({config})
+        });
+        const d = await r.json();
+        if (d.success) {
+            document.getElementById('notifResult').textContent = '✅ Configuration sauvegardee !';
+            loadNotifConfig();
+            notifChanged = false;
+            toast('Configuration notifications sauvegardee');
+        } else {
+            document.getElementById('notifResult').textContent = '❌ Erreur: ' + (d.error || 'Inconnue');
+        }
+    } catch(e) {
+        document.getElementById('notifResult').textContent = '❌ Erreur de connexion';
+    }
+}
+
+async function testNotif(platform, evt) {
+    const btn = evt ? evt.target : event.target;
+    btn.disabled = true;
+    btn.textContent = 'Envoi...';
+    document.getElementById('notifResult').textContent = 'Envoi du message de test...';
+
+    try {
+        const r = await fetch(API_BASE + '/api/notifications/test', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({platform})
+        });
+        const d = await r.json();
+        if (d.success) {
+            const results = d.results || {};
+            const msgs = [];
+            if (results.telegram) msgs.push('Telegram: ✅'); else if (platform === 'telegram' || platform === 'all') msgs.push('Telegram: ⏹️');
+            if (results.slack) msgs.push('Slack: ✅'); else if (platform === 'slack' || platform === 'all') msgs.push('Slack: ⏹️');
+            document.getElementById('notifResult').textContent = '✅ Test reussi ! ' + msgs.join(' | ');
+            toast('Notification de test envoyee !');
+        } else {
+            document.getElementById('notifResult').textContent = '❌ Erreur: ' + (d.error || 'Inconnue');
+        }
+    } catch(e) {
+        document.getElementById('notifResult').textContent = '❌ Erreur de connexion';
+    }
+    btn.disabled = false;
+    btn.textContent = 'Tester';
+}
+
+loadNotifConfig();
+</script>
+
+<div class="footer">Affilimax Admin Panel &middot; Injection manuelle de clics et conversions &middot; Notifications automatiques</div>
+</div>
+
 
 <script>
 const API_BASE = '';

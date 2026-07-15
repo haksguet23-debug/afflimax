@@ -1,6 +1,44 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
-server.log
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environnement
+.env
+*.log
 nohup.out
+server.log
+
+# Backup / Sensible
+*.bak
+*.swp
+*.swo
+*~
+partners.json.bak
+stats.json.bak
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# OS
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# Factures generées
+invoices/
+
+# Données générées (contient des données de session)
+__pycache__/
+
+# Fichiers de contenu générés
+contenu_*.txt
+
+# Stripe
+stripe_key_*.txt

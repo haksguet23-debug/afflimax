@@ -1,0 +1,26 @@
+{
+  "created_at": "2026-07-06T12:00:00Z",
+  "stats": {
+    "total_posts": 0,
+    "products_used": [],
+    "by_platform": {
+      "twitter": 0,
+      "linkedin": 0,
+      "facebook": 0,
+      "instagram": 0,
+      "telegram": 0,
+      "email": 0,
+      "blog": 0
+    },
+    "by_day": {},
+    "last_24h": 0
+  },
+  "history": [],
+  "schedule": {
+    "last_post_at": null,
+    "next_post_at": null,
+    "interval_seconds": null,
+    "running": false,
+    "started_at": null
+  }
+}

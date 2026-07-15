@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-07-06T20:00:00Z",
+  "partenaires": [
+    {
+      "id": "demo_partner_1",
+      "nom": "Sophie Martin",
+      "email": "sophie@example.com",
+      "stripe_account_id": null,
+      "onboarded": false,
+      "commission_rate": 12.5,
+      "total_gagne": 247.80,
+      "total_paye": 100.0,
+      "solde_en_attente": 147.80,
+      "statut": "actif",
+      "date_inscription": "2026-01-15T10:00:00Z",
+      "derniere_activite": "2026-07-06T18:30:00Z",
+      "methodes_paiement": [],
+      "transactions": [
+        {"id": "tx_demo_001", "type": "commission", "montant": 15.50, "source": "vente SSD Samsung", "date": "2026-07-06T18:00:00Z", "statut": "en_attente"},
+        {"id": "tx_demo_002", "type": "commission", "montant": 8.00, "source": "vente TP-Link Deco", "date": "2026-07-06T16:30:00Z", "statut": "en_attente"},
+        {"id": "tx_demo_003", "type": "commission", "montant": 22.40, "source": "vente AirPods 4", "date": "2026-07-06T14:00:00Z", "statut": "en_attente"},
+        {"id": "tx_demo_004", "type": "commission", "montant": 12.00, "source": "vente Bose QC", "date": "2026-07-05T19:00:00Z", "statut": "en_attente"},
+        {"id": "tx_demo_005", "type": "payout", "montant": -50.00, "source": "po_prev_001", "date": "2026-06-15T10:00:00Z", "statut": "completed"},
+        {"id": "tx_demo_006", "type": "payout", "montant": -50.00, "source": "po_prev_002", "date": "2026-05-15T10:00:00Z", "statut": "completed"}
+      ],
+      "payouts": [
+        {"id": "po_prev_001", "montant": 50.00, "devise": "EUR", "date_creation": "2026-06-15T10:00:00Z", "date_fin": "2026-06-18T10:00:00Z", "statut": "completed", "mode": "demo"},
+        {"id": "po_prev_002", "montant": 50.00, "devise": "EUR", "date_creation": "2026-05-15T10:00:00Z", "date_fin": "2026-05-18T10:00:00Z", "statut": "completed", "mode": "demo"}
+      ]
+    },
+    {
+      "id": "demo_partner_2",
+      "nom": "Thomas Dubois",
+      "email": "thomas@example.com",
+      "stripe_account_id": null,
+      "onboarded": false,
+      "commission_rate": 15.0,
+      "total_gagne": 183.50,
+      "total_paye": 0.0,
+      "solde_en_attente": 183.50,
+      "statut": "actif",
+      "date_inscription": "2026-02-20T14:00:00Z",
+      "derniere_activite": "2026-07-06T12:00:00Z",
+      "methodes_paiement": [],
+      "transactions": [
+        {"id": "tx_demo_007", "type": "commission", "montant": 95.00, "source": "vente Roborock Q5 Pro+", "date": "2026-07-05T15:00:00Z", "statut": "en_attente"},
+        {"id": "tx_demo_008", "type": "commission", "montant": 18.50, "source": "vente Ninja Air Fryer", "date": "2026-07-04T11:00:00Z", "statut": "en_attente"},
+        {"id": "tx_demo_009", "type": "commission", "montant": 70.00, "source": "vente Sony XM5", "date": "2026-07-03T09:00:00Z", "statut": "en_attente"}
+      ],
+      "payouts": []
+    },
+    {
+      "id": "demo_partner_3",
+      "nom": "Emma Bernard",
+      "email": "emma@example.com",
+      "stripe_account_id": null,
+      "onboarded": false,
+      "commission_rate": 10.0,
+      "total_gagne": 56.25,
+      "total_paye": 0.0,
+      "solde_en_attente": 56.25,
+      "statut": "actif",
+      "date_inscription": "2026-03-10T09:00:00Z",
+      "derniere_activite": "2026-07-05T20:00:00Z",
+      "methodes_paiement": [],
+      "transactions": [
+        {"id": "tx_demo_010", "type": "commission", "montant": 12.00, "source": "vente Kindle 2024", "date": "2026-07-05T20:00:00Z", "statut": "en_attente"},
+        {"id": "tx_demo_011", "type": "commission", "montant": 29.75, "source": "vente Galaxy Tab A9+", "date": "2026-07-03T16:00:00Z", "statut": "en_attente"},
+        {"id": "tx_demo_012", "type": "commission", "montant": 14.50, "source": "vente Philips Hue", "date": "2026-07-02T11:00:00Z", "statut": "en_attente"}
+      ],
+      "payouts": []
+    }
+  ]
+}

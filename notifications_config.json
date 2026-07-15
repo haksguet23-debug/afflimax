@@ -1,0 +1,17 @@
+{
+  "telegram": {
+    "enabled": false,
+    "bot_token": "",
+    "chat_id": "",
+    "notify_payout": true,
+    "notify_commission": true,
+    "notify_threshold": true
+  },
+  "slack": {
+    "enabled": false,
+    "webhook_url": "",
+    "notify_payout": true,
+    "notify_commission": true,
+    "notify_threshold": true
+  }
+}

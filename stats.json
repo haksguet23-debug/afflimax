@@ -1,132 +1,116 @@
 {
-  "timestamp": "2026-07-06T18:44:57.415547Z",
+  "timestamp": "2026-07-07T10:52:28.392819Z",
   "temps_reel": true,
-  "demarrage": "2026-07-06T17:18:27.320961Z",
+  "demarrage": "2026-07-06T16:59:37.732687Z",
   "resume": {
-    "commissions_aujourdhui": 0.0,
-    "clics_aujourdhui": 11,
-    "conversions_aujourdhui": 0,
-    "taux_conversion": 0.0,
-    "epc": 0.0,
-    "ca_genere": 0.0
+    "commissions_aujourdhui": 5758.99,
+    "clics_aujourdhui": 2172,
+    "conversions_aujourdhui": 199,
+    "taux_conversion": 9.16,
+    "epc": 2.65,
+    "ca_genere": 37393.3
   },
   "historique_7j": {
     "commissions": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      223.27,
+      490.2,
+      643.95,
+      1047.09,
+      1926.39,
+      3241.46,
+      5758.99
     ],
     "clics": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      114,
+      200,
+      252,
+      418,
+      878,
+      1287,
+      2172
     ],
     "conversions": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      7,
+      15,
+      27,
+      55,
+      83,
+      151,
+      199
     ]
   },
   "top_campagnes": [
     {
       "nom": "Pack Business Pro",
       "plateforme": "Amazon",
-      "clics": 7,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
+      "clics": 245,
+      "conversions": 24,
+      "commissions": 378.24,
+      "progression": 46
     },
     {
       "nom": "Formation Trading 2026",
       "plateforme": "ClickBank",
-      "clics": 0,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
+      "clics": 253,
+      "conversions": 31,
+      "commissions": 1381.05,
+      "progression": 72
     },
     {
       "nom": "Logiciel SEO Ultimate",
       "plateforme": "ShareASale",
-      "clics": 0,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
+      "clics": 272,
+      "conversions": 23,
+      "commissions": 405.72,
+      "progression": 55
     },
     {
       "nom": "Abonnement SaaS Premium",
       "plateforme": "CJ Affiliate",
-      "clics": 0,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
+      "clics": 277,
+      "conversions": 26,
+      "commissions": 77.74,
+      "progression": 53
     },
     {
       "nom": "Coaching VIP Mensuel",
       "plateforme": "Awin",
-      "clics": 0,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
+      "clics": 284,
+      "conversions": 23,
+      "commissions": 2286.2,
+      "progression": 45
     },
     {
       "nom": "Masterclass E-Commerce",
       "plateforme": "Impact",
-      "clics": 0,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
+      "clics": 269,
+      "conversions": 18,
+      "commissions": 1124.28,
+      "progression": 31
     },
     {
       "nom": "Kit Marketing Digital",
       "plateforme": "Amazon",
-      "clics": 0,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
+      "clics": 295,
+      "conversions": 23,
+      "commissions": 59.57,
+      "progression": 53
     },
     {
       "nom": "Template Website PRO",
       "plateforme": "ShareASale",
-      "clics": 0,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
-    },
-    {
-      "nom": "Routeur Wi-Fi Mesh Pro",
-      "plateforme": "Amazon",
-      "clics": 2,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
-    },
-    {
-      "nom": "Balance Connectee",
-      "plateforme": "Amazon",
-      "clics": 2,
-      "conversions": 0,
-      "commissions": 0.0,
-      "progression": 0
+      "clics": 277,
+      "conversions": 31,
+      "commissions": 46.19,
+      "progression": 74
     }
   ],
   "sources_trafic": {
-    "SEO_organique": 0,
-    "reseaux_sociaux": 5,
-    "email_marketing": 0,
-    "publicite_payante": 0,
-    "referencement_direct": 6
+    "SEO_organique": 649,
+    "reseaux_sociaux": 528,
+    "email_marketing": 431,
+    "publicite_payante": 339,
+    "referencement_direct": 225
   },
   "performance_horaire": {
     "labels": [
@@ -172,9 +156,9 @@
       0,
       0,
       0,
+      94,
+      2078,
       0,
-      3,
-      8,
       0,
       0,
       0,
@@ -198,8 +182,8 @@
       0,
       0,
       0,
-      0,
-      0,
+      264.68,
+      5494.31,
       0,
       0,
       0,
@@ -212,86 +196,759 @@
     "n8n": "online",
     "postgres": "online",
     "render_webhook": "online",
-    "derniere_synchro": "2026-07-06T18:44:57.415547Z",
+    "derniere_synchro": "2026-07-06T17:09:52.029736Z",
     "uptime_24h": 100.0
   },
   "activite_recente": [
     {
+      "type": "vente",
+      "produit": "Kit Marketing Digital",
+      "plateforme": "Amazon",
+      "montant": 2.59,
+      "prix_vente": 37.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "montant": 44.55,
+      "prix_vente": 297.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "montant": 1.49,
+      "prix_vente": 24.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "montant": 1.49,
+      "prix_vente": 24.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "montant": 2.99,
+      "prix_vente": 29.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "montant": 99.4,
+      "prix_vente": 497.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "montant": 17.64,
+      "prix_vente": 147.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "montant": 62.46,
+      "prix_vente": 347.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Kit Marketing Digital",
+      "plateforme": "Amazon",
+      "montant": 2.59,
+      "prix_vente": 37.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "montant": 17.64,
+      "prix_vente": 147.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "montant": 2.99,
+      "prix_vente": 29.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "montant": 44.55,
+      "prix_vente": 297.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "montant": 1.49,
+      "prix_vente": 24.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "montant": 17.64,
+      "prix_vente": 147.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "montant": 2.99,
+      "prix_vente": 29.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "montant": 1.49,
+      "prix_vente": 24.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "montant": 1.49,
+      "prix_vente": 24.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "montant": 99.4,
+      "prix_vente": 497.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "montant": 44.55,
+      "prix_vente": 297.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "montant": 1.49,
+      "prix_vente": 24.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "montant": 17.64,
+      "prix_vente": 147.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "montant": 15.76,
+      "prix_vente": 197.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "montant": 2.99,
+      "prix_vente": 29.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "montant": 62.46,
+      "prix_vente": 347.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "montant": 1.49,
+      "prix_vente": 24.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "montant": 2.99,
+      "prix_vente": 29.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "montant": 17.64,
+      "prix_vente": 147.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "montant": 99.4,
+      "prix_vente": 497.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "montant": 2.99,
+      "prix_vente": 29.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "montant": 17.64,
+      "prix_vente": 147.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Kit Marketing Digital",
+      "plateforme": "Amazon",
+      "montant": 2.59,
+      "prix_vente": 37.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "montant": 44.55,
+      "prix_vente": 297.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "montant": 62.46,
+      "prix_vente": 347.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "montant": 44.55,
+      "prix_vente": 297.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "montant": 1.49,
+      "prix_vente": 24.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "montant": 99.4,
+      "prix_vente": 497.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "montant": 15.76,
+      "prix_vente": 197.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "montant": 62.46,
+      "prix_vente": 347.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "montant": 44.55,
+      "prix_vente": 297.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "montant": 15.76,
+      "prix_vente": 197.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "montant": 17.64,
+      "prix_vente": 147.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "montant": 44.55,
+      "prix_vente": 297.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "montant": 15.76,
+      "prix_vente": 197.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Kit Marketing Digital",
+      "plateforme": "Amazon",
+      "montant": 2.59,
+      "prix_vente": 37.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Kit Marketing Digital",
+      "plateforme": "Amazon",
+      "montant": 2.59,
+      "prix_vente": 37.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "montant": 2.99,
+      "prix_vente": 29.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "montant": 1.49,
+      "prix_vente": 24.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "montant": 2.99,
+      "prix_vente": 29.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "montant": 99.4,
+      "prix_vente": 497.0,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "vente",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "montant": 2.99,
+      "prix_vente": 29.9,
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
       "type": "clic",
-      "produit": "Balance Connectee",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Kit Marketing Digital",
+      "plateforme": "Amazon",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Pack Business Pro",
+      "plateforme": "Amazon",
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Kit Marketing Digital",
       "plateforme": "Amazon",
       "source": "reseaux_sociaux",
-      "timestamp": "2026-07-06T18:44:57.415547Z"
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Kit Marketing Digital",
+      "plateforme": "Amazon",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Kit Marketing Digital",
+      "plateforme": "Amazon",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "source": "referencement_direct",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Logiciel SEO Ultimate",
+      "plateforme": "ShareASale",
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
     },
     {
       "type": "clic",
       "produit": "Pack Business Pro",
-      "plateforme": "Amazon",
-      "source": "referencement_direct",
-      "timestamp": "2026-07-06T18:44:57.152283Z"
-    },
-    {
-      "type": "clic",
-      "produit": "Balance Connectee",
       "plateforme": "Amazon",
       "source": "reseaux_sociaux",
-      "timestamp": "2026-07-06T18:44:34.048582Z"
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "source": "referencement_direct",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
     },
     {
       "type": "clic",
       "produit": "Pack Business Pro",
       "plateforme": "Amazon",
-      "source": "referencement_direct",
-      "timestamp": "2026-07-06T18:44:33.765462Z"
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
     },
     {
       "type": "clic",
-      "produit": "Routeur Wi-Fi Mesh Pro",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Abonnement SaaS Premium",
+      "plateforme": "CJ Affiliate",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Masterclass E-Commerce",
+      "plateforme": "Impact",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Kit Marketing Digital",
       "plateforme": "Amazon",
       "source": "reseaux_sociaux",
-      "timestamp": "2026-07-06T18:43:32.940415Z"
+      "timestamp": "2026-07-06T17:09:52.029736Z"
     },
     {
       "type": "clic",
-      "produit": "Pack Business Pro",
+      "produit": "Kit Marketing Digital",
       "plateforme": "Amazon",
-      "source": "referencement_direct",
-      "timestamp": "2026-07-06T18:43:32.673900Z"
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
     },
     {
       "type": "clic",
-      "produit": "Routeur Wi-Fi Mesh Pro",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "reseaux_sociaux",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Kit Marketing Digital",
       "plateforme": "Amazon",
       "source": "reseaux_sociaux",
-      "timestamp": "2026-07-06T18:43:10.868168Z"
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Template Website PRO",
+      "plateforme": "ShareASale",
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
     },
     {
       "type": "clic",
       "produit": "Pack Business Pro",
       "plateforme": "Amazon",
-      "source": "referencement_direct",
-      "timestamp": "2026-07-06T18:43:10.551660Z"
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Coaching VIP Mensuel",
+      "plateforme": "Awin",
+      "source": "SEO_organique",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
     },
     {
       "type": "clic",
       "produit": "Pack Business Pro",
       "plateforme": "Amazon",
-      "source": "referencement_direct",
-      "timestamp": "2026-07-06T17:52:20.232003Z"
+      "source": "email_marketing",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
     },
     {
       "type": "clic",
-      "produit": "Pack Business Pro",
-      "plateforme": "Amazon",
-      "source": "referencement_direct",
-      "timestamp": "2026-07-06T17:52:00.753933Z"
-    },
-    {
-      "type": "clic",
-      "produit": "Pack Business Pro",
-      "plateforme": "Amazon",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
       "source": "reseaux_sociaux",
-      "timestamp": "2026-07-06T17:44:15.286293Z"
+      "timestamp": "2026-07-06T17:09:52.029736Z"
+    },
+    {
+      "type": "clic",
+      "produit": "Formation Trading 2026",
+      "plateforme": "ClickBank",
+      "source": "publicite_payante",
+      "timestamp": "2026-07-06T17:09:52.029736Z"
     }
   ]
 }

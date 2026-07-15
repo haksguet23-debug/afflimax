@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affilimax - Promotion Automatique</title>
+<style>
+:root{--bg:#0a0a1a;--card:#141432;--gold:#f0a500;--purple:#7c3aed;--green:#10b981;--red:#ef4444;--text:#f1f5f9;--muted:#94a3b8;--border:#1e1e4a;--radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:0;line-height:1.5}
+
+/* Header */
+.header{background:var(--card);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header h1{font-size:1.12rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.header h1 span{color:var(--gold)}
+.header-links{display:flex;gap:10px;align-items:center}
+.header-links a{padding:6px 14px;background:rgba(124,58,237,.12);color:var(--purple);border-radius:6px;font-size:.75rem;font-weight:600;text-decoration:none;transition:all .15s}
+.header-links a:hover{background:var(--purple);color:#fff}
+
+.container{max-width:1100px;margin:0 auto;padding:24px 20px}
+
+/* Stats Cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:border-color .2s}
+.stat-card:hover{border-color:var(--purple)}
+.stat-card__value{font-size:1.8rem;font-weight:800;font-family:monospace;color:var(--gold)}
+.stat-card__label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.stat-card__sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+.stat-card .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.stat-card .status-dot.active{background:var(--green);box-shadow:0 0 8px rgba(16,185,129,.4)}
+.stat-card .status-dot.inactive{background:var(--red)}
+
+/* Controls */
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.btn{padding:10px 20px;border:none;border-radius:8px;font-weight:700;font-size:.8rem;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-family:inherit}
+.btn--primary{background:var(--purple);color:#fff}
+.btn--primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,58,237,.3)}
+.btn--success{background:var(--green);color:#fff}
+.btn--success:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(16,185,129,.3)}
+.btn--danger{background:var(--red);color:#fff}
+.btn--danger:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(239,68,68,.3)}
+.btn--outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn--outline:hover{border-color:var(--purple)}
+.btn--gold{background:var(--gold);color:#000}
+.btn--gold:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(240,165,0,.3)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Sections */
+.section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+.section h2{font-size:1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section h2 .count{background:rgba(124,58,237,.15);color:var(--purple);padding:1px 10px;border-radius:50px;font-size:.7rem}
+
+/* Posts Table */
+.posts-table{width:100%;border-collapse:collapse}
+.posts-table th{text-align:left;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border-bottom:1px solid var(--border);font-weight:600}
+.posts-table td{padding:10px;font-size:.82rem;border-bottom:1px solid rgba(30,30,74,.4)}
+.posts-table tr:hover td{background:rgba(124,58,237,.04)}
+.platform-badge{display:inline-block;padding:2px 10px;border-radius:50px;font-size:.65rem;font-weight:600}
+.platform-badge.twitter{background:rgba(29,161,242,.15);color:#1da1f2}
+.platform-badge.linkedin{background:rgba(10,102,194,.15);color:#0a66c2}
+.platform-badge.facebook{background:rgba(24,119,242,.15);color:#1877f2}
+.platform-badge.instagram{background:rgba(225,48,108,.15);color:#e1306c}
+.platform-badge.email{background:rgba(240,165,0,.15);color:var(--gold)}
+.platform-badge.blog{background:rgba(124,58,237,.15);color:var(--purple)}
+.post-content{max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:.75rem}
+
+/* Content Generator Box */
+.generator-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:20px}
+.generator-box h3{font-size:.95rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.generator-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:16px}
+.generator-info-item{background:rgba(255,255,255,.02);border-radius:8px;padding:12px;text-align:center}
+.generator-info-item .value{font-size:1.5rem;font-weight:800;font-family:monospace;color:var(--gold)}
+.generator-info-item .label{font-size:.65rem;color:var(--muted);margin-top:2px}
+
+/* Footer */
+.footer{text-align:center;padding:24px;color:var(--muted);font-size:.7rem;border-top:1px solid var(--border)}
+a{color:var(--purple);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;background:var(--card);border:1px solid var(--green);border-radius:50px;color:var(--text);font-size:.8rem;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.5);animation:toastIn .3s ease-out}
+.toast--error{border-color:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Empty */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state .icon{font-size:3rem;margin-bottom:12px;display:block}
+.empty-state p{font-size:.85rem}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1><span>Affilimax</span> Promotion Automatique</h1>
+    <div class="header-links">
+        <a href="/">Dashboard</a>
+        <a href="/pub.html">Landing Page</a>
+        <a href="/admin.html">Admin</a>
+        <a href="/go">Liens</a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+            <div class="stat-card__value" id="statStatus"><span class="status-dot inactive"></span>Inactif</div>
+            <div class="stat-card__label">Etat de l'automate</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__value" id="statTotal">0</div>
+            <div class="stat-card__label">Publications totales</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__value" id="statProducts">0/0</div>
+            <div class="stat-card__label">Produits couverts</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__value" id="statLast24h">0</div>
+            <div class="stat-card__label">Publications 24h</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__value" id="statNext">--</div>
+            <div class="stat-card__label">Prochaine publication</div>
+        </div>
+    </div>
+
+    <!-- Controles -->
+    <div class="controls">
+        <button class="btn btn--success" id="btnStart" onclick="startAutomator()">▶ Demarrer l'automate</button>
+        <button class="btn btn--danger" id="btnStop" onclick="stopAutomator()" disabled>⏹ Arreter l'automate</button>
+        <button class="btn btn--gold" id="btnForce" onclick="forcePost()" disabled>⚡ Publier maintenant</button>
+        <button class="btn btn--outline" onclick="loadStats()">🔄 Rafraichir</button>
+        <button class="btn btn--primary" onclick="showGeneratePanel()">📝 Generer du contenu</button>
+    </div>
+
+    <!-- Generateur de contenu -->
+    <div class="generator-box" id="generatePanel" style="display:none;">
+        <h3>📝 Generateur de contenu pour les reseaux sociaux</h3>
+        <p style="color:var(--muted);font-size:.82rem;margin-bottom:16px;">
+            Genere des centaines de posts uniques pour vos 30 produits sur toutes les plateformes.
+        </p>
+        <div class="generator-info">
+            <div class="generator-info-item">
+                <div class="value" id="genTweets">-</div>
+                <div class="label">Twitter/X</div>
+            </div>
+            <div class="generator-info-item">
+                <div class="value" id="genLinkedin">-</div>
+                <div class="label">LinkedIn</div>
+            </div>
+            <div class="generator-info-item">
+                <div class="value" id="genFacebook">-</div>
+                <div class="label">Facebook</div>
+            </div>
+            <div class="generator-info-item">
+                <div class="value" id="genEmails">-</div>
+                <div class="label">Emails</div>
+            </div>
+            <div class="generator-info-item">
+                <div class="value" id="genBlog">-</div>
+                <div class="label">Blog</div>
+            </div>
+            <div class="generator-info-item">
+                <div class="value" id="genTotal">-</div>
+                <div class="label">TOTAL</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn--primary" onclick="generateContent()">🔄 Generer et compter</button>
+            <a class="btn btn--outline" href="/social_reseaux.py?download=1" style="text-decoration:none" onclick="alert('Ouvrez le fichier social_reseaux.py dans votre editeur pour voir tout le contenu genere.'); return false;">📄 Voir le fichier complet</a>
+        </div>
+        <div style="margin-top:16px;padding:12px;background:rgba(0,0,0,.2);border-radius:8px;font-size:.72rem;color:var(--muted);font-family:monospace;line-height:1.6;" id="generatedStatus">
+            Cliquez sur "Generer et compter" pour voir les statistiques.
+        </div>
+    </div>
+
+    <!-- Derniers posts -->
+    <div class="section">
+        <h2>📋 Dernieres publications <span class="count" id="historyCount">0</span></h2>
+        <div id="postsContainer">
+            <div class="empty-state">
+                <span class="icon">📭</span>
+                <p>Aucune publication pour le moment. Lancez l'automate ou publiez manuellement.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Repartition par plateforme -->
+    <div class="section">
+        <h2>📊 Repartition par plateforme</h2>
+        <div id="platformContainer" style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="empty-state" style="padding:20px">
+                <p>Aucune donnee pour le moment.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>Affilimax - Promotion Automatique Intelligence | <a href="/">Dashboard</a> | <a href="/admin.html">Admin</a></p>
+</div>
+
+<script>
+let autoRefresh = null;
+
+async function api(url, method='GET', body=null) {
+    const opts = {method, headers:{'Content-Type':'application/json'}};
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(url, opts);
+    return r.json();
+}
+
+function toast(msg, isError) {
+    const t = document.createElement('div');
+    t.className = 'toast'+(isError?' toast--error':'');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(), 3500);
+}
+
+function formatTime(seconds) {
+    if (!seconds || seconds <= 0) return 'Imminent';
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    if (h > 0) return `Dans ${h}h${m}min`;
+    return `Dans ${m}min`;
+}
+
+async function loadStats() {
+    try {
+        const stats = await api('/api/promo/stats');
+
+        // Status
+        const statusEl = document.getElementById('statStatus');
+        if (stats.running) {
+            statusEl.innerHTML = '<span class="status-dot active"></span>Actif';
+        } else {
+            statusEl.innerHTML = '<span class="status-dot inactive"></span>Inactif';
+        }
+
+        document.getElementById('statTotal').textContent = stats.total_posts || 0;
+        document.getElementById('statProducts').textContent = `${stats.products_posted || 0}/${stats.total_products || 0}`;
+        document.getElementById('statLast24h').textContent = stats.last_24h || 0;
+        document.getElementById('statNext').textContent = formatTime(stats.next_post_in_seconds);
+
+        // Boutons
+        document.getElementById('btnStart').disabled = stats.running;
+        document.getElementById('btnStop').disabled = !stats.running;
+        document.getElementById('btnForce').disabled = false;
+
+        // Historique
+        const posts = stats.last_posts || [];
+        const container = document.getElementById('postsContainer');
+        document.getElementById('historyCount').textContent = stats.history_count || 0;
+
+        if (posts.length === 0) {
+            container.innerHTML = '<div class="empty-state"><span class="icon">📭</span><p>Aucune publication pour le moment. Lancez l\'automate ou publiez manuellement.</p></div>';
+        } else {
+            let html = '<table class="posts-table"><thead><tr><th>Plateforme</th><th>Produit</th><th>Contenu</th><th>Date</th></tr></thead><tbody>';
+            for (const p of posts) {
+                const plat = p.platform || '?';
+                const product = p.product_name || 'Inconnu';
+                const content = (p.content || p.titre || '').substring(0,80);
+                const date = p.created_at ? new Date(p.created_at).toLocaleString('fr-FR') : '';
+                html += `<tr>
+                    <td><span class="platform-badge ${plat}">${plat}</span></td>
+                    <td style="font-weight:600;font-size:.78rem">${product}</td>
+                    <td class="post-content" title="${content.replace(/"/g,'&quot;')}">${content}</td>
+                    <td style="font-size:.7rem;color:var(--muted)">${date}</td>
+                </tr>`;
+            }
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Plateformes
+        const platforms = stats.by_platform || {};
+        const platContainer = document.getElementById('platformContainer');
+        const platKeys = Object.keys(platforms).filter(k => platforms[k] > 0);
+        if (platKeys.length === 0) {
+            platContainer.innerHTML = '<div class="empty-state" style="padding:20px"><p>Aucune donnee pour le moment.</p></div>';
+        } else {
+            let html = '';
+            for (const p of ['twitter','linkedin','facebook','instagram','telegram','email','blog']) {
+                if (platforms[p] > 0) {
+                    html += `<div style="background:rgba(255,255,255,.02);border-radius:8px;padding:14px 18px;min-width:120px;text-align:center;border:1px solid var(--border)">
+                        <div style="font-size:.75rem;color:var(--muted);text-transform:capitalize;margin-bottom:4px">${p}</div>
+                        <div style="font-size:1.6rem;font-weight:800;font-family:monospace;color:var(--gold)">${platforms[p]}</div>
+                    </div>`;
+                }
+            }
+            platContainer.innerHTML = html || '<div class="empty-state" style="padding:20px"><p>Aucune donnee.</p></div>';
+        }
+
+    } catch(e) {
+        toast('Erreur de chargement des stats', true);
+    }
+}
+
+async function startAutomator() {
+    try {
+        const r = await api('/api/promo/start', 'POST');
+        if (r.status === 'started' || r.status === 'already_running') {
+            toast('Automate de promotion demarre !');
+            loadStats();
+        } else {
+            toast(r.message || 'Erreur au demarrage', true);
+        }
+    } catch(e) {
+        toast('Erreur au demarrage', true);
+    }
+}
+
+async function stopAutomator() {
+    try {
+        const r = await api('/api/promo/stop', 'POST');
+        if (r.status === 'stopped') {
+            toast('Automate de promotion arrete.');
+            loadStats();
+        }
+    } catch(e) {
+        toast('Erreur a l\'arret', true);
+    }
+}
+
+async function forcePost() {
+    const btn = document.getElementById('btnForce');
+    btn.disabled = true;
+    btn.textContent = 'Publication...';
+    try {
+        const r = await api('/api/promo/next');
+        if (r.status === 'published') {
+            const entry = r.entry || {};
+            toast(`Publie : ${entry.product_name || '?'} sur ${entry.platform || '?'}`);
+            loadStats();
+        } else {
+            toast(r.message || 'Erreur de publication', true);
+        }
+    } catch(e) {
+        toast('Erreur de publication', true);
+    }
+    btn.disabled = false;
+    btn.textContent = 'Publier maintenant';
+}
+
+function showGeneratePanel() {
+    const panel = document.getElementById('generatePanel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    if (panel.style.display === 'block') {
+        generateContent();
+    }
+}
+
+async function generateContent() {
+    document.getElementById('generatedStatus').textContent = 'Generation en cours...';
+    try {
+        const r = await api('/api/promo/generate');
+        if (r.total) {
+            document.getElementById('genTweets').textContent = r.tweets || 0;
+            document.getElementById('genLinkedin').textContent = r.linkedin || 0;
+            document.getElementById('genFacebook').textContent = r.facebook || 0;
+            document.getElementById('genEmails').textContent = r.emails || 0;
+            document.getElementById('genBlog').textContent = r.blog || 0;
+            document.getElementById('genTotal').textContent = r.total || 0;
+            document.getElementById('generatedStatus').innerHTML =
+                `✅ ${r.total} contenus generes !<br>
+                <span style="color:var(--text)">Twitter/X:</span> ${r.tweets} tweets |
+                <span style="color:var(--text)">LinkedIn:</span> ${r.linkedin} posts |
+                <span style="color:var(--text)">Facebook:</span> ${r.facebook} posts |
+                <span style="color:var(--text)">Email:</span> ${r.emails} emails |
+                <span style="color:var(--text)">Blog:</span> ${r.blog} articles`;
+        } else {
+            document.getElementById('generatedStatus').textContent = 'Erreur de generation';
+        }
+    } catch(e) {
+        document.getElementById('generatedStatus').textContent = 'Erreur: ' + e.message;
+    }
+}
+
+// Auto-refresh toutes les 30s
+loadStats();
+autoRefresh = setInterval(loadStats, 30000);
+</script>
+
+</body>
+</html>

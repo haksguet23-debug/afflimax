@@ -1,2 +1,3 @@
 # Affilimax - No external dependencies required
 # Python built-in modules only: http.server, json, os, threading, etc.
+stripe==11.6.0

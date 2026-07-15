@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Affilimax — Dashboard</title>
+    <title>Affilimax — Dashboard d'Affiliation en Temps Reel</title>
+    <meta name="description" content="Dashboard Affilimax : suivez vos commissions, clics, conversions et reversements en temps reel. Plateforme d'affiliation自动化.">
+    <meta name="robots" content="noindex, follow">
+    <meta property="og:title" content="Affilimax — Dashboard Affiliation">
+    <meta property="og:description" content="Dashboard de suivi des performances d'affiliation en temps reel.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Affilimax">
+    <meta name="twitter:card" content="summary">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         :root {
@@ -215,7 +222,8 @@
                     <span>CHARGEMENT...</span>
                 </div>
                 <div class="live-badge" id="dateBadge">&#128197; <span id="currentDate"></span></div>
-                <button class="refresh-btn" onclick="fetchRealData()">&#128259; Chercher donnees reelles</button>
+                <a href="/payouts.html" class="refresh-btn" style="background:linear-gradient(135deg,var(--accent-green),#059669);text-decoration:none">&#128176; Paiements</a>
+            <button class="refresh-btn" onclick="fetchRealData()">&#128259; Chercher donnees reelles</button>
             </div>
         </header>
 

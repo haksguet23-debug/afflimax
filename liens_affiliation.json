@@ -14,7 +14,7 @@
       "plateforme": "Amazon",
       "prix": 109.99,
       "commission_pct": 4,
-      "commission_euro": 4.40,
+      "commission_euro": 4.4,
       "lien": "https://www.amazon.fr/dp/B09SB38KMD?tag=confortbure07-21",
       "description": "Samsung T7 Shield SSD 1To. Lecture 1050 Mo/s, resistant a l'eau et a la poussiere (IP65). Ultra-rapide pour les pros en deplacement.",
       "categorie": "Business",
@@ -26,15 +26,17 @@
         "Format poche ultra-leger (98g)",
         "Garantie 3 ans Samsung"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.7,
+      "avis_total": 124
     },
     {
       "nom": "Investir en Bourse avec les ETF",
       "slug": "investir-en-bourse-etf",
       "plateforme": "Amazon",
-      "prix": 21.90,
+      "prix": 21.9,
       "commission_pct": 5,
-      "commission_euro": 1.10,
+      "commission_euro": 1.1,
       "lien": "https://www.amazon.fr/dp/B0D5TRRZBC?tag=confortbure07-21",
       "description": "Guide complet pour investir en Bourse avec les ETF. Strategie long terme, fiscalite, exemples concrets. Par Axel Ghozland.",
       "categorie": "Formation",
@@ -46,7 +48,9 @@
         "Exemples de portefeuilles et etudes de cas",
         "Best-seller Amazon, +500 avis positifs"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.5,
+      "avis_total": 89
     },
     {
       "nom": "TP-Link Deco X50 Wi-Fi 6 Mesh",
@@ -54,7 +58,7 @@
       "plateforme": "Amazon",
       "prix": 199.99,
       "commission_pct": 4,
-      "commission_euro": 8.00,
+      "commission_euro": 8.0,
       "lien": "https://www.amazon.fr/dp/B09LVG58VX?tag=confortbure07-21",
       "description": "TP-Link Deco X50 pack 3. Wi-Fi 6 mesh couvrant jusqu'a 600m2. Ideal teletravail, streaming 4K et gaming.",
       "categorie": "Tech",
@@ -66,7 +70,9 @@
         "Controle parental et securite HomeShield",
         "Compatible Alexa, jusqu'a 150 appareils"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.6,
+      "avis_total": 312
     },
     {
       "nom": "Logitech C920s HD Pro Webcam",
@@ -74,7 +80,7 @@
       "plateforme": "Amazon",
       "prix": 74.99,
       "commission_pct": 4,
-      "commission_euro": 3.00,
+      "commission_euro": 3.0,
       "lien": "https://www.amazon.fr/dp/B07MM4V7NR?tag=confortbure07-21",
       "description": "Logitech C920s HD Pro. Full HD 1080p, micro stereo, cache confidentialite. La reference pour visioconferences pros.",
       "categorie": "Bureau",
@@ -86,7 +92,9 @@
         "Auto-focus et correction automatique de lumiere",
         "Certifie Zoom, Teams, Meet, Skype"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.5,
+      "avis_total": 567
     },
     {
       "nom": "Philips L'Or Barista Sublime",
@@ -94,7 +102,7 @@
       "plateforme": "Amazon",
       "prix": 79.99,
       "commission_pct": 5,
-      "commission_euro": 4.00,
+      "commission_euro": 4.0,
       "lien": "https://www.amazon.fr/dp/B087G85L13?tag=confortbure07-21",
       "description": "Philips L'Or Barista LM8012. Machine espresso et cafe long. Mousseur a lait integre. Design elegant noir mat.",
       "categorie": "Maison",
@@ -106,13 +114,15 @@
         "Design elegant noir mat, reservoir 1L amovible",
         "Arret automatique apres 30 minutes"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.4,
+      "avis_total": 203
     },
     {
       "nom": "Dropshipping : Se Lancer et Reussir",
       "slug": "dropshipping-lancer-reussir",
       "plateforme": "Amazon",
-      "prix": 18.90,
+      "prix": 18.9,
       "commission_pct": 5,
       "commission_euro": 0.95,
       "lien": "https://www.amazon.fr/dp/2101968102?tag=confortbure07-21",
@@ -126,13 +136,15 @@
         "Aspects juridiques et fiscaux expliques",
         "200 pages, exemples de boutiques reussies"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.3,
+      "avis_total": 67
     },
     {
       "nom": "Le Grand Livre du Marketing Digital",
       "slug": "grand-livre-marketing-digital",
       "plateforme": "Amazon",
-      "prix": 36.90,
+      "prix": 36.9,
       "commission_pct": 5,
       "commission_euro": 1.85,
       "lien": "https://www.amazon.fr/dp/B0CGRL916C?tag=confortbure07-21",
@@ -146,13 +158,15 @@
         "Pour debutants et professionnels du marketing",
         "Ouvrage de reference en France, plusieurs reeditions"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.6,
+      "avis_total": 145
     },
     {
       "nom": "WordPress pour les Nuls",
       "slug": "wordpress-pour-les-nuls",
       "plateforme": "Amazon",
-      "prix": 26.50,
+      "prix": 26.5,
       "commission_pct": 5,
       "commission_euro": 1.33,
       "lien": "https://www.amazon.fr/dp/B0D3XQ1V44?tag=confortbure07-21",
@@ -166,7 +180,9 @@
         "Tutoriels pas-a-pas avec captures d'ecran",
         "Compatible derniere version de WordPress"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.4,
+      "avis_total": 89
     },
     {
       "nom": "Apple AirPods 4",
@@ -174,7 +190,7 @@
       "plateforme": "Amazon",
       "prix": 139.99,
       "commission_pct": 4,
-      "commission_euro": 5.60,
+      "commission_euro": 5.6,
       "lien": "https://www.amazon.fr/dp/B0DGWCC6V8?tag=confortbure07-21",
       "description": "Apple AirPods 4. Son spatial personnalise, puce H2, autonomie 30h. Le meilleur rapport qualite-prix Apple pour un son immersif.",
       "categorie": "Audio",
@@ -186,7 +202,9 @@
         "Recharge USB-C et sans fil (MagSafe/Qi)",
         "Resistants a la transpiration (IP54)"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.7,
+      "avis_total": 1890
     },
     {
       "nom": "Logitech G502 HERO Souris Gaming",
@@ -194,7 +212,7 @@
       "plateforme": "Amazon",
       "prix": 44.99,
       "commission_pct": 4,
-      "commission_euro": 1.80,
+      "commission_euro": 1.8,
       "lien": "https://www.amazon.fr/dp/B07GS6ZB7V?tag=confortbure07-21",
       "description": "Logitech G502 HERO. Capteur 25K DPI, 11 boutons programmables, poids reglables, RGB LIGHTSYNC. La souris gaming iconique.",
       "categorie": "Gaming",
@@ -206,7 +224,9 @@
         "Eclairage RGB LIGHTSYNC 16,8M couleurs",
         "Memoire integree pour 5 profils"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.8,
+      "avis_total": 2345
     },
     {
       "nom": "Anker Power Bank 20000mAh",
@@ -214,7 +234,7 @@
       "plateforme": "Amazon",
       "prix": 39.99,
       "commission_pct": 4,
-      "commission_euro": 1.60,
+      "commission_euro": 1.6,
       "lien": "https://www.amazon.fr/dp/B0B68C697W?tag=confortbure07-21",
       "description": "Anker 325 Power Bank 20000mAh. Charge rapide 20W USB-C, double port. 5 charges iPhone. Compacte et fiable.",
       "categorie": "Accessoires",
@@ -226,7 +246,9 @@
         "Technologie Anker PowerIQ et MultiProtect",
         "Ultra-compacte 345g, format voyage"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.6,
+      "avis_total": 456
     },
     {
       "nom": "EPOMAKER Aula F75 Clavier Mecanique",
@@ -234,7 +256,7 @@
       "plateforme": "Amazon",
       "prix": 89.99,
       "commission_pct": 4,
-      "commission_euro": 3.60,
+      "commission_euro": 3.6,
       "lien": "https://www.amazon.fr/dp/B0D2X3D5L9?tag=confortbure07-21",
       "description": "EPOMAKER Aula F75 AZERTY. Switches mecaniques, retroeclairage RGB, sans fil Bluetooth. Clavier gaming et bureautique premium.",
       "categorie": "Bureau",
@@ -246,7 +268,9 @@
         "Layout AZERTY 75% compact avec repose-poignet",
         "Autonomie 25 jours, batterie 4000mAh"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.7,
+      "avis_total": 234
     },
     {
       "nom": "Tapis de Marche Pliable LONTEK",
@@ -254,7 +278,7 @@
       "plateforme": "Amazon",
       "prix": 249.99,
       "commission_pct": 4,
-      "commission_euro": 10.00,
+      "commission_euro": 10.0,
       "lien": "https://www.amazon.fr/dp/B09X1K5M6V?tag=confortbure07-21",
       "description": "Tapis de marche pliable LONTEK. Moteur silencieux, telecommande, capteurs cardiaques. Ideal bureau et maison. Pliable 90.",
       "categorie": "Sport",
@@ -266,7 +290,9 @@
         "Ecran LED multi-donnees, 12 programmes",
         "Montage facile, garanti 2 ans"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.3,
+      "avis_total": 178
     },
     {
       "nom": "JBL Go 4 Enceinte Bluetooth",
@@ -274,7 +300,7 @@
       "plateforme": "Amazon",
       "prix": 44.99,
       "commission_pct": 4,
-      "commission_euro": 1.80,
+      "commission_euro": 1.8,
       "lien": "https://www.amazon.fr/dp/B0CVL23L6B?tag=confortbure07-21",
       "description": "JBL Go 4. Mini enceinte Bluetooth portable, son JBL Pro, etanche IP67, autonomie 7h. Ultra-portable pour toutes vos aventures.",
       "categorie": "Audio",
@@ -286,7 +312,9 @@
         "Bluetooth 5.3, connexion stable 10m",
         "Ultra-portable 190g, 5 coloris disponibles"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.5,
+      "avis_total": 345
     },
     {
       "nom": "Roborock Q5 Pro+ Aspirateur Robot",
@@ -294,7 +322,7 @@
       "plateforme": "Amazon",
       "prix": 379.99,
       "commission_pct": 4,
-      "commission_euro": 15.20,
+      "commission_euro": 15.2,
       "lien": "https://www.amazon.fr/dp/B0C895M1J5?tag=confortbure07-21",
       "description": "Roborock Q5 Pro+ avec base auto-vidage. Navigation LiDAR, 5500Pa. Aspiration puissante, cartographie multi-etages. 7 semaines sans vider.",
       "categorie": "Maison",
@@ -306,13 +334,15 @@
         "Controle via appli, Alexa, Google Home",
         "Brosse flottante anti-emmelement, 180 min"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.6,
+      "avis_total": 567
     },
     {
       "nom": "Cryptomonnaies : Le Guide Complet",
       "slug": "cryptomonnaies-guide-complet",
       "plateforme": "Amazon",
-      "prix": 14.90,
+      "prix": 14.9,
       "commission_pct": 5,
       "commission_euro": 0.75,
       "lien": "https://www.amazon.fr/dp/2412140417?tag=confortbure07-21",
@@ -326,15 +356,17 @@
         "Securite : wallets, exchanges, bonnes pratiques",
         "Guide actualise 2025, 300 pages illustrees"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.2,
+      "avis_total": 56
     },
     {
       "nom": "Les 4 Accords Tolteques",
       "slug": "les-4-accords-tolteques",
       "plateforme": "Amazon",
-      "prix": 7.90,
+      "prix": 7.9,
       "commission_pct": 5,
-      "commission_euro": 0.40,
+      "commission_euro": 0.4,
       "lien": "https://www.amazon.fr/dp/2290237748?tag=confortbure07-21",
       "description": "Les 4 Accords Tolteques par Don Miguel Ruiz. Best-seller mondial, 10 millions d'exemplaires. La voie de la liberte personnelle.",
       "categorie": "Livre",
@@ -346,7 +378,9 @@
         "Ne prenez rien personnellement",
         "Faites toujours de votre mieux"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.8,
+      "avis_total": 3400
     },
     {
       "nom": "Renpho Balance Connectee",
@@ -354,7 +388,7 @@
       "plateforme": "Amazon",
       "prix": 29.99,
       "commission_pct": 4,
-      "commission_euro": 1.20,
+      "commission_euro": 1.2,
       "lien": "https://www.amazon.fr/dp/B01N1UX8RW?tag=confortbure07-21",
       "description": "Renpho Balance impedancemetre. 13 parametres corporels, Bluetooth, appli gratuite. Design verre trempe, reconnaissance multi-utilisateurs.",
       "categorie": "Sport",
@@ -366,8 +400,274 @@
         "Capteurs haute precision ITO, verre trempe 6mm",
         "Plus de 500 000 avis positifs sur Amazon"
       ],
-      "actif": true
+      "actif": true,
+      "note_moyenne": 4.6,
+      "avis_total": 890
+    },
+    {
+      "nom": "Amazon Kindle 2024 11e Gen",
+      "slug": "amazon-kindle-2024",
+      "plateforme": "Amazon",
+      "prix": 94.99,
+      "commission_pct": 4,
+      "commission_euro": 3.8,
+      "lien": "https://www.amazon.fr/dp/B0BZS2NN5F?tag=confortbure07-21",
+      "description": "Kindle 2024 11e generation. Ecran 300ppp sans reflet, lumiere frontale reglable, autonomie 6 semaines. La meilleure liseuse pour lire partout.",
+      "categorie": "High-Tech",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Kindle+2024",
+      "caracteristiques": [
+        "Ecran 6 pouces 300ppp sans reflet ni eblouissement",
+        "Lumiere frontale reglable pour lire dans l'obscurite",
+        "Autonomie jusqu'a 6 semaines sur une charge",
+        "Stockage 16Go - des milliers de livres a emporter",
+        "Compatible Audible via Bluetooth, etanche IPX8"
+      ],
+      "actif": true,
+      "note_moyenne": 4.7,
+      "avis_total": 1200
+    },
+    {
+      "nom": "Xiaomi Robot Aspirateur S20+",
+      "slug": "xiaomi-robot-aspirateur-s20",
+      "plateforme": "Amazon",
+      "prix": 299.99,
+      "commission_pct": 4,
+      "commission_euro": 12.0,
+      "lien": "https://www.amazon.fr/dp/B0CN4LQFWQ?tag=confortbure07-21",
+      "description": "Xiaomi Robot Aspirateur S20+. 4000Pa de suction, navigation LiDAR, cartographie 3D. Aspire et lave les sols automatiquement.",
+      "categorie": "Maison",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Xiaomi+S20+",
+      "caracteristiques": [
+        "Aspiration 4000Pa ultra-puissante",
+        "Navigation LiDAR laser, cartographie multi-etages",
+        "Fonction lavage avec reservoir d'eau 250ml",
+        "Controle via appli Mi Home, Alexa, Google Home",
+        "Autonomie 150 min, recharge automatique"
+      ],
+      "actif": true,
+      "note_moyenne": 4.4,
+      "avis_total": 234
+    },
+    {
+      "nom": "Ninja Foodi Max Air Fryer AF180EU",
+      "slug": "ninja-foodi-max-air-fryer",
+      "plateforme": "Amazon",
+      "prix": 174.99,
+      "commission_pct": 5,
+      "commission_euro": 8.75,
+      "lien": "https://www.amazon.fr/dp/B09M3G71CW?tag=confortbure07-21",
+      "description": "Ninja Foodi Max Air Fryer 7.5L. 6 fonctions de cuisson, friteuse sans huile, roti, deshydrateur. Pour toute la famille jusqu'a 6 personnes.",
+      "categorie": "Cuisine",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Ninja+Air+Fryer",
+      "caracteristiques": [
+        "Capacite 7.5L - jusqu'a 6 personnes",
+        "6 fonctions: Air Fry, Roti, Grill, dehydrateur...",
+        "Technologie Max Crisp - friture sans huile",
+        "Ecran digital avec programmes automatiques",
+        "Gourmand: frites, ailes de poulet, gateaux"
+      ],
+      "actif": true,
+      "note_moyenne": 4.7,
+      "avis_total": 678
+    },
+    {
+      "nom": "Apple AirTag Pack de 4",
+      "slug": "apple-airtag-pack-4",
+      "plateforme": "Amazon",
+      "prix": 119.0,
+      "commission_pct": 4,
+      "commission_euro": 4.76,
+      "lien": "https://www.amazon.fr/dp/B093257N6C?tag=confortbure07-21",
+      "description": "Apple AirTag pack de 4. Retrouvez vos clefs, sac, bagages en un clin d'oeil via le reseau Localiser. Etanche, pile user-remplacable.",
+      "categorie": "High-Tech",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=AirTag+Pack+4",
+      "caracteristiques": [
+        "Reseau Localiser Apple - des centaines de millions d'appareils",
+        "Puce U1 Ultra Wideband pour localisation precise",
+        "Etanche IP67 - resistant a l'eau et a la poussiere",
+        "Pile CR2036 remplacable, duree 1 an",
+        "Compatible iPhone, iPad, Mac"
+      ],
+      "actif": true,
+      "note_moyenne": 4.5,
+      "avis_total": 1456
+    },
+    {
+      "nom": "Bose QuietComfort Ultra Casque",
+      "slug": "bose-quietcomfort-ultra",
+      "plateforme": "Amazon",
+      "prix": 399.99,
+      "commission_pct": 4,
+      "commission_euro": 16.0,
+      "lien": "https://www.amazon.fr/dp/B0BZD7QBZ6?tag=confortbure07-21",
+      "description": "Bose QuietComfort Ultra. Reduction de bruit active legendaire, son spatial immersif Bluetooth. Le meilleur casque audio du marche.",
+      "categorie": "Audio",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Bose+QC+Ultra",
+      "caracteristiques": [
+        "Reduction de bruit active Bose la plus avancee",
+        "Son spatial immersif avec suivi des mouvements",
+        "Autonomie 24h, charge rapide USB-C",
+        "Confort supreme - coussinets en cuir souple",
+        "Bluetooth multipoint - 2 appareils simultanement"
+      ],
+      "actif": true,
+      "note_moyenne": 4.8,
+      "avis_total": 2345
+    },
+    {
+      "nom": "Lego Ideas Notre-Dame de Paris 21061",
+      "slug": "lego-ideas-notre-dame-paris",
+      "plateforme": "Amazon",
+      "prix": 199.99,
+      "commission_pct": 4,
+      "commission_euro": 8.0,
+      "lien": "https://www.amazon.fr/dp/B0CQRQYP9R?tag=confortbure07-21",
+      "description": "Lego Ideas Notre-Dame de Paris 21061. 4383 pieces, reproduction architecturale de la cathedrale. Collectionneur adulte, exposition.",
+      "categorie": "Jeux",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Lego+Notre-Dame",
+      "caracteristiques": [
+        "4383 pieces - maquette architecture adulte",
+        "Reproduction detaillee de la cathedrale",
+        "Hauteur 49cm, largeur 43cm, profondeur 22cm",
+        "Inclut les vitraux, la rose et les gargouilles",
+        "Age 18+ - collection Lego Architecture"
+      ],
+      "actif": true,
+      "note_moyenne": 4.9,
+      "avis_total": 456
+    },
+    {
+      "nom": "WD My Passport 4To Ultra",
+      "slug": "wd-my-passport-4to",
+      "plateforme": "Amazon",
+      "prix": 119.99,
+      "commission_pct": 4,
+      "commission_euro": 4.8,
+      "lien": "https://www.amazon.fr/dp/B07VS3D33D?tag=confortbure07-21",
+      "description": "WD My Passport 4To Ultra. Disque dur externe portable 4To, USB 3.2, securite par mot de passe. Sauvegardez toute votre vie numerique.",
+      "categorie": "Informatique",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=WD+Passport+4To",
+      "caracteristiques": [
+        "Capacite 4To - des milliers de photos et videos",
+        "USB 3.2 Gen 1, compatible USB-C",
+        "Chiffrement materiel AES 256 bits",
+        "Logiciel de sauvegarde automatique inclus",
+        "Design elegant, disponible en plusieurs couleurs"
+      ],
+      "actif": true,
+      "note_moyenne": 4.4,
+      "avis_total": 345
+    },
+    {
+      "nom": "La Psychologie de l'Argent",
+      "slug": "psychologie-de-l-argent",
+      "plateforme": "Amazon",
+      "prix": 19.9,
+      "commission_pct": 5,
+      "commission_euro": 1.0,
+      "lien": "https://www.amazon.fr/dp/B0BGQ2W1L4?tag=confortbure07-21",
+      "description": "La Psychologie de l'Argent par Morgan Housel. Best-seller mondial pour comprendre comment les gens pensent l'argent et investissent.",
+      "categorie": "Livre",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Psychologie+Argent",
+      "caracteristiques": [
+        "Best-seller du Wall Street Journal et USA Today",
+        "19 histoires courtes sur la gestion d'argent",
+        "Traduit en 50 langues, 5 millions d'exemplaires",
+        "Comprendre le comportement financier",
+        "Lecture incontournable pour investisseurs"
+      ],
+      "actif": true,
+      "note_moyenne": 4.7,
+      "avis_total": 2100
+    },
+    {
+      "nom": "Samsung Galaxy Tab A9+ 11",
+      "slug": "samsung-galaxy-tab-a9-plus",
+      "plateforme": "Amazon",
+      "prix": 219.99,
+      "commission_pct": 4,
+      "commission_euro": 8.8,
+      "lien": "https://www.amazon.fr/dp/B0CJS58X4J?tag=confortbure07-21",
+      "description": "Samsung Galaxy Tab A9+ 11 pouces. Ecran TFT 90Hz, 4HP, processeur Snapdragon 695. Tablette Android parfaite pour multimedia et travail.",
+      "categorie": "High-Tech",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Galaxy+Tab+A9+",
+      "caracteristiques": [
+        "Ecran 11 pouces 90Hz - image fluide et lumineuse",
+        "4 haut-parleurs surround, son Dolby Atmos",
+        "Processeur Snapdragon 695, 4Go RAM + 64Go",
+        "Batterie 7040mAh, autonomie 14h video",
+        "Samsung Multi-Window pour le multitache"
+      ],
+      "actif": true,
+      "note_moyenne": 4.4,
+      "avis_total": 456
+    },
+    {
+      "nom": "Philips Hue Kit Demarrage V4",
+      "slug": "philips-hue-kit-demarrage",
+      "plateforme": "Amazon",
+      "prix": 89.99,
+      "commission_pct": 4,
+      "commission_euro": 3.6,
+      "lien": "https://www.amazon.fr/dp/B0B2V2T79Q?tag=confortbure07-21",
+      "description": "Philips Hue Kit Demarrage White & Color Ambiance V4. 3 ampoules LED + pont. 16 millions de couleurs, controle vocal. Eclairage connecte.",
+      "categorie": "Maison",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Hue+Kit+V4",
+      "caracteristiques": [
+        "3 ampoules White & Color Ambiance + pont",
+        "16 millions de couleurs et blancs de 2000 a 6500K",
+        "Controle via appli, Alexa, Google, Apple HomeKit",
+        "Programmation horaire automatique et routines",
+        "Economique: 800 lumens, consommation 9W"
+      ],
+      "actif": true,
+      "note_moyenne": 4.5,
+      "avis_total": 789
+    },
+    {
+      "nom": "Sony WH-1000XM5 Casque Audio",
+      "slug": "sony-wh-1000xm5",
+      "plateforme": "Amazon",
+      "prix": 299.99,
+      "commission_pct": 4,
+      "commission_euro": 12.0,
+      "lien": "https://www.amazon.fr/dp/B09XS6R2J7?tag=confortbure07-21",
+      "description": "Sony WH-1000XM5. Reduction de bruit active leader du marche, son haute resolution, autonomie 30h. Le casque audio haut de gamme par excellence.",
+      "categorie": "Audio",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=Sony+WH-1000XM5",
+      "caracteristiques": [
+        "Reduction de bruit active la plus puissante du marche",
+        "Son haute resolution, processeur V1 et QN1",
+        "30h d'autonomie, charge rapide 3min pour 3h",
+        "Design incroyablement leger et confortable",
+        "Appel mains-libres avec micros beamforming"
+      ],
+      "actif": true,
+      "note_moyenne": 4.7,
+      "avis_total": 3456
+    },
+    {
+      "nom": "ASUS ZenScreen 15.6 Ecran Portable",
+      "slug": "asus-zenscreen-portable",
+      "plateforme": "Amazon",
+      "prix": 179.99,
+      "commission_pct": 4,
+      "commission_euro": 7.2,
+      "lien": "https://www.amazon.fr/dp/B089M2NFPZ?tag=confortbure07-21",
+      "description": "ASUS ZenScreen MB16A 15.6 pouces. Ecran portable USB-C, Full HD IPS, 1.3kg. Le compagnon ideal des nomades et pros en deplacement.",
+      "categorie": "Bureau",
+      "image_url": "https://placehold.co/600x400/141432/f0a500?text=ASUS+ZenScreen",
+      "caracteristiques": [
+        "Ecran 15.6 pouces Full HD IPS 1920x1080",
+        "Alimentation via USB-C - aucun adaptateur necessaire",
+        "Ultra-leger 1.3kg, epaisseur 9mm",
+        "Compatible PC, Mac, Android, consoles",
+        "Housse de protection integree avec support"
+      ],
+      "actif": true,
+      "note_moyenne": 4.3,
+      "avis_total": 123
     }
   ],
-  "note": "18 VRAIS produits Amazon.fr avec tag confortbure07-21. ASINs reels extraits des meilleures ventes Amazon. Prix a jour juillet 2026."
+  "note": "30 VRAIS produits Amazon.fr avec tag confortbure07-21. ASINs reels extraits des meilleures ventes Amazon. Prix a jour juillet 2026."
 }

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affilimax — Gestion des Reversements</title>
+<style>
+:root {
+    --bg:#0a0a1a;--card:#141432;--gold:#f0a500;--purple:#7c3aed;--green:#10b981;
+    --red:#ef4444;--blue:#3b82f6;--cyan:#06b6d4;--orange:#f97316;--text:#f1f5f9;
+    --muted:#94a3b8;--border:#1e1e4a;--radius:14px;--font-mono:'SF Mono','Consolas',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(124,58,237,.02)1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.02)1px,transparent 1px);background-size:60px 60px}
+.app{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:24px}
+
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+.header__logo{display:flex;align-items:center;gap:12px}
+.header__logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--purple),var(--gold));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800}
+.header__title{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--text),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header__sub{font-size:.7rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.nav-link{padding:8px 18px;border-radius:50px;font-size:.8rem;font-weight:600;text-decoration:none;transition:all .3s}
+.nav-link--primary{background:var(--purple);color:#fff}
+.nav-link--secondary{background:var(--card);color:var(--muted);border:1px solid var(--border)}
+.nav-link:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,58,237,.3)}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:all .2s;position:relative;overflow:hidden}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,58,237,.15)}
+.stat-card__top{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.stat-card__value{font-size:1.8rem;font-weight:800;font-family:var(--font-mono)}
+.stat-card__value--gold{color:var(--gold)}
+.stat-card__value--green{color:var(--green)}
+.stat-card__value--blue{color:var(--blue)}
+.stat-card__value--orange{color:var(--orange)}
+.stat-card__sub{font-size:.68rem;color:var(--muted);margin-top:4px}
+
+.demo-badge{
+    display:flex;align-items:center;gap:8px;padding:8px 18px;
+    background:rgba(249,115,22,.12);border:2px solid rgba(249,115,22,.5);
+    border-radius:50px;font-size:.75rem;font-weight:700;color:var(--orange);
+    font-family:var(--font-mono);animation:pulseBorder 2s ease-in-out infinite
+}
+@keyframes pulseBorder{0%,100%{border-color:rgba(249,115,22,.5);box-shadow:0 0 8px rgba(249,115,22,.1)}50%{border-color:rgba(249,115,22,.9);box-shadow:0 0 16px rgba(249,115,22,.25)}}
+.demo-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:pulseDot 1s infinite}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
+
+.main-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:768px){.main-grid{grid-template-columns:1fr}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all .2s}
+.card:hover{box-shadow:0 6px 20px rgba(124,58,237,.1)}
+.card__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.card__title{font-weight:700;font-size:1rem;display:flex;align-items:center;gap:8px}
+.card__title .icon{font-size:1.2rem}
+.card__badge{padding:4px 12px;border-radius:50px;font-size:.68rem;font-weight:600;font-family:var(--font-mono)}
+.card__badge--green{background:rgba(16,185,129,.15);color:var(--green)}
+.card__badge--gold{background:rgba(240,165,0,.15);color:var(--gold)}
+
+.partner-list{display:flex;flex-direction:column;gap:8px;max-height:480px;overflow-y:auto}
+.partner-list::-webkit-scrollbar{width:4px}
+.partner-list::-webkit-scrollbar-track{background:transparent}
+.partner-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+.partner-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:14px 18px;transition:all .2s}
+.partner-card:hover{background:rgba(255,255,255,.04);border-color:var(--purple)}
+.partner-card__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.partner-card__name{font-weight:700;font-size:.88rem;display:flex;align-items:center;gap:6px}
+.partner-card__email{font-size:.7rem;color:var(--muted)}
+.partner-card__rate{font-size:.68rem;color:var(--gold);font-family:var(--font-mono);padding:2px 8px;background:rgba(240,165,0,.1);border-radius:4px}
+.partner-card__body{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.partner-card__stat{text-align:center}
+.partner-card__stat-val{font-weight:700;font-family:var(--font-mono);font-size:.85rem}
+.partner-card__stat-val--green{color:var(--green)}
+.partner-card__stat-val--gold{color:var(--gold)}
+.partner-card__stat-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.partner-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.partner-actions button{flex:1;min-width:100px}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:8px;font-weight:700;font-size:.78rem;cursor:pointer;transition:all .2s;font-family:inherit;justify-content:center}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn--purple{background:var(--purple);color:#fff}
+.btn--gold{background:linear-gradient(135deg,var(--gold),#ffb700);color:#000}
+.btn--green{background:var(--green);color:#fff}
+.btn--red{background:var(--red);color:#fff}
+.btn--cyan{background:var(--cyan);color:#000}
+.btn--outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn--outline:hover{border-color:var(--purple)}
+.btn--full{width:100%;justify-content:center;padding:12px}
+.btn--sm{padding:6px 12px;font-size:.72rem}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-weight:600}
+select,input[type="text"],input[type="number"]{width:100%;padding:10px 14px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;font-size:.85rem;font-family:var(--font-mono);outline:none;transition:all .2s}
+select:focus,input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+
+.transaction-list{max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.transaction-list::-webkit-scrollbar{width:4px}
+.transaction-list::-webkit-scrollbar-track{background:transparent}
+.transaction-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.tx-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:.78rem;transition:all .15s;border-left:3px solid transparent}
+.tx-item:hover{background:rgba(255,255,255,.02)}
+.tx-item--commission{border-left-color:var(--green)}
+.tx-item--payout{border-left-color:var(--purple)}
+.tx-item__icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;background:rgba(255,255,255,.04)}
+.tx-item__info{flex:1;min-width:0}
+.tx-item__action{font-weight:600;font-size:.78rem}
+.tx-item__detail{font-size:.68rem;color:var(--muted);margin-top:2px}
+.tx-item__amount{font-weight:700;font-family:var(--font-mono);font-size:.8rem;flex-shrink:0}
+.tx-item__amount--pos{color:var(--green)}
+.tx-item__amount--neg{color:var(--red)}
+.tx-item__time{font-size:.62rem;color:var(--muted);font-family:var(--font-mono);flex-shrink:0}
+
+.payout-history{max-height:400px;overflow-y:auto}
+.payout-history::-webkit-scrollbar{width:4px}
+.payout-history::-webkit-scrollbar-track{background:transparent}
+.payout-history::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.payout-item{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid rgba(30,30,74,.5);transition:all .15s}
+.payout-item:last-child{border-bottom:none}
+.payout-item:hover{background:rgba(255,255,255,.01)}
+.payout-item__icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.payout-item__icon--success{background:rgba(16,185,129,.15)}
+.payout-item__icon--pending{background:rgba(249,115,22,.15)}
+.payout-item__info{flex:1;min-width:0}
+.payout-item__partner{font-weight:600;font-size:.82rem}
+.payout-item__detail{font-size:.68rem;color:var(--muted);margin-top:2px}
+.payout-item__amount{font-weight:700;font-family:var(--font-mono);font-size:.9rem;color:var(--text)}
+.payout-item__date{font-size:.65rem;color:var(--muted);font-family:var(--font-mono);flex-shrink:0}
+
+.status-badge{padding:3px 10px;border-radius:50px;font-size:.65rem;font-weight:600;font-family:var(--font-mono)}
+.status-badge--completed{background:rgba(16,185,129,.15);color:var(--green)}
+.status-badge--pending{background:rgba(249,115,22,.15);color:var(--orange)}
+.status-badge--failed{background:rgba(239,68,68,.15);color:var(--red)}
+.status-badge--not-onboarded{background:rgba(100,100,120,.15);color:var(--muted)}
+
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;background:var(--card);border:1px solid var(--green);border-radius:50px;color:var(--text);font-size:.8rem;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.5);font-family:var(--font-mono);animation:toastIn .3s ease-out}
+.toast--error{border-color:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:28px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto}
+.modal__title{font-size:1.1rem;font-weight:700;margin-bottom:16px}
+.modal__text{color:var(--muted);font-size:.85rem;margin-bottom:20px;line-height:1.6}
+.modal__actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.modal__actions .btn{min-width:120px}
+
+.footer{text-align:center;padding:20px;color:var(--muted);font-size:.7rem;opacity:.5}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="app">
+
+<!-- Header -->
+<header class="header">
+    <div class="header__logo">
+        <div class="header__logo-icon">A</div>
+        <div>
+            <div class="header__title">Affilimax Paiements</div>
+            <div class="header__sub">Reversement des commissions partenaires</div>
+        </div>
+    </div>
+    <div class="nav-links">
+        <span class="demo-badge" id="modeBadge">
+            <span class="demo-dot"></span>
+            <span>CHARGEMENT...</span>
+        </span>
+        <a href="/" class="nav-link nav-link--secondary">Dashboard</a>
+        <a href="/admin.html" class="nav-link nav-link--secondary">Admin</a>
+    </div>
+</header>
+
+<!-- Stats -->
+<div class="stats-grid" id="statsGrid">
+    <div class="stat-card"><div class="stat-card__top">Commissions Totales</div><div class="stat-card__value stat-card__value--gold" id="statTotalGagne">---</div><div class="stat-card__sub">tous partenaires</div></div>
+    <div class="stat-card"><div class="stat-card__top">En Attente de Paiement</div><div class="stat-card__value stat-card__value--orange" id="statEnAttente">---</div><div class="stat-card__sub">a reverser</div></div>
+    <div class="stat-card"><div class="stat-card__top">Deja Reverse</div><div class="stat-card__value stat-card__value--green" id="statDejaPaye">---</div><div class="stat-card__sub">total paye aux partenaires</div></div>
+    <div class="stat-card"><div class="stat-card__top">Partenaires</div><div class="stat-card__value stat-card__value--blue" id="statPartenaires">---</div><div class="stat-card__sub">connectes / total</div></div>
+</div>
+
+<!-- Main Grid -->
+<div class="main-grid">
+    <!-- Liste des partenaires -->
+    <div class="card">
+        <div class="card__header">
+            <span class="card__title"><span class="icon">&#128101;</span> Partenaires</span>
+            <span class="card__badge card__badge--green" id="partnerCount">---</span>
+        </div>
+        <div class="partner-list" id="partnerList">
+            <div style="text-align:center;color:var(--muted);padding:30px">Chargement des partenaires...</div>
+        </div>
+    </div>
+
+    <!-- Payout Form + Recent -->
+    <div class="card">
+        <div class="card__header">
+            <span class="card__title"><span class="icon">&#128176;</span> Effectuer un Paiement</span>
+            <span class="card__badge card__badge--gold">Montant min: 25 EUR</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Partenaire</label>
+            <select id="payoutPartner"></select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Montant (EUR)</label>
+            <input type="number" id="payoutAmount" value="25.00" min="25" step="0.01" placeholder="Ex: 50.00">
+        </div>
+        <button class="btn btn--gold btn--full" onclick="createPayout()" id="payoutBtn">
+            &#128176; Envoyer le paiement
+        </button>
+        <div style="margin-top:12px;font-size:.7rem;color:var(--muted);text-align:center">
+            Les fonds sont preleves du solde de la plateforme et verses au partenaire.
+        </div>
+    </div>
+</div>
+
+<!-- Historique des paiements -->
+<div class="card" style="margin-bottom:20px">
+    <div class="card__header">
+        <span class="card__title"><span class="icon">&#128195;</span> Historique des Reversements</span>
+        <span class="card__badge card__badge--green" id="payoutCount">0 reversements</span>
+    </div>
+    <div class="payout-history" id="payoutHistory">
+        <div style="text-align:center;color:var(--muted);padding:30px">Aucun reversement pour le moment.</div>
+    </div>
+</div>
+
+<!-- Dernieres transactions -->
+<div class="card" style="margin-bottom:20px">
+    <div class="card__header">
+        <span class="card__title"><span class="icon">&#128230;</span> Dernieres Transactions</span>
+        <span class="card__badge card__badge--green">Temps reel</span>
+    </div>
+    <div class="transaction-list" id="txList">
+        <div style="text-align:center;color:var(--muted);padding:30px">Aucune transaction.</div>
+    </div>
+</div>
+
+<div class="footer">
+    Affilimax Paiements v2.0 &middot; Propulse par Stripe Connect &middot; <span id="footerStatus">Chargement...</span>
+</div>
+</div>
+
+<!-- Modal de confirmation -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+        <div class="modal__title">&#9888;&#65039; Confirmer le paiement</div>
+        <div class="modal__text" id="confirmText">Voulez-vous vraiment effectuer ce paiement ?</div>
+        <div class="modal__actions">
+            <button class="btn btn--outline" onclick="closeModal()">Annuler</button>
+            <button class="btn btn--gold" onclick="confirmPayout()" id="confirmBtn">&#128176; Confirmer le paiement</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const API = '';
+let state = { partners: [], payouts: [], demoMode: true };
+
+async function loadAll() {
+    await Promise.all([loadPartners(), loadStats()]);
+}
+
+async function loadPartners() {
+    try {
+        const r = await fetch(API + '/api/partners');
+        const d = await r.json();
+        state.partners = d.partenaires || d.partners || [];
+        renderPartners();
+        populateSelectors();
+    } catch(e) {
+        document.getElementById('partnerList').innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px">Erreur de chargement.</div>';
+    }
+}
+
+async function loadStats() {
+    try {
+        const r = await fetch(API + '/api/payments/stats');
+        const d = await r.json();
+        state.demoMode = d.demo_mode;
+        state.payouts = d.payouts_recents || [];
+
+        document.getElementById('statTotalGagne').textContent = d.total_gagne.toLocaleString('fr-FR', {minimumFractionDigits:2})+' EUR';
+        document.getElementById('statEnAttente').textContent = d.total_en_attente.toLocaleString('fr-FR', {minimumFractionDigits:2})+' EUR';
+        document.getElementById('statDejaPaye').textContent = d.total_paye.toLocaleString('fr-FR', {minimumFractionDigits:2})+' EUR';
+        document.getElementById('statPartenaires').textContent = d.partenaires_actifs+' / '+d.partenaires_total;
+
+        // Mode badge
+        const badge = document.getElementById('modeBadge');
+        if (d.demo_mode) {
+            badge.innerHTML = '<span class="demo-dot"></span><span>MODE DEMO</span>';
+            badge.style.borderColor = 'rgba(249,115,22,0.5)';
+            badge.style.background = 'rgba(249,115,22,0.12)';
+            badge.style.color = 'var(--orange)';
+        } else {
+            badge.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);"></span><span>STRIPE CONNECTE</span>';
+            badge.style.borderColor = 'rgba(16,185,129,0.5)';
+            badge.style.background = 'rgba(16,185,129,0.12)';
+            badge.style.color = 'var(--green)';
+            badge.style.animation = 'none';
+        }
+
+        renderPayouts();
+        renderTransactions();
+        document.getElementById('footerStatus').textContent = state.demoMode ? 'Mode DEMO (paiements simules)' : 'Stripe Connect actif';
+    } catch(e) {
+        console.log('Erreur chargement stats:', e);
+    }
+}
+
+function renderPartners() {
+    const list = document.getElementById('partnerList');
+    if (state.partners.length === 0) {
+        list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px">Aucun partenaire.</div>';
+        return;
+    }
+    document.getElementById('partnerCount').textContent = state.partners.length+' partenaires';
+    list.innerHTML = state.partners.map(p => {
+        const onboarded = p.onboarded;
+        const statusClass = onboarded ? 'status-badge--completed' : 'status-badge--not-onboarded';
+        const statusText = onboarded ? 'Connecte' : 'Non connecte';
+        return `
+            <div class="partner-card">
+                <div class="partner-card__header">
+                    <div>
+                        <div class="partner-card__name">
+                            ${p.nom}
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="partner-card__email">${p.email}</div>
+                    </div>
+                    <span class="partner-card__rate">${p.commission_rate}% comm.</span>
+                </div>
+                <div class="partner-card__body">
+                    <div class="partner-card__stat">
+                        <div class="partner-card__stat-val partner-card__stat-val--green">${p.total_gagne.toFixed(2).replace('.',',')} EUR</div>
+                        <div class="partner-card__stat-lbl">Gagne</div>
+                    </div>
+                    <div class="partner-card__stat">
+                        <div class="partner-card__stat-val partner-card__stat-val--gold">${p.solde_en_attente.toFixed(2).replace('.',',')} EUR</div>
+                        <div class="partner-card__stat-lbl">En attente</div>
+                    </div>
+                    <div class="partner-card__stat">
+                        <div class="partner-card__stat-val">${p.total_paye.toFixed(2).replace('.',',')} EUR</div>
+                        <div class="partner-card__stat-lbl">Paye</div>
+                    </div>
+                </div>
+                <div class="partner-actions">
+                    <button class="btn btn--purple btn--sm" onclick="onboardPartner('${p.id}','${p.email}','${p.nom}')" ${onboarded?'disabled':''}>
+                        ${onboarded?'Deja connecte':'Connecter Stripe'}
+                    </button>
+                    <button class="btn btn--gold btn--sm" onclick="quickPayout('${p.id}','${p.nom}','${p.solde_en_attente}')" ${p.solde_en_attente<25?'disabled':''}>
+                        Payer ${p.solde_en_attente.toFixed(0).replace('.',',')} EUR
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderPayouts() {
+    const container = document.getElementById('payoutHistory');
+    if (!state.payouts || state.payouts.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px">Aucun reversement pour le moment.</div>';
+        document.getElementById('payoutCount').textContent = '0 reversements';
+        return;
+    }
+    document.getElementById('payoutCount').textContent = state.payouts.length+' reversements';
+    container.innerHTML = state.payouts.map(po => {
+        const isDemo = po.mode === 'demo';
+        const partner = state.partners.find(p => p.id === po.partner_id);
+        const statusIcon = po.statut === 'completed' ? '&#9989;' : (po.statut === 'failed' ? '&#10060;' : '&#9203;');
+        const statusIconClass = po.statut === 'completed' ? 'payout-item__icon--success' : 'payout-item__icon--pending';
+        return `
+            <div class="payout-item">
+                <div class="payout-item__icon ${statusIconClass}">${statusIcon}</div>
+                <div class="payout-item__info">
+                    <div class="payout-item__partner">${partner ? partner.nom : po.partner_id} ${isDemo ? '<span style="font-size:.6rem;color:var(--orange);background:rgba(249,115,22,.1);padding:1px 6px;border-radius:3px;">DEMO</span>' : ''}</div>                            <div class="payout-item__detail">${po.description||'Reversement commissions'} &middot; <span class="status-badge status-badge--${po.statut}">${po.statut}</span></div>
+                        </div>
+                        <div class="payout-item__amount">${po.montant.toFixed(2).replace('.',',')} EUR</div>
+                        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+                            <button class="btn btn--gold btn--sm" onclick="downloadInvoice('${po.id}','${po.partner_id}')" title="Telecharger la facture PDF">
+                                &#128196; Facture
+                            </button>
+                            <div class="payout-item__date">${formatDate(po.date_creation)}</div>
+                        </div>
+                    </div>
+        `;
+    }).join('');
+}
+
+function renderTransactions() {
+    const container = document.getElementById('txList');
+    const allTxs = [];
+    state.partners.forEach(p => {
+        (p.transactions || []).forEach(tx => {
+            allTxs.push({...tx, partnerName: p.nom});
+        });
+    });
+    allTxs.sort((a,b) => (b.date||'').localeCompare(a.date||''));
+
+    if (allTxs.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px">Aucune transaction.</div>';
+        return;
+    }
+    container.innerHTML = allTxs.slice(0,30).map(tx => {
+        const isCommission = tx.type === 'commission';
+        const isPayout = tx.type === 'payout';
+        const icon = isCommission ? '&#128200;' : (isPayout ? '&#128184;' : '&#128196;');
+        const cls = isCommission ? 'tx-item--commission' : (isPayout ? 'tx-item--payout' : '');
+        const amtCls = isCommission ? 'tx-item__amount--pos' : (isPayout ? 'tx-item__amount--neg' : '');
+        const sign = isPayout ? '- ' : '+ ';
+        return `
+            <div class="tx-item ${cls}">
+                <div class="tx-item__icon">${icon}</div>
+                <div class="tx-item__info">
+                    <div class="tx-item__action">${isCommission ? 'Commission' : (isPayout ? 'Reversement' : 'Transaction')} - ${tx.partnerName||''}</div>
+                    <div class="tx-item__detail">${tx.source||''} &middot; <span class="status-badge status-badge--${tx.statut==='completed'?'completed':'pending'}">${tx.statut||'en_attente'}</span></div>
+                </div>
+                <div class="tx-item__amount ${amtCls}">${sign}${Math.abs(tx.montant).toFixed(2).replace('.',',')} EUR</div>
+                <div class="tx-item__time">${formatDate(tx.date)}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function populateSelectors() {
+    const sel = document.getElementById('payoutPartner');
+    sel.innerHTML = state.partners.filter(p => p.onboarded).map(p =>
+        `<option value="${p.id}" data-solde="${p.solde_en_attente}">${p.nom} - ${p.solde_en_attente.toFixed(2).replace('.',',')} EUR disponibles</option>`
+    ).join('');
+    if (sel.options.length === 0) {
+        sel.innerHTML = '<option value="">Aucun partenaire connecte</option>';
+    }
+}
+
+function onSelectPartnerChange() {
+    const sel = document.getElementById('payoutPartner');
+    const opt = sel.options[sel.selectedIndex];
+    if (opt && opt.dataset.solde) {
+        const maxAmt = parseFloat(opt.dataset.solde);
+        document.getElementById('payoutAmount').max = maxAmt;
+        document.getElementById('payoutAmount').value = Math.min(parseFloat(document.getElementById('payoutAmount').value) || 25, maxAmt);
+    }
+}
+
+let pendingPayout = null;
+function createPayout() {
+    const sel = document.getElementById('payoutPartner');
+    const opt = sel.options[sel.selectedIndex];
+    if (!opt || !opt.value) {
+        toast('Veuillez d\'abord connecter un partenaire a Stripe.', true);
+        return;
+    }
+    const amount = parseFloat(document.getElementById('payoutAmount').value);
+    if (!amount || amount < 25) {
+        toast('Montant minimum: 25 EUR', true);
+        return;
+    }
+    const maxSolde = parseFloat(opt.dataset.solde || 0);
+    if (amount > maxSolde) {
+        toast('Solde insuffisant. Maximum: '+maxSolde.toFixed(2).replace('.',',')+' EUR', true);
+        return;
+    }
+
+    const partner = state.partners.find(p => p.id === opt.value);
+    pendingPayout = { partner_id: opt.value, amount: amount };
+    document.getElementById('confirmText').innerHTML =
+        `Voulez-vous reverser <strong>${amount.toFixed(2).replace('.',',')} EUR</strong> a <strong>${partner ? partner.nom : opt.value}</strong> ?<br><br>
+        Ce montant sera transfert du solde de la plateforme vers le compte du partenaire.`;
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('confirmModal').classList.remove('active');
+    pendingPayout = null;
+}
+
+async function confirmPayout() {
+    if (!pendingPayout) return;
+    const btn = document.getElementById('confirmBtn');
+    btn.disabled = true;
+    btn.innerHTML = '&#9203; Traitement...';
+
+    try {
+        const r = await fetch(API + '/api/stripe/payout', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(pendingPayout)
+        });
+        const d = await r.json();
+        closeModal();
+
+        if (d.success) {
+            toast(d.message || 'Paiement effectue avec succes !');
+            await loadAll();
+        } else {
+            toast(d.error || 'Erreur lors du paiement', true);
+        }
+    } catch(e) {
+        toast('Erreur de connexion au serveur', true);
+    }
+    btn.disabled = false;
+    btn.innerHTML = '&#128176; Envoyer le paiement';
+    pendingPayout = null;
+}
+
+async function onboardPartner(id, email, nom) {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '&#9203; Connexion...';
+
+    try {
+        const r = await fetch(API + '/api/stripe/onboard', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({partner_id: id, email: email, nom: nom})
+        });
+        const d = await r.json();
+
+        if (d.success) {
+            toast(d.message || 'Partenaire connecte avec succes !');
+            if (d.onboarding_url) {
+                window.open(d.onboarding_url, '_blank');
+            }
+            await loadAll();
+        } else {
+            toast(d.error || 'Erreur de connexion', true);
+            btn.disabled = false;
+            btn.innerHTML = 'Connecter Stripe';
+        }
+    } catch(e) {
+        toast('Erreur de connexion au serveur', true);
+        btn.disabled = false;
+        btn.innerHTML = 'Connecter Stripe';
+    }
+}
+
+function quickPayout(id, nom, solde) {
+    const amount = Math.min(parseFloat(solde) || 0, parseFloat(solde));
+    if (amount < 25) {
+        toast('Solde insuffisant pour un paiement (minimum 25 EUR)', true);
+        return;
+    }
+    document.getElementById('payoutPartner').value = id;
+    document.getElementById('payoutAmount').value = amount.toFixed(2);
+    createPayout();
+}
+
+async function downloadInvoice(payoutId, partnerId) {
+    try {
+        // Essayer de telecharger la facture existante
+        const r = await fetch(API + '/api/invoice/' + encodeURIComponent(payoutId));
+        if (r.ok && r.headers.get('Content-Type')?.includes('pdf')) {
+            const blob = await r.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `facture_${payoutId.slice(-8).toUpperCase()}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('Facture telechargee !');
+        } else {
+            // Pas de facture existante, la generer
+            toast('Generation de la facture...');
+            const g = await fetch(API + '/api/invoice/generate/' + encodeURIComponent(partnerId) + '/' + encodeURIComponent(payoutId));
+            const d = await g.json();
+            if (d.success) {
+                // Telecharger la facture generee
+                const r2 = await fetch(API + '/api/invoice/' + encodeURIComponent(payoutId));
+                if (r2.ok) {
+                    const blob = await r2.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = d.filename || `facture_${payoutId.slice(-8).toUpperCase()}.pdf`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast('Facture generee et telechargee !');
+                }
+            } else {
+                toast(d.error || 'Erreur generation facture', true);
+            }
+        }
+    } catch(e) {
+        toast('Erreur de telechargement', true);
+    }
+}
+
+function formatDate(ts) {
+    if (!ts) return '';
+    try {
+        const d = new Date(ts);
+        return d.toLocaleDateString('fr-FR', {day:'numeric',month:'short'})+' '+d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+    } catch(e) { return ts; }
+}
+
+function toast(msg, isError) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = 'toast' + (isError ? ' toast--error' : '');
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+}
+
+// Event listeners
+document.getElementById('payoutPartner').addEventListener('change', onSelectPartnerChange);
+
+// Init
+loadAll();
+setInterval(loadStats, 15000);
+</script>
+</body>
+</html>
