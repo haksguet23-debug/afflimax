@@ -664,8 +664,8 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
         # API: Statut des images generees
         if path == "/api/images/status":
             try:
-                from image_generator import load_products, ASSETS_DIR
-                data = load_products()
+                from image_generator import load_products as img_load_products, ASSETS_DIR
+                data = img_load_products()
                 if data:
                     produits = [p for p in data["produits"] if p.get("actif")]
                     results = []
