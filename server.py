@@ -764,7 +764,6 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
 
         # Page promo.html
         if path == "/promo.html":
-        if path == "/promo.html":
             self.path = "/promo.html"
             return super().do_GET()
 
