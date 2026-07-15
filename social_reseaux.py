@@ -26,7 +26,8 @@ from datetime import datetime
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LIENS_FILE = os.path.join(BASE_DIR, "liens_affiliation.json")
 
-SITE_URL = "https://affilmax.render.com"
+import os
+SITE_URL = os.environ.get("SITE_URL") or os.environ.get("RENDER_EXTERNAL_URL") or "http://localhost:8765"
 
 def load_products():
     try:
