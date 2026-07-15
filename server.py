@@ -772,6 +772,15 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             self.path = "/ai-content.html"
             return super().do_GET()
 
+        # API: Twitter poster status
+        if path == "/api/twitter/status":
+            try:
+                from twitter_poster import get_status
+                self.serve_json(get_status())
+            except Exception as e:
+                self.serve_json({"status": "error", "message": str(e)})
+            return
+
         # Fichiers statiques
         if path == "/" or path == "":
             self.path = "/index.html"
@@ -1019,7 +1028,18 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
                 self.serve_json({"status": "error", "message": str(e)})
             return
 
-        # ================== NOTIFICATIONS ==================
+        # API: Twitter poster - post tweets
+        if path == "/api/twitter/post":
+            count = int(payload.get("count", 1))
+            try:
+                from twitter_poster import post_next_tweets
+                result = post_next_tweets(count=count)
+                self.serve_json(result)
+            except Exception as e:
+                self.serve_json({"status": "error", "message": str(e)})
+            return
+
+        # ================== FIN TWITTER ==================
 
         if path == "/api/images/generate":
             try:
