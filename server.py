@@ -724,7 +724,46 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
                 self.serve_json({"status": "error", "message": str(e)})
             return
 
+        # API: IA Automator (Groq) - health check
+        if path == "/api/ai/health":
+            try:
+                from ai_automator import health_check
+                self.serve_json(health_check())
+            except Exception as e:
+                self.serve_json({"status": "error", "message": str(e)})
+            return
+
+        # API: Generer contenu IA
+        if path == "/api/ai/generate":
+            qs = urllib.parse.parse_qs(parsed.query)
+            content_type = qs.get("type", ["tweets"])[0]
+            product_name = qs.get("product", [None])[0]
+            count = int(qs.get("count", [5])[0])
+            try:
+                from ai_automator import generate_tweets, generate_linkedin, generate_facebook, generate_blog, generate_email, find_product
+                product = find_product(product_name) if product_name else None
+                if content_type == "tweets":
+                    result = {"tweets": generate_tweets(product, count=count)}
+                elif content_type == "linkedin":
+                    result = {"linkedin": generate_linkedin(product)}
+                elif content_type == "facebook":
+                    result = {"facebook": generate_facebook(product)}
+                elif content_type == "blog":
+                    result = {"blog": generate_blog(product)}
+                elif content_type == "email":
+                    result = {"email": generate_email(product)}
+                elif content_type == "all":
+                    from ai_automator import generate_all_content
+                    result = generate_all_content(product_name, count=count)
+                else:
+                    result = {"error": f"Type inconnu: {content_type}"}
+                self.serve_json(result)
+            except Exception as e:
+                self.serve_json({"status": "error", "message": str(e)})
+            return
+
         # Page promo.html
+        if path == "/promo.html":
         if path == "/promo.html":
             self.path = "/promo.html"
             return super().do_GET()
