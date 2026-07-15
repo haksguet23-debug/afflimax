@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affilimax - Pilotage IA</title>
+<style>
+:root {
+    --bg: #0a0a1a; --card: #141432; --gold: #f0a500; --purple: #7c3aed;
+    --green: #10b981; --red: #ef4444; --text: #f1f5f9; --muted: #94a3b8;
+    --border: #1e1e4a; --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', system-ui, sans-serif; background: var(--bg);
+    color: var(--text); min-height: 100vh;
+}
+.bg-grid {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: linear-gradient(rgba(124,58,237,0.02) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(124,58,237,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+.app { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+
+/* Header */
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; flex-wrap: wrap; gap: 12px; }
+.header h1 { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, var(--text), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.header-badge {
+    display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+    border-radius: 50px; font-size: 0.78rem; font-weight: 600; font-family: monospace;
+}
+.header-badge.online { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.4); }
+.header-badge.offline { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.4); }
+.pulse { width: 8px; height: 8px; border-radius: 50%; animation: pulse 1.5s infinite; }
+.pulse.online { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.pulse.offline { background: var(--red); box-shadow: 0 0 8px var(--red); }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.nav a { color: var(--muted); text-decoration: none; font-size: 0.82rem; margin-left: 16px; transition: color 0.2s; }
+.nav a:hover { color: var(--gold); }
+
+/* Controls */
+.controls {
+    display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 12px;
+    margin-bottom: 24px; align-items: end;
+}
+@media (max-width: 768px) { .controls { grid-template-columns: 1fr 1fr; } }
+.control-group { display: flex; flex-direction: column; gap: 6px; }
+.control-group label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+.control-group select, .control-group input {
+    padding: 12px 16px; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text); font-size: 0.9rem; font-family: inherit;
+    transition: all 0.2s;
+}
+.control-group select:focus, .control-group input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 12px rgba(124,58,237,0.2); }
+.btn-generate {
+    padding: 14px 28px; background: linear-gradient(135deg, var(--purple), #5b21b6);
+    border: none; border-radius: var(--radius); color: white; font-weight: 700;
+    font-size: 0.95rem; cursor: pointer; transition: all 0.3s; white-space: nowrap;
+    display: flex; align-items: center; gap: 8px;
+}
+.btn-generate:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(124,58,237,0.4); }
+.btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-generate .spinner {
+    display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn-generate.loading .spinner { display: block; }
+.btn-generate.loading .btn-text { display: none; }
+
+/* Stats */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.stat-mini {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px; text-align: center;
+}
+.stat-mini .val { font-size: 1.4rem; font-weight: 800; font-family: monospace; color: var(--gold); }
+.stat-mini .lbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+/* Results */
+.results { display: grid; gap: 16px; }
+.result-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+}
+.result-card__header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);
+}
+.result-card__title { font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+.result-card__badge {
+    padding: 3px 10px; border-radius: 50px; font-size: 0.65rem; font-weight: 600; font-family: monospace;
+}
+.result-card__badge.ia { background: rgba(124,58,237,0.15); color: var(--purple); }
+.result-card__badge.static { background: rgba(240,165,0,0.15); color: var(--gold); }
+.result-card__body { padding: 16px 18px; font-size: 0.85rem; line-height: 1.7; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
+.result-card__body::-webkit-scrollbar { width: 4px; }
+.result-card__body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.copy-btn {
+    padding: 6px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--muted); font-size: 0.7rem; cursor: pointer;
+    transition: all 0.2s; font-family: monospace;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+.copy-btn.copied { background: rgba(16,185,129,0.15); color: var(--green); border-color: var(--green); }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-state .icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.3; }
+.empty-state p { font-size: 0.9rem; }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+.tab {
+    padding: 8px 16px; border: 1px solid var(--border); border-radius: 50px;
+    background: transparent; color: var(--muted); font-size: 0.78rem; cursor: pointer;
+    transition: all 0.2s;
+}
+.tab:hover { color: var(--text); border-color: var(--purple); }
+.tab.active { background: rgba(124,58,237,0.15); color: var(--purple); border-color: var(--purple); }
+
+.toast {
+    position: fixed; bottom: 24px; right: 24px; padding: 12px 20px;
+    background: var(--card); border: 1px solid var(--green); border-radius: 50px;
+    color: var(--text); font-size: 0.8rem; font-family: monospace; z-index: 100;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4); animation: slideIn 0.3s ease;
+}
+@keyframes slideIn { from { transform: translateY(20px); opacity: 0; } }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<div class="app">
+    <!-- Header -->
+    <header class="header">
+        <div>
+            <h1>🤖 Pilotage IA</h1>
+            <div style="font-size:0.7rem;color:var(--muted);margin-top:4px">Generateur de contenu par intelligence artificielle</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <div class="header-badge" id="aiStatus">...</div>
+            <div class="nav">
+                <a href="/">Dashboard</a>
+                <a href="/pub.html">Landing</a>
+                <a href="/payouts.html">Paiements</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-mini"><div class="val" id="statProducts">...</div><div class="lbl">Produits</div></div>
+        <div class="stat-mini"><div class="val" id="statModel">...</div><div class="lbl">Modele IA</div></div>
+        <div class="stat-mini"><div class="val" id="statMode">...</div><div class="lbl">Mode</div></div>
+        <div class="stat-mini"><div class="val" id="statGenerated">0</div><div class="lbl">Genere cette session</div></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <div class="control-group">
+            <label>Produit</label>
+            <select id="productSelect">
+                <option value="">Chargement...</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label>Type de contenu</label>
+            <select id="typeSelect">
+                <option value="tweets">🐦 Tweets</option>
+                <option value="linkedin">💼 LinkedIn</option>
+                <option value="facebook">📘 Facebook</option>
+                <option value="blog">📰 Article Blog</option>
+                <option value="email">📧 Email Marketing</option>
+                <option value="all">🔥 TOUT (complet)</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label>Nombre</label>
+            <input type="number" id="countInput" value="3" min="1" max="10">
+        </div>
+        <button class="btn-generate" id="btnGenerate" onclick="generate()">
+            <span class="spinner"></span>
+            <span class="btn-text">⚡ Generer</span>
+        </button>
+    </div>
+
+    <!-- Results -->
+    <div class="results" id="results">
+        <div class="empty-state">
+            <div class="icon">🤖</div>
+            <p>Selectionne un produit et un type de contenu, puis clique sur Generer.</p>
+            <p style="font-size:0.7rem;margin-top:8px">L'IA (Groq/Llama 3.3) creera du contenu unique et optimise.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+let products = [];
+let generatedCount = 0;
+
+async function init() {
+    await loadProducts();
+    await checkHealth();
+}
+
+async function loadProducts() {
+    try {
+        const r = await fetch('/api/produits');
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        products = await r.json();
+        const active = products.filter(p => p.actif);
+        const sel = document.getElementById('productSelect');
+        sel.innerHTML = active.map(p =>
+            `<option value="${p.slug || p.nom}">${p.nom} (${p.commission_euro}€ comm)</option>`
+        ).join('');
+        document.getElementById('statProducts').textContent = active.length;
+    } catch(e) {
+        console.error('Products load error:', e);
+        document.getElementById('productSelect').innerHTML = '<option>Erreur chargement</option>';
+    }
+}
+
+async function checkHealth() {
+    const statusEl = document.getElementById('aiStatus');
+    try {
+        const r = await fetch('/api/ai/health');
+        const h = await r.json();
+
+        if (h.ai_enabled) {
+            statusEl.innerHTML = '<span class="pulse online"></span> IA Groq active';
+            statusEl.className = 'header-badge online';
+            document.getElementById('statModel').textContent = h.model.split('-').slice(0,2).join('-');
+            document.getElementById('statMode').textContent = 'Groq';
+        } else {
+            statusEl.innerHTML = '<span class="pulse offline"></span> Fallback statique';
+            statusEl.className = 'header-badge offline';
+            document.getElementById('statModel').textContent = 'Statique';
+            document.getElementById('statMode').textContent = 'Fallback';
+            document.getElementById('statMode').style.color = 'var(--gold)';
+        }
+    } catch(e) {
+        statusEl.innerHTML = '<span class="pulse offline"></span> Serveur offline';
+        statusEl.className = 'header-badge offline';
+    }
+}
+
+async function generate() {
+    const product = document.getElementById('productSelect').value;
+    const type = document.getElementById('typeSelect').value;
+    const count = document.getElementById('countInput').value;
+    const btn = document.getElementById('btnGenerate');
+
+    if (!product) return;
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    try {
+        const params = new URLSearchParams({ type, product, count });
+        const r = await fetch('/api/ai/generate?' + params);
+        const data = await r.json();
+
+        if (data.status === 'error') throw new Error(data.message);
+
+        displayResults(data, type);
+        generatedCount++;
+        document.getElementById('statGenerated').textContent = generatedCount;
+        showToast('Contenu genere avec succes !');
+    } catch(e) {
+        showToast('Erreur: ' + e.message, true);
+        console.error(e);
+    } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
+}
+
+function displayResults(data, type) {
+    const results = document.getElementById('results');
+    let html = '';
+
+    if (type === 'tweets' || (type === 'all' && data.tweets)) {
+        const tweets = type === 'all' ? data.tweets : data.tweets || [];
+        const mode = data.mode || 'IA';
+        const badgeClass = mode.includes('IA') ? 'ia' : 'static';
+        html += `
+        <div class="result-card">
+            <div class="result-card__header">
+                <div class="result-card__title">🐦 Tweets (${tweets.length})</div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span class="result-card__badge ${badgeClass}">${mode}</span>
+                    <button class="copy-btn" onclick="copyAll('tweets-${Date.now()}')">Copier tout</button>
+                </div>
+            </div>
+            <div class="result-card__body" id="tweets-${Date.now()}">${tweets.map((t,i) => `--- Tweet ${i+1} ---\n${t}`).join('\n\n')}</div>
+        </div>`;
+    }
+
+    if (type === 'linkedin' || (type === 'all' && data.linkedin)) {
+        const li = type === 'all' ? data.linkedin : data.linkedin || {};
+        const mode = data.mode || 'IA';
+        const badgeClass = mode.includes('IA') ? 'ia' : 'static';
+        html += `
+        <div class="result-card">
+            <div class="result-card__header">
+                <div class="result-card__title">💼 LinkedIn</div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span class="result-card__badge ${badgeClass}">${mode}</span>
+                    <button class="copy-btn" onclick="copyText(this, 'li-${Date.now()}')">Copier</button>
+                </div>
+            </div>
+            <div class="result-card__body" id="li-${Date.now()}">${li.titre ? '### ' + li.titre + '\n\n' : ''}${li.contenu || ''}</div>
+        </div>`;
+    }
+
+    if (type === 'blog' || (type === 'all' && data.blog)) {
+        const blog = type === 'all' ? data.blog : data.blog || {};
+        html += `
+        <div class="result-card">
+            <div class="result-card__header">
+                <div class="result-card__title">📰 Article Blog</div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <button class="copy-btn" onclick="copyText(this, 'blog-${Date.now()}')">Copier</button>
+                </div>
+            </div>
+            <div class="result-card__body" id="blog-${Date.now()}">${blog.titre ? '# ' + blog.titre + '\n\n' : ''}${blog.contenu || ''}</div>
+        </div>`;
+    }
+
+    if (type === 'email' || (type === 'all' && data.email)) {
+        const email = type === 'all' ? data.email : data.email || {};
+        html += `
+        <div class="result-card">
+            <div class="result-card__header">
+                <div class="result-card__title">📧 Email</div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <button class="copy-btn" onclick="copyText(this, 'email-${Date.now()}')">Copier</button>
+                </div>
+            </div>
+            <div class="result-card__body" id="email-${Date.now()}">${email.sujet ? 'Sujet: ' + email.sujet + '\n\n' : ''}${email.contenu || ''}</div>
+        </div>`;
+    }
+
+    if (type === 'facebook' || (type === 'all' && data.facebook)) {
+        const fb = type === 'all' ? data.facebook : data.facebook || {};
+        html += `
+        <div class="result-card">
+            <div class="result-card__header">
+                <div class="result-card__title">📘 Facebook</div>
+                <button class="copy-btn" onclick="copyText(this, 'fb-${Date.now()}')">Copier</button>
+            </div>
+            <div class="result-card__body" id="fb-${Date.now()}">${fb.titre ? fb.titre + '\n\n' : ''}${fb.contenu || ''}</div>
+        </div>`;
+    }
+
+    results.innerHTML = html || '<div class="empty-state"><p>Aucun contenu genere.</p></div>';
+
+    // Scroll to results
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyText(btn, id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    navigator.clipboard.writeText(el.textContent).then(() => {
+        btn.textContent = 'Copie !';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copier'; btn.classList.remove('copied'); }, 2000);
+    });
+}
+
+function copyAll(id) {
+    copyText(null, id);
+    // Update all copy buttons in the same card
+    const card = document.getElementById(id).closest('.result-card');
+    if (card) {
+        const btn = card.querySelector('.copy-btn');
+        if (btn) { btn.textContent = 'Copie !'; btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'Copier tout'; btn.classList.remove('copied'); }, 2000);
+        }
+    }
+}
+
+function showToast(msg, isError) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    if (isError) t.style.borderColor = 'var(--red)';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+init();
+setInterval(checkHealth, 30000);
+</script>
+</body>
+</html>

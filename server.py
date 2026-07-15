@@ -767,6 +767,11 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             self.path = "/promo.html"
             return super().do_GET()
 
+        # Page pilotage IA
+        if path == "/ai-content.html":
+            self.path = "/ai-content.html"
+            return super().do_GET()
+
         # Fichiers statiques
         if path == "/" or path == "":
             self.path = "/index.html"
