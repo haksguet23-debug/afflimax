@@ -149,6 +149,10 @@ body {
                 <span class="spinner"></span>
                 <span class="btn-text">🐦 Poster sur Twitter</span>
             </button>
+            <button class="btn-generate" id="btnEmail" onclick="sendEmailToAll()" style="background:linear-gradient(135deg,#f04355,#d63031);padding:10px 18px;font-size:0.78rem">
+                <span class="spinner"></span>
+                <span class="btn-text">📧 Envoyer emails</span>
+            </button>
         </div>
     </header>
 
@@ -187,6 +191,32 @@ body {
             <span class="spinner"></span>
             <span class="btn-text">⚡ Generer</span>
         </button>
+    </div>
+
+    <!-- Section Email -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+            <div>
+                <h3 style="font-size:0.95rem;margin:0">📧 Email Marketing (Resend)</h3>
+                <p style="font-size:0.7rem;color:var(--muted);margin:4px 0 0" id="emailStatusText">Chargement...</p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <div class="control-group">
+                    <label>Destinataire</label>
+                    <input type="email" id="emailTo" placeholder="client@email.com" style="padding:8px 12px;font-size:0.78rem;min-width:200px">
+                </div>
+                <button class="btn-generate" onclick="sendSingleEmail()" style="padding:10px 16px;font-size:0.75rem;background:linear-gradient(135deg,#f04355,#d63031)">
+                    <span class="spinner"></span>
+                    <span class="btn-text">📧 Envoyer 1 email</span>
+                </button>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-top:12px" id="emailStats">
+            <div class="stat-mini"><div class="val" id="emailSentToday">-</div><div class="lbl">Envoyes auj.</div></div>
+            <div class="stat-mini"><div class="val" id="emailRemaining">-</div><div class="lbl">Restants</div></div>
+            <div class="stat-mini"><div class="val" id="emailTotal">-</div><div class="lbl">Total</div></div>
+            <div class="stat-mini"><div class="val" id="emailRecipients">-</div><div class="lbl">Destinataires</div></div>
+        </div>
     </div>
 
     <!-- Results -->
@@ -412,6 +442,84 @@ async function postTweet() {
     }
 }
 
+async function loadEmailStatus() {
+    try {
+        const r = await fetch('/api/email/status');
+        const s = await r.json();
+        document.getElementById('emailSentToday').textContent = s.today_sent || 0;
+        document.getElementById('emailRemaining').textContent = s.remaining_today || 0;
+        document.getElementById('emailTotal').textContent = s.total_sent || 0;
+        document.getElementById('emailRecipients').textContent = s.recipients_count || 0;
+        const statusText = document.getElementById('emailStatusText');
+        const btnEmail = document.getElementById('btnEmail');
+        if (s.email_enabled) {
+            statusText.innerHTML = '✅ <span style="color:var(--green)">Resend actif</span> — ' + s.remaining_today + ' emails restants aujourd\'hui';
+            btnEmail.querySelector('.btn-text').textContent = '📧 Envoyer emails (' + s.remaining_today + ' rest.)';
+        } else {
+            statusText.innerHTML = '⚠️ <span style="color:var(--gold)">Mode simulation</span> — cle RESEND_API_KEY absente';
+            btnEmail.querySelector('.btn-text').textContent = '📧 Simuler envoi';
+        }
+        if (s.remaining_today <= 0 && s.email_enabled) {
+            btnEmail.disabled = true;
+            btnEmail.style.opacity = '0.5';
+            btnEmail.querySelector('.btn-text').textContent = '⏳ Quota epuise';
+        }
+        if (s.last_sent) {
+            statusText.innerHTML += '<br><span style="font-size:0.65rem;color:var(--muted)">Dernier: ' + s.last_sent.product + ' → ' + s.last_sent.to + '</span>';
+        }
+    } catch(e) {
+        document.getElementById('emailStatusText').innerHTML = '<span style="color:var(--red)">Erreur chargement</span>';
+    }
+}
+
+async function sendSingleEmail() {
+    const to = document.getElementById('emailTo').value.trim();
+    if (!to || !to.includes('@')) { showToast('Email destinataire requis', true); return; }
+    const product = document.getElementById('productSelect').value;
+    const btns = document.querySelectorAll('#emailSection button.btn-generate, .btn-generate[onclick*="sendSingleEmail"]');
+    // Find the right button
+    const sendBtn = document.querySelector('button[onclick="sendSingleEmail()"]');
+    if (sendBtn) { sendBtn.classList.add('loading'); sendBtn.disabled = true; }
+    try {
+        const r = await fetch('/api/email/send', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({to, product, name: to.split('@')[0]})
+        });
+        const data = await r.json();
+        if (data.success) {
+            showToast('✅ Email envoye a ' + to + ' — ' + (data.product || ''));
+        } else {
+            showToast((data.message || data.error || 'Erreur'), true);
+        }
+        loadEmailStatus();
+    } catch(e) {
+        showToast('Erreur: ' + e.message, true);
+    } finally {
+        if (sendBtn) { sendBtn.classList.remove('loading'); sendBtn.disabled = false; }
+    }
+}
+
+async function sendEmailToAll() {
+    const btn = document.getElementById('btnEmail');
+    if (!btn) return;
+    btn.classList.add('loading');
+    btn.disabled = true;
+    try {
+        const r = await fetch('/api/email/send-all', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({})
+        });
+        const data = await r.json();
+        showToast('📬 ' + (data.sent || 0) + ' envoyes, ' + (data.failed || 0) + ' echoues');
+        loadEmailStatus();
+    } catch(e) {
+        showToast('Erreur: ' + e.message, true);
+    } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
+}
+
 async function loadTwitterStatus() {
     try {
         const r = await fetch('/api/twitter/status');
@@ -441,6 +549,8 @@ function showToast(msg, isError) {
 
 init();
 setInterval(checkHealth, 30000);
+setInterval(loadEmailStatus, 60000);
+loadEmailStatus();
 </script>
 </body>
 </html>

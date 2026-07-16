@@ -781,6 +781,15 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
                 self.serve_json({"status": "error", "message": str(e)})
             return
 
+        # API: Email sender status
+        if path == "/api/email/status":
+            try:
+                from email_sender import get_status
+                self.serve_json(get_status())
+            except Exception as e:
+                self.serve_json({"status": "error", "message": str(e)})
+            return
+
         # Fichiers statiques
         if path == "/" or path == "":
             self.path = "/index.html"
@@ -1040,6 +1049,37 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         # ================== FIN TWITTER ==================
+
+        # API: Email sender - send single email
+        if path == "/api/email/send":
+            to_email = payload.get("to", "")
+            product_name = payload.get("product") or payload.get("product_name")
+            if not to_email or "@" not in to_email:
+                self.serve_json({"success": False, "error": "Email destinataire requis"})
+                return
+            try:
+                from email_sender import send_marketing_email
+                to_name = payload.get("name", to_email.split("@")[0].capitalize())
+                result = send_marketing_email(to_email=to_email, to_name=to_name, product_name=product_name)
+                self.serve_json(result)
+            except Exception as e:
+                self.serve_json({"success": False, "error": str(e)})
+            return
+
+        # API: Email sender - send to all partners
+        if path == "/api/email/send-all":
+            limit = payload.get("limit")
+            if limit is not None:
+                limit = int(limit)
+            try:
+                from email_sender import send_all
+                result = send_all(limit=limit)
+                self.serve_json(result)
+            except Exception as e:
+                self.serve_json({"success": False, "error": str(e)})
+            return
+
+        # ================== FIN EMAIL ==================
 
         if path == "/api/images/generate":
             try:
