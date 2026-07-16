@@ -162,6 +162,10 @@ body {
         <div class="stat-mini"><div class="val" id="statModel">...</div><div class="lbl">Modele IA</div></div>
         <div class="stat-mini"><div class="val" id="statMode">...</div><div class="lbl">Mode</div></div>
         <div class="stat-mini"><div class="val" id="statGenerated">0</div><div class="lbl">Genere cette session</div></div>
+        <div class="stat-mini" id="monitorCard" style="cursor:pointer" onclick="window.open('/healthz','_blank')" title="Clique pour voir le health check">
+            <div class="val" id="statUptime" style="color:var(--green)">...</div>
+            <div class="lbl">Uptime 24h</div>
+        </div>
     </div>
 
     <!-- Controls -->
@@ -536,6 +540,35 @@ async function loadTwitterStatus() {
     } catch(e) {}
 }
 
+async function loadUptimeStatus() {
+    try {
+        const r = await fetch('/healthz');
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const h = await r.json();
+        const uptimeH = h.uptime_hours || 0;
+        const card = document.getElementById('monitorCard');
+        const val = document.getElementById('statUptime');
+        if (uptimeH < 1) {
+            val.textContent = Math.round(uptimeH * 60) + 'min';
+            val.style.color = 'var(--gold)';
+        } else if (uptimeH < 24) {
+            val.textContent = uptimeH.toFixed(1) + 'h';
+            val.style.color = 'var(--green)';
+        } else {
+            val.textContent = Math.round(uptimeH / 24) + 'j';
+            val.style.color = 'var(--green)';
+        }
+        // Show AI status in the card tooltip
+        const ai = h.checks?.ai;
+        if (ai) {
+            card.title = `Groq: ${ai.groq ? 'ON' : 'OFF'} | Gemini: ${ai.gemini ? 'ON' : 'OFF'}\nClics auj: ${h.clicks_today || 0} | Comm: ${(h.commissions_today || 0).toFixed(2)}EUR\nClique pour voir le health check complet`;
+        }
+    } catch(e) {
+        document.getElementById('statUptime').textContent = 'N/A';
+        document.getElementById('statUptime').style.color = 'var(--red)';
+    }
+}
+
 function showToast(msg, isError) {
     const existing = document.querySelector('.toast');
     if (existing) existing.remove();
@@ -550,6 +583,7 @@ function showToast(msg, isError) {
 init();
 setInterval(checkHealth, 30000);
 setInterval(loadEmailStatus, 60000);
+loadUptimeStatus();
 loadEmailStatus();
 </script>
 </body>

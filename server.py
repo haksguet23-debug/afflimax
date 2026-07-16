@@ -552,16 +552,78 @@ class AffilimaxHandler(http.server.SimpleHTTPRequestHandler):
             self.serve_review_stats(slug)
             return
 
-        # API: Ping sante (Render health check)
+        # API: Ping sante (Render health check + UptimeRobot compatible)
+        # Usage UptimeRobot: surveiller GET /healthz?keyword=Affilimax
+        # Le keyword dans le body JSON confirme que le serveur est vraiment UP
         if path == "/healthz":
-            data = load_data()
-            self.serve_json({
-                "status": "ok",
-                "timestamp": datetime.utcnow().isoformat() + "Z",
-                "clicks": data["resume"]["clics_aujourdhui"],
-                "commissions": data["resume"]["commissions_aujourdhui"],
-                "uptime_seconds": (datetime.utcnow() - datetime.fromisoformat(data["demarrage"].replace("Z", ""))).total_seconds()
-            })
+            qs = urllib.parse.parse_qs(parsed.query)
+            keyword = qs.get("keyword", [None])[0]
+
+            try:
+                data = load_data()
+                now = datetime.utcnow()
+                uptime_sec = (now - datetime.fromisoformat(data["demarrage"].replace("Z", ""))).total_seconds()
+
+                # Checks legers (pas d'appels API couteux)
+                produits = load_products()
+                checks = {
+                    "server": "ok",
+                    "products_loaded": len(produits) > 0,
+                    "products_count": len(produits),
+                    "stats_accessible": True,
+                }
+
+                # AI providers status (env vars only - no heavy imports)
+                checks["ai"] = {
+                    "groq": bool(os.environ.get("GROQ_API_KEY")),
+                    "gemini": bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")),
+                }
+
+                # Email sender status
+                checks["email"] = {
+                    "enabled": bool(os.environ.get("RESEND_API_KEY")),
+                }
+
+                all_healthy = checks["server"] == "ok" and checks["products_loaded"] and checks["stats_accessible"]
+
+                response = {
+                    "status": "ok" if all_healthy else "degraded",
+                    "service": "Affilimax",
+                    "timestamp": now.isoformat() + "Z",
+                    "uptime_seconds": round(uptime_sec, 1),
+                    "uptime_hours": round(uptime_sec / 3600, 1),
+                    "clicks_today": data["resume"]["clics_aujourdhui"],
+                    "commissions_today": data["resume"]["commissions_aujourdhui"],
+                    "checks": checks,
+                }
+
+                # UptimeRobot keyword check: recherche dans le champ service
+                if keyword:
+                    response["keyword_check"] = {
+                        "expected": keyword,
+                        "found": keyword.lower() in response.get("service", "").lower(),
+                    }
+
+                # Status HTTP: 200 si tout est OK, 503 si degrade
+                if all_healthy:
+                    self.serve_json(response)
+                else:
+                    self.send_response(503)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    self.wfile.write(json.dumps(response, ensure_ascii=False).encode("utf-8"))
+            except Exception as e:
+                self.send_response(503)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "status": "error",
+                    "service": "Affilimax",
+                    "error": str(e)[:200],
+                    "timestamp": datetime.utcnow().isoformat() + "Z",
+                }, ensure_ascii=False).encode("utf-8"))
             return
 
         # PAGES PRODUIT: /produit/<slug> -> fiche detaillee style Amazon
