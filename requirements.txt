@@ -1,4 +1,5 @@
 # Affilimax - No external dependencies required
 # Python built-in modules only: http.server, json, os, threading, etc.
 stripe==11.6.0
-tweepy>=4.15
+resend>=1.0.0
+google-generativeai>=0.8.0

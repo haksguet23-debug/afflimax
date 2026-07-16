@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Affilimax - Automatisation IA via Groq (API gratuite)
-=====================================================
+Affilimax - Automatisation IA Dual-Provider (Groq + Gemini)
+===========================================================
 Genere du contenu frais pour tous les reseaux sociaux + blog + emails
-en utilisant l'API Groq (gratuite, OpenAI-compatible).
+en utilisant 2 API gratuites en cascade :
+  1. Groq (Llama 3.3 70B, ~30 req/min)
+  2. Google Gemini (gemini-2.0-flash, ~15 req/min)
+  3. Fallback statique (social_reseaux.py)
+
+Cela DOUBLE le quota d'IA gratuit !
 
 Utilisation:
     python ai_automator.py --tweets    # Genere 5 tweets sur un produit aleatoire
@@ -37,29 +42,63 @@ from social_reseaux import generer_emails as static_emails
 
 # ==================== CONFIGURATION ====================
 
-# Groq API (gratuit, OpenAI-compatible)
+# --- Provider 1: Groq (OpenAI-compatible, gratuit) ---
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 GROQ_MODEL = os.environ.get("AI_MODEL", "llama-3.3-70b-versatile")
 
-# Fallback: utiliser le generateur statique si pas d'API key
-AI_ENABLED = bool(GROQ_API_KEY)
+# --- Provider 2: Google Gemini (gratuit) ---
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", os.environ.get("GOOGLE_API_KEY", ""))
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
 
-# Initialiser le client OpenAI (pointe vers Groq)
-openai_client = None
-if AI_ENABLED:
+# --- Etat des providers ---
+GROQ_ENABLED = False
+GEMINI_ENABLED = False
+
+# Initialiser Groq
+groq_client = None
+if bool(GROQ_API_KEY):
     try:
         from openai import OpenAI
-        openai_client = OpenAI(
+        groq_client = OpenAI(
             base_url=GROQ_BASE_URL,
             api_key=GROQ_API_KEY
         )
+        GROQ_ENABLED = True
         print(f"[IA] Groq connecte - modele: {GROQ_MODEL}")
     except ImportError:
-        print("[IA] Module 'openai' non installe. Utilisation du fallback statique.")
-        AI_ENABLED = False
+        print("[IA] Module 'openai' non installe.")
 else:
-    print("[IA] GROQ_API_KEY absent. Utilisation du fallback statique (social_reseaux.py).")
+    print("[IA] GROQ_API_KEY absent.")
+
+# Initialiser Gemini
+gemini_model_obj = None
+if bool(GEMINI_API_KEY):
+    try:
+        import google.generativeai as genai
+        genai.configure(api_key=GEMINI_API_KEY)
+        gemini_model_obj = genai.GenerativeModel(GEMINI_MODEL)
+        GEMINI_ENABLED = True
+        print(f"[IA] Gemini connecte - modele: {GEMINI_MODEL}")
+    except ImportError:
+        print("[IA] Module 'google-generativeai' non installe. pip install google-generativeai")
+    except Exception as e:
+        print(f"[IA] Gemini init erreur: {e}")
+else:
+    print("[IA] GEMINI_API_KEY/GOOGLE_API_KEY absent.")
+
+# IA globale activee si au moins un provider est dispo
+AI_ENABLED = GROQ_ENABLED or GEMINI_ENABLED
+
+if not AI_ENABLED:
+    print("[IA] Aucun provider IA disponible. Fallback statique (social_reseaux.py).")
+else:
+    providers = []
+    if GROQ_ENABLED:
+        providers.append("Groq")
+    if GEMINI_ENABLED:
+        providers.append("Gemini")
+    print(f"[IA] Providers actifs: {', '.join(providers)} (cascade: Groq -> Gemini -> statique)")
 
 
 # ==================== CHARGEMENT PRODUITS ====================
@@ -90,15 +129,17 @@ def find_product(query):
     return random.choice(produits) if produits else None
 
 
-# ==================== GENERATEUR IA ====================
+# ==================== GENERATEUR IA (DUAL-PROVIDER) ====================
 
-def ask_ai(system_prompt, user_prompt, temperature=0.8, max_tokens=500):
-    """Appelle l'API Groq et retourne la reponse. Fallback si pas dispo."""
-    if not AI_ENABLED or not openai_client:
+_last_provider = None  # Track which provider answered last
+
+def _ask_groq(system_prompt, user_prompt, temperature=0.8, max_tokens=500):
+    """Appelle Groq (OpenAI-compatible). Retourne None si indisponible."""
+    global _last_provider
+    if not GROQ_ENABLED or not groq_client:
         return None
-
     try:
-        response = openai_client.chat.completions.create(
+        response = groq_client.chat.completions.create(
             model=GROQ_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -107,10 +148,65 @@ def ask_ai(system_prompt, user_prompt, temperature=0.8, max_tokens=500):
             temperature=temperature,
             max_tokens=max_tokens,
         )
+        _last_provider = "groq"
         return response.choices[0].message.content.strip()
     except Exception as e:
-        print(f"[IA] Erreur API: {e}")
+        print(f"[IA Groq] Erreur: {e}")
         return None
+
+
+def _ask_gemini(system_prompt, user_prompt, temperature=0.8, max_tokens=500):
+    """Appelle Google Gemini. Retourne None si indisponible."""
+    global _last_provider
+    if not GEMINI_ENABLED or not gemini_model_obj:
+        return None
+    try:
+        # Gemini: fusionner system+user en un seul prompt (le modele le gere bien)
+        combined = f"[Instructions]\n{system_prompt}\n\n[Message]\n{user_prompt}"
+        response = gemini_model_obj.generate_content(
+            combined,
+            generation_config=genai.types.GenerationConfig(
+                temperature=temperature,
+                max_output_tokens=max_tokens,
+            )
+        )
+        _last_provider = "gemini"
+        return response.text.strip()
+    except Exception as e:
+        print(f"[IA Gemini] Erreur: {e}")
+        return None
+
+
+def ask_ai(system_prompt, user_prompt, temperature=0.8, max_tokens=500):
+    """Appelle les providers IA en cascade: Groq -> Gemini -> None.
+
+    Si aucun provider ne repond, retourne None, ce qui declenche
+    le fallback statique (social_reseaux.py) dans chaque generateur.
+    """
+    global _last_provider
+    if not AI_ENABLED:
+        return None
+
+    # Provider 1: Groq (plus rapide, plus de quota)
+    result = _ask_groq(system_prompt, user_prompt, temperature, max_tokens)
+    if result is not None:
+        return result
+
+    # Provider 2: Gemini (fallback, gratuit)
+    print("[IA] Groq rate-limite -> tentative Gemini...")
+    result = _ask_gemini(system_prompt, user_prompt, temperature, max_tokens)
+    if result is not None:
+        return result
+
+    # Les deux providers sont KO
+    _last_provider = None  # Reset pour que get_active_provider() soit honnete
+    print("[IA] Aucun provider dispo. Fallback statique.")
+    return None
+
+
+def get_active_provider():
+    """Retourne le nom du dernier provider utilise, ou 'statique' si aucun."""
+    return _last_provider or "statique"
 
 
 # ==================== GENERATEURS DE CONTENU ====================
@@ -363,7 +459,7 @@ def generate_all_content(product_name=None, count=3):
         "prix": product["prix"],
         "commission": product["commission_euro"],
         "generated_at": datetime.utcnow().isoformat() + "Z",
-        "mode": "IA (Groq)" if AI_ENABLED else "FALLBACK (statique)",
+        "mode": f"IA ({get_active_provider().upper()})" if AI_ENABLED else "FALLBACK (statique)",
     }
 
     # Generer chaque type
@@ -385,7 +481,9 @@ def generate_batch_for_all_platforms(count_per_product=3):
         print(f"[IA] Generation pour: {p['nom']} ({i+1}/{len(produits)})")
         result = generate_all_content(p['nom'], count=count_per_product)
         all_results.append(result)
-        # Rate limiting: pause entre chaque produit (evite de depasser 30 RPM Groq)
+        # Rate limiting adaptatif: pause entre chaque produit
+        # Groq: ~30 RPM -> 2s pause. Gemini: ~15 RPM -> 4s pause.
+        # Avec les 2, on alterne donc 3s est un bon compromis.
         if AI_ENABLED and i < len(produits) - 1:
             time.sleep(3)
 
@@ -396,12 +494,24 @@ def generate_batch_for_all_platforms(count_per_product=3):
 
 def health_check():
     """Verifie si l'IA est operationnelle (sans consommer de quota)."""
+    providers = []
+    if GROQ_ENABLED:
+        providers.append({"name": "groq", "model": GROQ_MODEL, "ready": True})
+    else:
+        providers.append({"name": "groq", "model": GROQ_MODEL, "ready": bool(GROQ_API_KEY)})
+    if GEMINI_ENABLED:
+        providers.append({"name": "gemini", "model": GEMINI_MODEL, "ready": True})
+    else:
+        providers.append({"name": "gemini", "model": GEMINI_MODEL, "ready": bool(GEMINI_API_KEY)})
+
     status = {
         "ai_enabled": AI_ENABLED,
-        "api_key_configured": bool(GROQ_API_KEY),
-        "model": GROQ_MODEL if AI_ENABLED else "fallback (statique)",
-        "provider": "Groq" if AI_ENABLED else "social_reseaux.py",
+        "active_provider": _last_provider or ("groq" if GROQ_ENABLED else "gemini" if GEMINI_ENABLED else "statique"),
+        "providers": providers,
+        "cascade_order": ["groq", "gemini", "statique"],
         "products_count": len(load_products()),
+        "groq_enabled": GROQ_ENABLED,
+        "gemini_enabled": GEMINI_ENABLED,
     }
     # Test leger: verifier que le fallback fonctionne
     if not AI_ENABLED:
